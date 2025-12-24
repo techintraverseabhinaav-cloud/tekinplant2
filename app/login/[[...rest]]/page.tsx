@@ -11,7 +11,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative z-10 flex flex-col justify-between p-12 text-white">
           <div>
-            <h1 className="text-4xl font-bold mb-4">TRAININ</h1>
+            <h1 className="text-4xl font-bold mb-4">TekinPlant</h1>
             <p className="text-xl text-white/90 font-light">Empowering Your Learning Journey</p>
           </div>
           
