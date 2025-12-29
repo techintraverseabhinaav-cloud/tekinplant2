@@ -230,60 +230,6 @@ export default function Navbar() {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            <div className="relative search-container">
-              <button 
-                onClick={handleSearchClick}
-                className="p-2 text-white/70 hover:text-white transition-all duration-300 rounded-xl"
-                style={{ backgroundColor: 'transparent' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(168,85,247,0.1)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-              >
-              <Search size={20} />
-            </button>
-              {showSearch && (
-                <div className="absolute right-0 mt-2 w-80 rounded-xl p-4 border backdrop-blur-xl z-50"
-                style={{
-                  backgroundColor: 'rgba(168,85,247,0.08)',
-                  borderColor: 'rgba(168,85,247,0.25)',
-                  boxShadow: '0 0 20px rgba(196,181,253,0.3), 0 0 40px rgba(196,181,253,0.2)'
-                }}>
-                  <form onSubmit={handleSearch} className="space-y-3">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" size={18} />
-                      <input
-                        ref={searchInputRef}
-                        type="text"
-                        placeholder="Search courses, companies..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 rounded-xl text-white placeholder-white/40 focus:outline-none transition-all duration-300 backdrop-blur-sm border"
-                        style={{
-                          backgroundColor: 'rgba(168,85,247,0.08)',
-                          borderColor: 'rgba(168,85,247,0.3)'
-                        }}
-                        onFocus={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(168,85,247,0.6)'
-                          e.currentTarget.style.backgroundColor = 'rgba(168,85,247,0.12)'
-                        }}
-                        onBlur={(e) => {
-                          e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'
-                          e.currentTarget.style.backgroundColor = 'rgba(168,85,247,0.08)'
-                        }}
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="w-full text-sm py-2 rounded-xl transition-all duration-300 hover:opacity-90 backdrop-blur-sm border border-purple-400/40"
-                      style={{ background: 'linear-gradient(to right, #a78bfa, #c084fc, #a78bfa)', color: '#ffffff', boxShadow: '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)' }}
-                      onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 25px rgba(196,181,253,0.6), 0 0 50px rgba(196,181,253,0.4)'}
-                      onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)'}
-                    >
-                      Search
-                    </button>
-                  </form>
-                </div>
-              )}
-            </div>
             {user && userRole === "admin" && pathname?.startsWith("/admin-dashboard") && (
             <button className="p-2 text-white/70 hover:text-white transition-all duration-300 rounded-xl relative"
             style={{ backgroundColor: 'transparent' }}

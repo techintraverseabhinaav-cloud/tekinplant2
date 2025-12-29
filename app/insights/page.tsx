@@ -13,7 +13,7 @@ export default function InsightsPage() {
       {/* Header */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #000000 100%)' }}></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="slide-up relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="text-center mb-12">
             <h1 className="text-4xl lg:text-5xl font-normal mb-6">
               <span className="text-white" style={{ textShadow: '0 0 20px rgba(255,255,255,0.3)' }}>Industry</span> <span className="bg-gradient-to-r from-purple-300 via-purple-200 to-purple-300 bg-clip-text text-transparent" style={{ textShadow: '0 0 30px rgba(196,181,253,0.5), 0 0 60px rgba(196,181,253,0.3)' }}>Insights</span>

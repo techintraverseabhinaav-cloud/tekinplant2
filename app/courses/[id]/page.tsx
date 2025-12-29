@@ -484,7 +484,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
       {/* Course Header */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #000000 100%)' }}></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="slide-up relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Main Content */}
             <div className="lg:col-span-2">
@@ -656,7 +656,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
 
                 <Link
                   href={`/enroll/${resolvedParams.id}`}
-                  className="w-full px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:opacity-90 backdrop-blur-sm border border-purple-400/40 mb-4 block text-center"
+                  className="w-full px-4 py-2 rounded-xl font-semibold transition-all duration-300 hover:opacity-90 backdrop-blur-sm border border-purple-400/40 mb-4 block text-center text-sm"
                   style={{ background: 'linear-gradient(to right, #a78bfa, #c084fc, #a78bfa)', color: '#ffffff', boxShadow: '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)' }}
                   onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 25px rgba(196,181,253,0.6), 0 0 50px rgba(196,181,253,0.4)'}
                   onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)'}
@@ -664,7 +664,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                   Enroll Now
                 </Link>
 
-                <button className="w-full px-6 py-3 rounded-xl font-semibold transition-all duration-300 mb-6 border backdrop-blur-sm"                 style={{ backgroundColor: 'rgba(0,0,0,0.4)', borderColor: 'rgba(168,85,247,0.3)', color: '#ffffff' }} onMouseEnter={(e) => {
+                <button className="w-full px-4 py-2 rounded-xl font-semibold transition-all duration-300 mb-6 border backdrop-blur-sm text-sm"                 style={{ backgroundColor: 'rgba(0,0,0,0.4)', borderColor: 'rgba(168,85,247,0.3)', color: '#ffffff' }} onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.6)'
                   e.currentTarget.style.borderColor = 'rgba(168,85,247,0.5)'
                 }} onMouseLeave={(e) => {

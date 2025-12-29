@@ -272,7 +272,7 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
 
                 <button
                   type="submit"
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors duration-200 text-lg"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 text-base"
                 >
                   Complete Enrollment - {courseData.price}
                 </button>
