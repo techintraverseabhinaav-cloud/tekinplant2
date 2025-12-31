@@ -22,7 +22,7 @@ import {
 const AdminDashboardHome = () => {
   const stats = [
     { label: "Total Users", value: "2,847", icon: Users, color: "text-dark-primary", change: "+12%" },
-    { label: "Active Courses", value: "156", icon: BookOpen, color: "text-dark-accent", change: "+8%" },
+    { label: "Active Courses", value: "25", icon: BookOpen, color: "text-dark-accent", change: "+8%" },
     { label: "Revenue", value: "₹12.5L", icon: DollarSign, color: "text-green-400", change: "+15%" },
     { label: "Completion Rate", value: "87%", icon: TrendingUp, color: "text-yellow-400", change: "+3%" },
   ]
@@ -70,7 +70,7 @@ const AdminDashboardHome = () => {
       {/* Welcome Section */}
       <div className="bg-dark-surface border border-gray-700 rounded-2xl p-8">
         <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
-        <p className="text-gray-400">Welcome back! Here's what's happening with TRAININ today.</p>
+        <p className="text-gray-400">Welcome back! Here's what's happening with TekinPlant today.</p>
       </div>
 
       {/* Stats Cards */}
@@ -173,7 +173,7 @@ const UserManagement = () => {
     {
       id: 2,
       name: "Prof. Sarah Wilson",
-      email: "sarah.wilson@trainin.com",
+      email: "sarah.wilson@tekinplant.com",
       role: "Trainer",
       status: "Active",
       joinDate: "2023-12-01",
@@ -448,7 +448,7 @@ const AdminAnalytics = () => {
     overview: {
       totalRevenue: "₹45.2L",
       totalStudents: 2847,
-      activeCourses: 156,
+      activeCourses: 25,
       completionRate: 87,
     },
     monthlyGrowth: {

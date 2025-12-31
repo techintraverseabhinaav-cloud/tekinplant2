@@ -10,7 +10,7 @@ const LiveChat = () => {
     {
       id: 1,
       type: "bot",
-      message: "Hello! I'm TRAININ Assistant. How can I help you today?",
+      message: "Hello! I'm TekinPlant Assistant. How can I help you today?",
       timestamp: new Date(),
       options: ["Course Information", "Enrollment Process", "Technical Support", "Speak to Human Agent"],
     },
@@ -156,7 +156,7 @@ const LiveChat = () => {
     const agentMessage = {
       id: messages.length + 1,
       type: "agent",
-      message: `Hello ${userInfo.name}! I'm Sarah from TRAININ support team. I've received your contact details and I'm here to help you. What can I assist you with today?`,
+      message: `Hello ${userInfo.name}! I'm Sarah from TekinPlant support team. I've received your contact details and I'm here to help you. What can I assist you with today?`,
       timestamp: new Date(),
     }
 
@@ -194,7 +194,7 @@ const LiveChat = () => {
               )}
             </div>
             <div>
-              <h3 className="font-semibold text-white">{chatMode === "bot" ? "TRAININ Assistant" : "Live Support"}</h3>
+              <h3 className="font-semibold text-white">{chatMode === "bot" ? "TekinPlant Assistant" : "Live Support"}</h3>
               <p className="text-xs text-purple-200">
                 {chatMode === "bot" ? "AI-powered help" : "Human agent - Online"}
               </p>
@@ -343,7 +343,7 @@ const LiveChat = () => {
                     <span>Call</span>
                   </a>
                   <a
-                    href="mailto:info@trainin.com"
+                    href="mailto:info@tekinplant.com"
                     className="flex items-center space-x-1 text-xs text-gray-400 hover:text-dark-primary transition-colors"
                   >
                     <Mail size={12} />

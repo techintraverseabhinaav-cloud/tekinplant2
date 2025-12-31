@@ -65,7 +65,7 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-gray-400">info@trainin.com</p>
+                    <p className="text-gray-400">info@tekinplant.com</p>
                     <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
                   </div>
                 </div>
@@ -77,7 +77,7 @@ const ContactPage = () => {
                   <div>
                     <h3 className="font-semibold mb-1">Address</h3>
                     <p className="text-gray-400">
-                      TRAININ Institute
+                      TekinPlant Institute
                       <br />
                       Tech Park, Sector 5<br />
                       Bangalore, Karnataka 560001
@@ -290,7 +290,7 @@ const ContactPage = () => {
                 <MapPin className="mx-auto mb-4 text-gray-400" size={48} />
                 <p className="text-gray-400">Interactive map would be embedded here</p>
                 <p className="text-sm text-gray-500 mt-2">
-                  TRAININ Institute, Tech Park, Sector 5, Bangalore, Karnataka 560001
+                  TekinPlant Institute, Tech Park, Sector 5, Bangalore, Karnataka 560001
                 </p>
               </div>
             </div>

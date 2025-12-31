@@ -80,9 +80,7 @@ export function useProtectedRoute(requiredRole?: string) {
         // Redirect to appropriate dashboard based on user role
         const dashboardRoutes = {
           student: '/student-dashboard',
-          trainer: '/trainer-dashboard',
-          admin: '/admin-dashboard',
-          corporate: '/corporate-dashboard'
+          admin: '/admin-dashboard'
         }
         router.push(dashboardRoutes[user.role as keyof typeof dashboardRoutes] || '/')
       }

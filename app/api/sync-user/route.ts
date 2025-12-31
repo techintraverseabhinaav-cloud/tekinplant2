@@ -123,6 +123,7 @@ export async function POST(request: NextRequest) {
     }
     
     console.log('👤 User found from request body:', userId, email)
+    console.log('🔑 Role from request:', role || 'student (default)')
     
     const userData = {
       clerkId: userId,
@@ -130,9 +131,11 @@ export async function POST(request: NextRequest) {
       fullName: fullName || null,
       firstName: firstName || null,
       lastName: lastName || null,
-      role: role || 'student',
+      role: role || 'student', // Ensure role is always set
       avatarUrl: avatarUrl || null
     }
+    
+    console.log('📤 User data to sync:', { ...userData, email: userData.email.substring(0, 10) + '...' })
     
     return await syncUserToSupabase(userData)
     
@@ -164,6 +167,53 @@ export async function POST(request: NextRequest) {
     }
     
       console.log('📤 Syncing user data:', userData)
+      
+      // Only update Clerk's publicMetadata with role if not already set
+      // This prevents overwriting an existing role on subsequent sign-ins
+      if (userData.role && userData.clerkId) {
+        try {
+          const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY
+          if (CLERK_SECRET_KEY) {
+            // First check if role is already set in Clerk
+            const userResponse = await fetch(`https://api.clerk.com/v1/users/${userData.clerkId}`, {
+              headers: {
+                'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
+                'Content-Type': 'application/json',
+              },
+            })
+            
+            if (userResponse.ok) {
+              const clerkUser = await userResponse.json()
+              const existingRole = clerkUser.public_metadata?.role
+              
+              // Only update if role is not already set or if it's different (new sign-up)
+              if (!existingRole || existingRole !== userData.role) {
+                const updateResponse = await fetch(`https://api.clerk.com/v1/users/${userData.clerkId}/metadata`, {
+                  method: 'PATCH',
+                  headers: {
+                    'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    public_metadata: { role: userData.role }
+                  }),
+                })
+                
+                if (updateResponse.ok) {
+                  console.log('✅ Updated Clerk publicMetadata with role:', userData.role)
+                } else {
+                  console.warn('⚠️ Failed to update Clerk publicMetadata, but continuing with Supabase sync')
+                }
+              } else {
+                console.log('ℹ️ Role already set in Clerk, skipping update:', existingRole)
+              }
+            }
+          }
+        } catch (error) {
+          console.warn('⚠️ Error updating Clerk publicMetadata:', error)
+          // Continue with Supabase sync even if Clerk update fails
+        }
+      }
       
       const profile = await syncClerkUserToSupabase(userData)
       

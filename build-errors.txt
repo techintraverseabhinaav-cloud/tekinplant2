@@ -1,0 +1,45 @@
+﻿node.exe :  ΓÜá Invalid next.config.mjs options detected: 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( ΓÜá Invalid ne...ions detected: :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ΓÜá     Unrecognized key(s) in object: 'swcMinify'
+ ΓÜá See more info here: https://nextjs.org/docs/messages/invalid-next-config
+   Γû▓ Next.js 15.2.4
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/components/Sidebar.jsx
+Module not found: Can't resolve 'react-router-dom'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/pages/AdminDashboard.jsx
+
+./src/pages/AdminDashboard.jsx
+Module not found: Can't resolve 'react-router-dom'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/pages/AssignmentPage.jsx
+Module not found: Can't resolve 'react-router-dom'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/pages/CertificatePage.jsx
+Module not found: Can't resolve 'react-router-dom'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/pages/CorporateDashboard.jsx
+Module not found: Can't resolve 'react-router-dom'
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+> Build failed because of webpack errors

@@ -47,7 +47,18 @@ export async function syncClerkUserToSupabase(userData: SyncUserData) {
       ? `${userData.firstName} ${userData.lastName}` 
       : userData.firstName || null)
   
-  const role = (userData.role as 'student' | 'trainer' | 'admin' | 'corporate') || 'student'
+  // Validate and set role - must be one of the allowed values
+  const validRoles = ['student', 'trainer', 'admin', 'corporate'] as const
+  const providedRole = userData.role?.toLowerCase().trim()
+  const role = (providedRole && validRoles.includes(providedRole as any)) 
+    ? (providedRole as 'student' | 'trainer' | 'admin' | 'corporate')
+    : 'student'
+  
+  console.log('🔑 Role validation:', {
+    provided: userData.role,
+    validated: role,
+    isValid: validRoles.includes(role)
+  })
   
   // Generate UUID from Clerk ID
   const userId = generateUserIdFromClerkId(userData.clerkId)
@@ -92,32 +103,54 @@ export async function syncClerkUserToSupabase(userData: SyncUserData) {
   console.log('📋 Existing profile check result:', existingProfile ? 'Found' : 'Not found')
   
   if (existingProfile) {
-    // Update existing profile
+    // Update existing profile - only update role if it's different (new sign-up) or not set
     console.log('🔄 Updating existing profile...', existingProfile.id)
+    
+    // Get current role from existing profile
+    const { data: currentProfile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', existingProfile.id)
+      .single()
+    
+    const currentRole = currentProfile?.role
+    
+    const updateData: any = {
+      clerk_id: userData.clerkId,
+      full_name: fullName,
+      avatar_url: userData.avatarUrl,
+      updated_at: new Date().toISOString()
+    }
+    
+    // Only update role if:
+    // 1. Current role is not set, OR
+    // 2. New role is provided and different (new sign-up scenario)
+    // This prevents overwriting existing roles on subsequent sign-ins
+    if (role && (!currentRole || currentRole !== role)) {
+      updateData.role = role
+      console.log('📝 Updating role from', currentRole, 'to', role)
+    } else {
+      console.log('ℹ️ Keeping existing role:', currentRole)
+    }
     
     const { data, error } = await supabase
       .from('profiles')
-      .update({
-        clerk_id: userData.clerkId,
-        full_name: fullName,
-        role: role,
-        avatar_url: userData.avatarUrl,
-        updated_at: new Date().toISOString()
-      })
+      .update(updateData)
       .eq('id', existingProfile.id)
       .select()
       .single()
     
     if (error) {
       console.error('❌ Error updating Supabase profile:', error)
+      console.error('❌ Update data attempted:', updateData)
       throw error
     }
     
-    console.log('✅ Profile updated successfully:', data)
+    console.log('✅ Profile updated successfully with role:', data?.role)
     return data
   } else {
     // Create new profile
-    console.log('➕ Creating new profile...', { userId, email: userData.email })
+    console.log('➕ Creating new profile...', { userId, email: userData.email, role: role })
     
     const { data, error } = await supabase
       .from('profiles')
@@ -126,7 +159,7 @@ export async function syncClerkUserToSupabase(userData: SyncUserData) {
         clerk_id: userData.clerkId,
         email: userData.email,
         full_name: fullName,
-        role: role,
+        role: role, // Ensure role is always set
         avatar_url: userData.avatarUrl
       })
       .select()
@@ -189,7 +222,7 @@ export async function syncClerkUserToSupabase(userData: SyncUserData) {
  * Generate a consistent UUID from Clerk ID
  * Uses a simple hash function to convert Clerk ID to UUID format
  */
-function generateUserIdFromClerkId(clerkId: string): string {
+export function generateUserIdFromClerkId(clerkId: string): string {
   // Simple hash function to convert Clerk ID to UUID-like string
   // In production, you might want to use a proper UUID v5 with a namespace
   let hash = 0

@@ -22,9 +22,41 @@ export default function SyncUserToSupabase() {
     try {
       console.log('🔄 Syncing user to Supabase...', user.id)
       
-      // Prefer role from Clerk metadata, fallback to locally selected role (sign-up)
-      const selectedRole = typeof window !== 'undefined' ? localStorage.getItem('signup_role') : null
-      const roleToSend = (user.publicMetadata?.role as string) || selectedRole || 'student'
+      // Priority: 1. Clerk metadata (already set), 2. Supabase profile (fetch if needed), 3. localStorage (only for new sign-ups)
+      let roleToSend = (user.publicMetadata?.role as string) || null
+      
+      // If no role in Clerk metadata, try to fetch from Supabase
+      if (!roleToSend) {
+        try {
+          const profileResponse = await fetch(`/api/get-user-role?userId=${user.id}`)
+          if (profileResponse.ok) {
+            const profileData = await profileResponse.json()
+            roleToSend = profileData.role
+            console.log('📋 Role fetched from Supabase:', roleToSend)
+          }
+        } catch (error) {
+          console.warn('⚠️ Could not fetch role from Supabase:', error)
+        }
+      }
+      
+      // Only use localStorage if this is a new sign-up (no role in Clerk or Supabase)
+      if (!roleToSend && typeof window !== 'undefined') {
+        const selectedRole = localStorage.getItem('signup_role')
+        if (selectedRole) {
+          roleToSend = selectedRole
+          console.log('📝 Using role from localStorage (new sign-up):', roleToSend)
+          // Clear localStorage after using it to prevent future overwrites
+          localStorage.removeItem('signup_role')
+        }
+      }
+      
+      // Default to student if still no role
+      roleToSend = roleToSend || 'student'
+      
+      console.log('🔑 Role determination:', {
+        clerkMetadata: user.publicMetadata?.role,
+        finalRole: roleToSend
+      })
       
       // Send user data in request body
       const response = await fetch('/api/sync-user', {
@@ -38,7 +70,7 @@ export default function SyncUserToSupabase() {
           fullName: user.fullName,
           firstName: user.firstName,
           lastName: user.lastName,
-          role: roleToSend,
+          role: roleToSend, // This will be saved to Supabase
           avatarUrl: user.imageUrl
         }),
       })
