@@ -399,25 +399,25 @@ export default function StudentDashboard() {
 
           {/* Recent Activity */}
           <div>
-            <h3 className="text-2xl font-normal mb-6 text-white">Recent Activity</h3>
+            <h3 className={`text-2xl font-normal mb-6 ${isDark ? 'text-white' : 'text-amber-900'}`}>Recent Activity</h3>
             <div className="slide-up rounded-2xl p-6 backdrop-blur-xl border space-y-4" style={{ 
-              backgroundColor: 'rgba(168,85,247,0.05)',
-              borderColor: 'rgba(168,85,247,0.25)'
+              backgroundColor: isDark ? 'rgba(168,85,247,0.05)' : 'rgba(255,255,255,0.7)',
+              borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
             }}>
               {recentActivity.length > 0 ? (
                 <ul className="space-y-4">
                   {recentActivity.map((activity: any, index: number) => (
                     <li key={index} className="flex items-start space-x-3">
-                      <div className="w-2 h-2 mt-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#a78bfa' }}></div>
+                      <div className="w-2 h-2 mt-2 rounded-full flex-shrink-0" style={{ backgroundColor: isDark ? '#a78bfa' : '#8b6f47' }}></div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-white/90 text-sm">{activity.title}</p>
-                        <p className="text-white/50 text-xs mt-1">{activity.date}</p>
+                        <p className={`text-sm ${isDark ? 'text-white/90' : 'text-amber-900/90'}`}>{activity.title}</p>
+                        <p className={`text-xs mt-1 ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>{activity.date}</p>
                       </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-white/50 text-center py-8">No recent activity.</p>
+                <p className={`text-center py-8 ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>No recent activity.</p>
               )}
             </div>
           </div>

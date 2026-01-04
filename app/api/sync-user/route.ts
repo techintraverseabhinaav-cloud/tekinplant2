@@ -2,6 +2,94 @@ import { NextRequest, NextResponse } from 'next/server'
 import { syncClerkUserToSupabase } from '@/lib/supabase/sync-clerk-user'
 
 /**
+ * Helper function to sync user data to Supabase
+ */
+async function syncUserToSupabase(userData: any) {
+  // Check if service role key is set
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error('❌ SUPABASE_SERVICE_ROLE_KEY not set in environment variables')
+    console.error('💡 Fix: Add SUPABASE_SERVICE_ROLE_KEY to .env.local and restart server')
+    return NextResponse.json(
+      { 
+        error: 'Server configuration error: SUPABASE_SERVICE_ROLE_KEY not set',
+        hint: 'Add SUPABASE_SERVICE_ROLE_KEY to .env.local file'
+      },
+      { status: 500 }
+    )
+  }
+  
+  // Check if Supabase URL is set
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    console.error('❌ NEXT_PUBLIC_SUPABASE_URL not set')
+    return NextResponse.json(
+      { 
+        error: 'Server configuration error: NEXT_PUBLIC_SUPABASE_URL not set',
+        hint: 'Add NEXT_PUBLIC_SUPABASE_URL to .env.local file'
+      },
+      { status: 500 }
+    )
+  }
+  
+  console.log('📤 Syncing user data:', userData)
+  
+  // Only update Clerk's publicMetadata with role if not already set
+  // This prevents overwriting an existing role on subsequent sign-ins
+  if (userData.role && userData.clerkId) {
+    try {
+      const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY
+      if (CLERK_SECRET_KEY) {
+        // First check if role is already set in Clerk
+        const userResponse = await fetch(`https://api.clerk.com/v1/users/${userData.clerkId}`, {
+          headers: {
+            'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (userResponse.ok) {
+          const clerkUser = await userResponse.json()
+          const existingRole = clerkUser.public_metadata?.role
+          
+          // Only update if role is not already set or if it's different (new sign-up)
+          if (!existingRole || existingRole !== userData.role) {
+            const updateResponse = await fetch(`https://api.clerk.com/v1/users/${userData.clerkId}/metadata`, {
+              method: 'PATCH',
+              headers: {
+                'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                public_metadata: { role: userData.role }
+              }),
+            })
+            
+            if (updateResponse.ok) {
+              console.log('✅ Updated Clerk publicMetadata with role:', userData.role)
+            } else {
+              console.warn('⚠️ Failed to update Clerk publicMetadata, but continuing with Supabase sync')
+            }
+          } else {
+            console.log('ℹ️ Role already set in Clerk, skipping update:', existingRole)
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('⚠️ Error updating Clerk publicMetadata:', error)
+      // Continue with Supabase sync even if Clerk update fails
+    }
+  }
+  
+  const profile = await syncClerkUserToSupabase(userData)
+  
+  console.log('✅ Profile synced successfully:', profile)
+  
+  return NextResponse.json({ 
+    success: true, 
+    profile 
+  })
+}
+
+/**
  * API Route to sync Clerk user to Supabase
  * Call this after user signs in/signs up
  * 
@@ -138,92 +226,6 @@ export async function POST(request: NextRequest) {
     console.log('📤 User data to sync:', { ...userData, email: userData.email.substring(0, 10) + '...' })
     
     return await syncUserToSupabase(userData)
-    
-    async function syncUserToSupabase(userData: any) {
-    
-    // Check if service role key is set
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.error('❌ SUPABASE_SERVICE_ROLE_KEY not set in environment variables')
-      console.error('💡 Fix: Add SUPABASE_SERVICE_ROLE_KEY to .env.local and restart server')
-      return NextResponse.json(
-        { 
-          error: 'Server configuration error: SUPABASE_SERVICE_ROLE_KEY not set',
-          hint: 'Add SUPABASE_SERVICE_ROLE_KEY to .env.local file'
-        },
-        { status: 500 }
-      )
-    }
-    
-    // Check if Supabase URL is set
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-      console.error('❌ NEXT_PUBLIC_SUPABASE_URL not set')
-      return NextResponse.json(
-        { 
-          error: 'Server configuration error: NEXT_PUBLIC_SUPABASE_URL not set',
-          hint: 'Add NEXT_PUBLIC_SUPABASE_URL to .env.local file'
-        },
-        { status: 500 }
-      )
-    }
-    
-      console.log('📤 Syncing user data:', userData)
-      
-      // Only update Clerk's publicMetadata with role if not already set
-      // This prevents overwriting an existing role on subsequent sign-ins
-      if (userData.role && userData.clerkId) {
-        try {
-          const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY
-          if (CLERK_SECRET_KEY) {
-            // First check if role is already set in Clerk
-            const userResponse = await fetch(`https://api.clerk.com/v1/users/${userData.clerkId}`, {
-              headers: {
-                'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
-                'Content-Type': 'application/json',
-              },
-            })
-            
-            if (userResponse.ok) {
-              const clerkUser = await userResponse.json()
-              const existingRole = clerkUser.public_metadata?.role
-              
-              // Only update if role is not already set or if it's different (new sign-up)
-              if (!existingRole || existingRole !== userData.role) {
-                const updateResponse = await fetch(`https://api.clerk.com/v1/users/${userData.clerkId}/metadata`, {
-                  method: 'PATCH',
-                  headers: {
-                    'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    public_metadata: { role: userData.role }
-                  }),
-                })
-                
-                if (updateResponse.ok) {
-                  console.log('✅ Updated Clerk publicMetadata with role:', userData.role)
-                } else {
-                  console.warn('⚠️ Failed to update Clerk publicMetadata, but continuing with Supabase sync')
-                }
-              } else {
-                console.log('ℹ️ Role already set in Clerk, skipping update:', existingRole)
-              }
-            }
-          }
-        } catch (error) {
-          console.warn('⚠️ Error updating Clerk publicMetadata:', error)
-          // Continue with Supabase sync even if Clerk update fails
-        }
-      }
-      
-      const profile = await syncClerkUserToSupabase(userData)
-      
-      console.log('✅ Profile synced successfully:', profile)
-      
-      return NextResponse.json({ 
-        success: true, 
-        profile 
-      })
-    }
   } catch (error: any) {
     console.error('❌ Error syncing user:', error)
     return NextResponse.json(

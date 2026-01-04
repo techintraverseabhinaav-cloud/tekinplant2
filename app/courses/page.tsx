@@ -157,12 +157,29 @@ function CoursesContent() {
                     borderColor: statBorder, 
                     borderWidth: '1px' 
                   }}>
-                    <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden" style={{ 
+                    <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ 
                       borderColor: statBorder, 
                       borderWidth: '1px', 
                       backgroundColor: '#ffffff' 
                     }}>
-                      <img src={stat.icon} alt={stat.label} className="w-full h-full object-cover scale-125" />
+                      <div 
+                        className="absolute inset-0 rounded-lg"
+                        style={{
+                          background: isDark ? 'transparent' : 'linear-gradient(135deg, rgba(217,119,6,0.5) 0%, rgba(251,191,36,0.4) 100%)',
+                          mixBlendMode: isDark ? 'normal' : 'color',
+                          pointerEvents: 'none',
+                          zIndex: 1
+                        }}
+                      />
+                      <img 
+                        src={stat.icon} 
+                        alt={stat.label} 
+                        className="w-full h-full object-cover scale-125 relative z-0" 
+                        style={{ 
+                          filter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6)',
+                          WebkitFilter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6)'
+                        }}
+                      />
                     </div>
                   </div>
                   <h3 className={`text-3xl lg:text-4xl font-light mb-2 tracking-tight bg-clip-text text-transparent ${
@@ -378,7 +395,7 @@ function CoursesContent() {
                 return (
                 <div 
                   key={course.id} 
-                  className="group border rounded-2xl overflow-hidden transition-all duration-500" 
+                  className="group border rounded-2xl overflow-hidden transition-all duration-500 flex flex-col h-full" 
                   style={{ backgroundColor: cardBg, borderColor: cardBorder }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)'
@@ -416,12 +433,12 @@ function CoursesContent() {
                     </div>
                   </div>
 
-                  <div className="p-6 space-y-4">
+                  <div className="p-6 space-y-4 flex flex-col flex-grow">
                     <h3 className="text-xl font-light leading-tight line-clamp-2" style={{ color: themeStyles.textPrimary }}>
                       {course.title}
                     </h3>
                     
-                    <p className="text-sm line-clamp-2 leading-relaxed font-light" style={{ color: themeStyles.textSecondary }}>
+                    <p className="text-sm line-clamp-2 leading-relaxed font-light flex-grow" style={{ color: themeStyles.textSecondary }}>
                       {course.description}
                     </p>
 
@@ -442,7 +459,7 @@ function CoursesContent() {
 
                     <button 
                       onClick={() => isSignedIn ? router.push(`/courses/${course.id}`) : router.push('/login')} 
-                      className="w-full text-sm px-4 py-2.5 rounded-xl backdrop-blur-sm border transition-all duration-300 font-medium" 
+                      className="w-full text-sm px-4 py-2.5 rounded-xl backdrop-blur-sm border transition-all duration-300 font-medium mt-auto" 
                       style={{ 
                         background: themeStyles.buttonGradient, 
                         color: '#ffffff',

@@ -94,10 +94,15 @@ export async function getStudentDashboardData(clerkId: string) {
   // Calculate stats
   const totalCourses = enrollmentsData.length
   const completedCourses = enrollmentsData.filter((e: any) => e.status === 'completed').length
+  // Calculate total hours based on progress percentage (partial completion included)
+  // For example: 50% of a 6-hour course = 3 hours
   const totalHours = enrollmentsData.reduce((sum: number, e: any) => {
     const duration = e.courses?.duration || '0 hours'
-    const hours = parseInt(duration.split(' ')[0]) || 0
-    return sum + hours
+    const courseHours = parseInt(duration.split(' ')[0]) || 0
+    const progressPercentage = e.progress_percentage || 0
+    // Calculate actual hours completed based on progress
+    const hoursCompleted = (courseHours * progressPercentage) / 100
+    return sum + hoursCompleted
   }, 0)
   const averageScore = totalCourses > 0
     ? Math.floor(enrollmentsData.reduce((sum: number, e: any) => sum + (e.progress_percentage || 0), 0) / totalCourses)

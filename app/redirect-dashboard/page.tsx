@@ -88,9 +88,28 @@ export default function RedirectDashboard() {
     redirectToDashboard()
   }, [user, isLoaded, router])
 
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#000000' }}>
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#000000' }}>
+        <div className="text-white text-xl">Please sign in to access your dashboard.</div>
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <div className="text-white text-xl">Redirecting to your dashboard...</div>
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#000000' }}>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+        <div className="text-white text-xl">Redirecting to your dashboard...</div>
+      </div>
     </div>
   )
 }

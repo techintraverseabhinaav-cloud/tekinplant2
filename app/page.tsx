@@ -454,9 +454,9 @@ export default function HomePage() {
                   <h3 className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 break-words bg-clip-text text-transparent ${
                     theme === 'dark' 
                       ? 'bg-gradient-to-r from-purple-300 to-purple-400' 
-                      : 'bg-gradient-to-r from-amber-800 to-amber-700'
+                      : 'bg-gradient-to-r from-amber-950 to-amber-900'
                   }`}>{stat.value}</h3>
-                  <p className={`text-xs sm:text-sm md:text-base break-words ${theme === 'dark' ? 'text-white/70' : 'text-amber-900/70'}`} style={{ lineHeight: '1.6' }}>{stat.label}</p>
+                  <p className={`text-xs sm:text-sm md:text-base break-words ${theme === 'dark' ? 'text-white/70' : 'text-amber-950/90'}`} style={{ lineHeight: '1.6' }}>{stat.label}</p>
                 </div>
               )
             })}
@@ -499,17 +499,27 @@ export default function HomePage() {
               ].map((row, rowIndex) => (
                 <div key={rowIndex} className="flex gap-2 sm:gap-3 md:gap-4 justify-center md:justify-end">
                   {row.map((company) => {
-                    const colors = [
+                    const colors = theme === 'dark' ? [
                       { bg: 'rgba(168,85,247,0.12)', border: 'rgba(168,85,247,0.25)', inner: 'rgba(168,85,247,0.22)' },
                       { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.25)', inner: 'rgba(99,102,241,0.22)' },
                       { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.25)', inner: 'rgba(236,72,153,0.22)' },
                       { bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.25)', inner: 'rgba(139,92,246,0.22)' },
                       { bg: 'rgba(79,70,229,0.12)', border: 'rgba(79,70,229,0.25)', inner: 'rgba(79,70,229,0.22)' },
                       { bg: 'rgba(192,132,252,0.12)', border: 'rgba(192,132,252,0.25)', inner: 'rgba(192,132,252,0.22)' },
+                    ] : [
+                      { bg: 'rgba(217,119,6,0.15)', border: 'rgba(217,119,6,0.35)', inner: 'rgba(217,119,6,0.25)' },
+                      { bg: 'rgba(217,119,6,0.15)', border: 'rgba(217,119,6,0.35)', inner: 'rgba(217,119,6,0.25)' },
+                      { bg: 'rgba(217,119,6,0.15)', border: 'rgba(217,119,6,0.35)', inner: 'rgba(217,119,6,0.25)' },
+                      { bg: 'rgba(217,119,6,0.15)', border: 'rgba(217,119,6,0.35)', inner: 'rgba(217,119,6,0.25)' },
+                      { bg: 'rgba(217,119,6,0.15)', border: 'rgba(217,119,6,0.35)', inner: 'rgba(217,119,6,0.25)' },
+                      { bg: 'rgba(217,119,6,0.15)', border: 'rgba(217,119,6,0.35)', inner: 'rgba(217,119,6,0.25)' },
                     ]
                     const color = colors[company.index % 6]
+                    const hoverShadow = theme === 'dark'
+                      ? '0 0 25px rgba(196,181,253,0.6), 0 0 50px rgba(196,181,253,0.4), inset 0 0 25px rgba(196,181,253,0.2)'
+                      : '0 0 25px rgba(217,119,6,0.4), 0 0 50px rgba(217,119,6,0.3), inset 0 0 25px rgba(217,119,6,0.2)'
                     return (
-                      <div key={company.index} className="hover-lift p-1.5 sm:p-2 flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-xl sm:rounded-2xl transition-all duration-300 relative" style={{ backgroundColor: color.bg, borderColor: color.border, borderWidth: '1px' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 25px rgba(196,181,253,0.6), 0 0 50px rgba(196,181,253,0.4), inset 0 0 25px rgba(196,181,253,0.2)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}>
+                      <div key={company.index} className="hover-lift p-1.5 sm:p-2 flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-xl sm:rounded-2xl transition-all duration-300 relative" style={{ backgroundColor: color.bg, borderColor: color.border, borderWidth: '1px' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = hoverShadow} onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}>
                         <div className="w-full h-full rounded-lg sm:rounded-xl flex items-center justify-center relative z-10 overflow-hidden" style={{ borderColor: color.border, borderWidth: '1px' }}>
                           <Image 
                             src={company.logo} 
@@ -753,7 +763,7 @@ export default function HomePage() {
                 return (
                   <div 
                     key={index} 
-                    className={`w-full hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
+                    className={`w-full md:flex-1 hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
                     style={{
                       backgroundColor: boxBg, 
                       borderColor: boxBorder, 
@@ -840,7 +850,7 @@ export default function HomePage() {
                 return (
                   <div 
                     key={index} 
-                    className={`w-full hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
+                    className={`w-full md:flex-1 hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
                     style={{
                       backgroundColor: boxBg, 
                       borderColor: boxBorder, 
@@ -892,7 +902,30 @@ export default function HomePage() {
             </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-end">
-              <Link href="/courses" className="text-base px-7 py-3 rounded-2xl hover:opacity-90 transition-all duration-300 backdrop-blur-sm border border-purple-400/40" style={{ background: 'linear-gradient(to right, #a78bfa, #c084fc, #a78bfa)', color: '#ffffff', boxShadow: '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)' }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 0 25px rgba(196,181,253,0.6), 0 0 50px rgba(196,181,253,0.4)'} onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)'}>
+              <Link 
+                href="/courses" 
+                className="text-base px-7 py-3 rounded-2xl hover:opacity-90 transition-all duration-300 backdrop-blur-sm border" 
+                style={{ 
+                  background: theme === 'dark'
+                    ? 'linear-gradient(to right, #a78bfa, #c084fc, #a78bfa)' 
+                    : 'linear-gradient(to right, #92400e, #78350f, #92400e)', 
+                  color: '#ffffff', 
+                  borderColor: theme === 'dark' ? 'rgba(168,85,247,0.4)' : 'rgba(146,64,14,0.35)',
+                  boxShadow: theme === 'dark' 
+                    ? '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)' 
+                    : '0 0 20px rgba(146,64,14,0.15), 0 0 40px rgba(146,64,14,0.1)'
+                }} 
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = theme === 'dark'
+                    ? '0 0 25px rgba(196,181,253,0.6), 0 0 50px rgba(196,181,253,0.4)'
+                    : '0 0 25px rgba(146,64,14,0.25), 0 0 50px rgba(146,64,14,0.15)'
+                }} 
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = theme === 'dark'
+                    ? '0 0 20px rgba(196,181,253,0.4), 0 0 40px rgba(196,181,253,0.2)'
+                    : '0 0 20px rgba(146,64,14,0.15), 0 0 40px rgba(146,64,14,0.1)'
+                }}
+              >
                 Get Started Today
               </Link>
               <Link href="/partners" className="text-base px-7 py-3 rounded-2xl transition-all duration-300" style={{ backgroundColor: '#E0E0E0', color: '#6b21a8' }} onMouseEnter={(e) => {

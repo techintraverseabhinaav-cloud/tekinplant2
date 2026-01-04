@@ -3,8 +3,21 @@
 import { useEffect } from 'react'
 import { SignUp } from '@clerk/nextjs'
 import SyncUserToSupabase from '../../../components/SyncUserToSupabase'
+import { useTheme } from 'next-themes'
+import { useThemeStyles } from '../../../lib/theme-styles'
 
 export default function SignUpPage() {
+  const { theme } = useTheme()
+  const themeStyles = useThemeStyles()
+  const isDark = theme === 'dark'
+  
+  // Golden/amber colors for light mode, purple for dark mode
+  const primaryColor = isDark ? 'rgba(168,85,247' : 'rgba(217,119,6' // purple vs amber-600
+  const primaryColorLight = isDark ? 'rgba(196,181,253' : 'rgba(251,191,36' // purple-300 vs amber-400
+  const borderColor = isDark ? 'rgba(168,85,247' : 'rgba(217,119,6'
+  const gradientFrom = isDark ? 'from-purple-300' : 'from-amber-600'
+  const gradientVia = isDark ? 'via-purple-200' : 'via-amber-500'
+  const gradientTo = isDark ? 'to-purple-300' : 'to-amber-600'
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -26,19 +39,24 @@ export default function SignUpPage() {
   useEffect(() => {
     // Add custom styles for social buttons and remove inner borders
     const style = document.createElement('style')
+    const borderColor = isDark ? 'rgba(168, 85, 247, 0.4)' : 'rgba(217, 119, 6, 0.5)'
+    const borderColorHover = isDark ? 'rgba(168, 85, 247, 0.6)' : 'rgba(217, 119, 6, 0.7)'
+    const textColor = isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(58, 46, 31, 0.9)'
+    const bgColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.8)'
+    const bgColorHover = isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.9)'
     style.textContent = `
       button[data-provider="google"],
       .cl-socialButtonsBlockButton {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        border: 2px solid rgba(168, 85, 247, 0.4) !important;
-        color: rgba(255, 255, 255, 0.9) !important;
+        background-color: ${bgColor} !important;
+        border: 2px solid ${borderColor} !important;
+        color: ${textColor} !important;
         padding: 0.75rem 1rem !important;
       }
       button[data-provider="google"]:hover,
       .cl-socialButtonsBlockButton:hover {
-        background-color: rgba(255, 255, 255, 0.15) !important;
-        border-color: rgba(168, 85, 247, 0.6) !important;
-        color: #ffffff !important;
+        background-color: ${bgColorHover} !important;
+        border-color: ${borderColorHover} !important;
+        color: ${isDark ? '#ffffff' : '#3a2e1f'} !important;
         transform: translateY(-1px);
       }
       .cl-card,
@@ -52,77 +70,104 @@ export default function SignUpPage() {
     return () => {
       document.head.removeChild(style)
     }
-  }, [])
+  }, [isDark])
 
   return (
-    <div className="min-h-screen relative flex" style={{ backgroundColor: '#000000' }}>
+    <div className="min-h-screen relative flex" style={{ backgroundColor: themeStyles.pageBg }}>
       {/* Background Gradient */}
-      <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #000000 100%)' }}></div>
+      <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: themeStyles.pageBgGradient }}></div>
       
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:flex-1 relative overflow-hidden">
         <div className="relative z-10 flex flex-col justify-center p-12 lg:p-16 xl:p-20 text-white w-full">
           <div className="max-w-lg">
-            <div className="slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border border-purple-500/20" style={{ backgroundColor: 'rgba(0,0,0,0.4)', transitionDelay: '0.1s' }}>
-              <span className="text-xs font-medium text-white/70 tracking-wide uppercase">Get Started</span>
+            <div className={`slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)', transitionDelay: '0.1s' }}>
+              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Get Started</span>
             </div>
             <h1 className="slide-up text-5xl lg:text-6xl xl:text-7xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
-              <span className="text-white">Sign Up for</span> <span className="bg-gradient-to-r from-purple-300 via-purple-200 to-purple-300 bg-clip-text text-transparent">TEKINPLANT</span>
+              <span className={isDark ? 'text-white' : 'text-amber-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TEKINPLANT</span>
             </h1>
-            <p className="slide-up text-lg lg:text-xl text-white/50 font-light leading-relaxed mb-12" style={{ transitionDelay: '0.3s' }}>
+            <p className={`slide-up text-lg lg:text-xl font-light leading-relaxed mb-12 ${isDark ? 'text-white/50' : 'text-amber-900/70'}`} style={{ transitionDelay: '0.3s' }}>
               Start your professional development journey and unlock access to industry-leading training programs.
             </p>
             
             <div className="space-y-4">
-              <div className="slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border border-purple-500/20 transition-all duration-300" style={{ backgroundColor: 'rgba(0,0,0,0.2)', transitionDelay: '0.4s' }} onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.3)'
-                e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.4s' }} onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
+                e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.2)'
-                e.currentTarget.style.borderColor = 'rgba(168,85,247,0.2)'
+                e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
+                e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderColor: 'rgba(168,85,247,0.25)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden" style={{ borderColor: 'rgba(168,85,247,0.25)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <img src="/Icons/badge.png" alt="Badge" className="w-full h-full object-cover scale-150" />
+                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
+                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{
+                        background: isDark ? 'transparent' : 'linear-gradient(135deg, rgba(217,119,6,0.5) 0%, rgba(251,191,36,0.4) 100%)',
+                        mixBlendMode: isDark ? 'normal' : 'color',
+                        pointerEvents: 'none',
+                        zIndex: 1
+                      }}
+                    />
+                    <img src="/Icons/badge.png" alt="Badge" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)', WebkitFilter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)' }} />
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-light text-white mb-1">Industry-Leading Courses</h3>
-                  <p className="text-white/50 text-sm font-light">Learn from top companies</p>
+                  <h3 className={`font-light mb-1 ${isDark ? 'text-white' : 'text-amber-900'}`}>Industry-Leading Courses</h3>
+                  <p className={`text-sm font-light ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>Learn from top companies</p>
                 </div>
               </div>
-              <div className="slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border border-purple-500/20 transition-all duration-300" style={{ backgroundColor: 'rgba(0,0,0,0.2)', transitionDelay: '0.5s' }} onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.3)'
-                e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.5s' }} onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
+                e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.2)'
-                e.currentTarget.style.borderColor = 'rgba(168,85,247,0.2)'
+                e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
+                e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderColor: 'rgba(168,85,247,0.25)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden" style={{ borderColor: 'rgba(168,85,247,0.25)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <img src="/Icons/students.png" alt="Students" className="w-full h-full object-cover scale-150" />
+                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
+                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{
+                        background: isDark ? 'transparent' : 'linear-gradient(135deg, rgba(217,119,6,0.5) 0%, rgba(251,191,36,0.4) 100%)',
+                        mixBlendMode: isDark ? 'normal' : 'color',
+                        pointerEvents: 'none',
+                        zIndex: 1
+                      }}
+                    />
+                    <img src="/Icons/students.png" alt="Students" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)', WebkitFilter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)' }} />
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-light text-white mb-1">Expert Trainers</h3>
-                  <p className="text-white/50 text-sm font-light">Learn from industry professionals</p>
+                  <h3 className={`font-light mb-1 ${isDark ? 'text-white' : 'text-amber-900'}`}>Expert Trainers</h3>
+                  <p className={`text-sm font-light ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>Learn from industry professionals</p>
                 </div>
               </div>
-              <div className="slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border border-purple-500/20 transition-all duration-300" style={{ backgroundColor: 'rgba(0,0,0,0.2)', transitionDelay: '0.6s' }} onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.3)'
-                e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.6s' }} onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
+                e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.2)'
-                e.currentTarget.style.borderColor = 'rgba(168,85,247,0.2)'
+                e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
+                e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderColor: 'rgba(168,85,247,0.25)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden" style={{ borderColor: 'rgba(168,85,247,0.25)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <img src="/Icons/growth.png" alt="Growth" className="w-full h-full object-cover scale-150" />
+                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
+                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{
+                        background: isDark ? 'transparent' : 'linear-gradient(135deg, rgba(217,119,6,0.5) 0%, rgba(251,191,36,0.4) 100%)',
+                        mixBlendMode: isDark ? 'normal' : 'color',
+                        pointerEvents: 'none',
+                        zIndex: 1
+                      }}
+                    />
+                    <img src="/Icons/growth.png" alt="Growth" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)', WebkitFilter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)' }} />
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-light text-white mb-1">Certified Programs</h3>
-                  <p className="text-white/50 text-sm font-light">Get recognized certificates</p>
+                  <h3 className={`font-light mb-1 ${isDark ? 'text-white' : 'text-amber-900'}`}>Certified Programs</h3>
+                  <p className={`text-sm font-light ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>Get recognized certificates</p>
                 </div>
               </div>
             </div>
@@ -130,8 +175,8 @@ export default function SignUpPage() {
         </div>
         
         {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-50" style={{ backgroundColor: 'rgba(168,85,247,0.1)' }}></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-50" style={{ backgroundColor: 'rgba(196,181,253,0.1)' }}></div>
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-50" style={{ backgroundColor: isDark ? 'rgba(168,85,247,0.1)' : 'rgba(217,119,6,0.1)' }}></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-50" style={{ backgroundColor: isDark ? 'rgba(196,181,253,0.1)' : 'rgba(251,191,36,0.1)' }}></div>
       </div>
 
       {/* Right Side - Sign Up Form */}
@@ -139,11 +184,11 @@ export default function SignUpPage() {
         <div className="w-full max-w-md mx-auto">
           {/* Mobile Header */}
           <div className="slide-up lg:hidden mb-8 text-center" style={{ transitionDelay: '0.1s' }}>
-            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm border border-purple-500/20" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
-              <span className="text-xs font-medium text-white/70 tracking-wide uppercase">Get Started</span>
+            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)' }}>
+              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Get Started</span>
             </div>
             <h1 className="text-4xl font-light mb-4 leading-tight tracking-tight">
-              <span className="text-white">Sign Up for</span> <span className="bg-gradient-to-r from-purple-300 via-purple-200 to-purple-300 bg-clip-text text-transparent">TEKINPLANT</span>
+              <span className={isDark ? 'text-white' : 'text-amber-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TEKINPLANT</span>
             </h1>
           </div>
 
@@ -152,28 +197,28 @@ export default function SignUpPage() {
 
           {/* Clerk Sign Up Component */}
           <div className="slide-up w-full" style={{ transitionDelay: '0.7s' }}>
-            <div className="rounded-2xl p-12 lg:p-14 backdrop-blur-xl border border-purple-500/20 w-full" style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}>
+            <div className={`rounded-2xl p-12 lg:p-14 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} w-full`} style={{ backgroundColor: themeStyles.cardBg }}>
               <SignUp 
                 appearance={{
                   elements: {
                     rootBox: "mx-auto w-full flex flex-col items-center",
                     card: "bg-transparent shadow-none border-none p-0 w-full",
-                    headerTitle: "text-2xl lg:text-3xl font-light text-white mb-2 tracking-tight text-center",
-                    headerSubtitle: "text-white/50 font-light mb-8 text-center",
+                    headerTitle: `text-2xl lg:text-3xl font-light mb-2 tracking-tight text-center ${isDark ? 'text-white' : 'text-amber-900'}`,
+                    headerSubtitle: `font-light mb-8 text-center ${isDark ? 'text-white/50' : 'text-amber-900/70'}`,
                     socialButtonsBlockButton: "rounded-xl border-2 transition-all duration-300 font-light w-full py-3 px-4 backdrop-blur-sm",
-                    formButtonPrimary: "rounded-xl transition-all duration-300 hover:opacity-90 backdrop-blur-sm border border-purple-400/40 font-medium w-full",
+                    formButtonPrimary: `rounded-xl transition-all duration-300 hover:opacity-90 backdrop-blur-sm border ${isDark ? 'border-purple-400/40' : 'border-amber-600/50'} font-medium w-full`,
                     footerActionLink: "transition-colors duration-200 font-light",
                     formFieldInput: "rounded-xl backdrop-blur-sm border transition-all duration-300 font-light w-full",
-                    formFieldLabel: "text-white/60 font-medium text-xs uppercase tracking-wide",
-                    formFieldInputShowPasswordButton: "text-white/50 hover:text-white",
+                    formFieldLabel: `font-medium text-xs uppercase tracking-wide ${isDark ? 'text-white/60' : 'text-amber-900/70'}`,
+                    formFieldInputShowPasswordButton: `${isDark ? 'text-white/50 hover:text-white' : 'text-amber-900/70 hover:text-amber-900'}`,
                     formResendCodeLink: "transition-colors duration-200 font-light",
-                    identityPreviewEditButton: "text-white/50 hover:text-white",
+                    identityPreviewEditButton: `${isDark ? 'text-white/50 hover:text-white' : 'text-amber-900/70 hover:text-amber-900'}`,
                     formFieldSuccessText: "text-green-400 font-light",
                     formFieldErrorText: "text-red-400 font-light",
-                    alertText: "text-white/50 font-light",
-                    footer: "border-t border-purple-500/20 pt-6 mt-6 text-center",
-                    dividerLine: "bg-white/10",
-                    dividerText: "text-white/50 font-light",
+                    alertText: `${isDark ? 'text-white/50' : 'text-amber-900/70'} font-light`,
+                    footer: `border-t ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} pt-6 mt-6 text-center`,
+                    dividerLine: isDark ? "bg-white/10" : "bg-amber-900/20",
+                    dividerText: `${isDark ? 'text-white/50' : 'text-amber-900/70'} font-light`,
                     socialButtonsBlockButtonText: "font-light",
                     formButtonReset: "font-light",
                     formButtonResetLink: "font-light",
@@ -182,24 +227,24 @@ export default function SignUpPage() {
                     socialButtons: "w-full",
                   },
                   variables: {
-                    colorBackground: 'rgba(0,0,0,0.4)',
-                    colorInputBackground: 'rgba(0,0,0,0.4)',
-                    colorInputText: '#ffffff',
-                    colorText: '#ffffff',
-                    colorTextSecondary: 'rgba(255,255,255,0.5)',
-                    colorPrimary: '#a78bfa',
+                    colorBackground: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
+                    colorInputBackground: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                    colorInputText: isDark ? '#ffffff' : '#3a2e1f',
+                    colorText: isDark ? '#ffffff' : '#3a2e1f',
+                    colorTextSecondary: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(58,46,31,0.7)',
+                    colorPrimary: isDark ? '#a78bfa' : '#d97706',
                     colorDanger: '#ef4444',
                     colorSuccess: '#10b981',
                     borderRadius: '0.75rem',
                     fontFamily: 'Inter, system-ui, sans-serif',
                     fontSize: '0.875rem',
-                    colorNeutral: 'rgba(255,255,255,0.9)',
+                    colorNeutral: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(58,46,31,0.9)',
                   },
                 }}
                 routing="path"
                 path="/sign-up"
                 signInUrl="/login"
-                afterSignUpUrl="/student-dashboard"
+                afterSignUpUrl="/redirect-dashboard"
               />
             </div>
           </div>

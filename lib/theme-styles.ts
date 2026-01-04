@@ -1,11 +1,20 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 
 export function useThemeStyles() {
-  const { theme } = useTheme()
-  const isDark = theme === "dark"
+  const [mounted, setMounted] = useState(false)
+  const { theme, resolvedTheme, systemTheme } = useTheme()
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  // During SSR, default to dark to match server render
+  // After mount, use resolvedTheme which gives the actual theme
+  const currentTheme = mounted ? (resolvedTheme || systemTheme || theme || 'dark') : 'dark'
+  const isDark = currentTheme === "dark"
 
   return useMemo(() => {
     if (isDark) {
@@ -35,6 +44,6 @@ export function useThemeStyles() {
         buttonShadowHover: '0 0 25px rgba(139, 90, 43, 0.35), 0 0 50px rgba(139, 90, 43, 0.2)',
       }
     }
-  }, [isDark])
+  }, [isDark, mounted, currentTheme])
 }
 

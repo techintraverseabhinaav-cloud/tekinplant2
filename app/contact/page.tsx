@@ -288,12 +288,29 @@ export default function ContactPage() {
                     borderColor: itemBorder, 
                     borderWidth: '1px' 
                   }}>
-                    <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden" style={{ 
+                    <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ 
                       borderColor: itemBorder, 
                       borderWidth: '1px', 
                       backgroundColor: '#ffffff' 
                     }}>
-                      <img src={item.icon} alt={item.title} className="w-full h-full object-cover scale-150" />
+                      <div 
+                        className="absolute inset-0 rounded-lg"
+                        style={{
+                          background: isDark ? 'transparent' : 'linear-gradient(135deg, rgba(217,119,6,0.5) 0%, rgba(251,191,36,0.4) 100%)',
+                          mixBlendMode: isDark ? 'normal' : 'color',
+                          pointerEvents: 'none',
+                          zIndex: 1
+                        }}
+                      />
+                      <img 
+                        src={item.icon} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover scale-150 relative z-0" 
+                        style={{ 
+                          filter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)',
+                          WebkitFilter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6) contrast(1.2)'
+                        }}
+                      />
                     </div>
                   </div>
                   <h3 className={`text-lg font-light mb-2 ${isDark ? 'text-white' : 'text-amber-900'}`}>{item.title}</h3>

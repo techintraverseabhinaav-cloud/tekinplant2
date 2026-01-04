@@ -335,9 +335,29 @@ export default function Navbar() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.1)' : 'rgba(139,90,43,0.1)'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ background: themeStyles.buttonGradient }}>
-                    <span className="text-white text-sm font-medium">{userName.charAt(0).toUpperCase()}</span>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden relative"
+                  style={{ background: user?.imageUrl ? 'transparent' : themeStyles.buttonGradient }}>
+                    {user?.imageUrl ? (
+                      <>
+                        <img
+                          src={user.imageUrl}
+                          alt={userName}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none'
+                            const fallback = e.currentTarget.nextElementSibling
+                            if (fallback) {
+                              fallback.style.display = 'flex'
+                            }
+                          }}
+                        />
+                        <span className="text-white text-sm font-medium absolute inset-0 flex items-center justify-center" style={{ display: 'none' }}>
+                          {userName.charAt(0).toUpperCase()}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-white text-sm font-medium">{userName.charAt(0).toUpperCase()}</span>
+                    )}
                   </div>
                   <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-amber-900'}`}>{userName}</span>
                 </button>
