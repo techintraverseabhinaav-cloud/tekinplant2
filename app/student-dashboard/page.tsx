@@ -289,11 +289,11 @@ export default function StudentDashboard() {
             <div className="space-y-6">
               {enrollments.length > 0 ? (
                 enrollments.map((course: any, index: number) => {
-                  const courseBg = isDark ? 'rgba(168,85,247,0.05)' : 'rgba(139,90,43,0.08)'
-                  const courseBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
+                  const courseBg = isDark ? 'rgba(168,85,247,0.05)' : 'rgba(146,64,14,0.12)'
+                  const courseBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(146,64,14,0.35)'
                   const hoverShadow = isDark
                     ? '0 0 25px rgba(196,181,253,0.4), 0 0 50px rgba(196,181,253,0.2)'
-                    : '0 0 25px rgba(139,90,43,0.3), 0 0 50px rgba(139,90,43,0.2)'
+                    : '0 0 25px rgba(146,64,14,0.4), 0 0 50px rgba(146,64,14,0.25)'
                   
                   return (
                   <div 
@@ -375,19 +375,19 @@ export default function StudentDashboard() {
                   )
                 })
               ) : (
-                <div className="slide-up rounded-2xl p-12 text-center backdrop-blur-xl border" style={{ 
-                  backgroundColor: 'rgba(168,85,247,0.05)',
-                  borderColor: 'rgba(168,85,247,0.25)'
+                <div className={`slide-up rounded-2xl p-12 text-center backdrop-blur-xl border`} style={{ 
+                  backgroundColor: isDark ? 'rgba(168,85,247,0.05)' : 'rgba(146,64,14,0.12)',
+                  borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(146,64,14,0.35)'
                 }}>
-                  <BookOpen className="w-16 h-16 mx-auto mb-4 text-white/40" />
-                  <p className="text-white/70 mb-4">You are not enrolled in any courses yet.</p>
+                  <BookOpen className={`w-16 h-16 mx-auto mb-4 ${isDark ? 'text-white/40' : 'text-amber-900/40'}`} />
+                  <p className={`mb-4 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>You are not enrolled in any courses yet.</p>
                   <Link 
                     href="/courses" 
-                    className="inline-block px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 backdrop-blur-sm border border-purple-400/40"
+                    className={`inline-block px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 backdrop-blur-sm border ${isDark ? 'border-purple-400/40' : 'border-amber-800/50'}`}
                     style={{ 
-                      background: 'linear-gradient(to right, #a78bfa, #c084fc, #a78bfa)', 
+                      background: isDark ? 'linear-gradient(to right, #a78bfa, #c084fc, #a78bfa)' : 'linear-gradient(to right, #92400e, #c2410c, #92400e)', 
                       color: '#ffffff',
-                      boxShadow: '0 0 15px rgba(196,181,253,0.4)'
+                      boxShadow: isDark ? '0 0 15px rgba(196,181,253,0.4)' : '0 0 15px rgba(146,64,14,0.4)'
                     }}
                   >
                     Browse Courses

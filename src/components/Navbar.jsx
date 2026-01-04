@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { usePathname } from "next/navigation"
-import { Menu, X, Search, User, Bell, LogOut, Settings } from "lucide-react"
+import { Menu, X, Search, User, Bell, LogOut, Settings, Moon, Sun } from "lucide-react"
 import { useUser, useClerk } from "@clerk/nextjs"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../../lib/theme-styles"
@@ -20,8 +20,9 @@ export default function Navbar() {
   const pathname = usePathname()
   const { user, isLoaded } = useUser()
   const { signOut } = useClerk()
-  const { theme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const themeStyles = useThemeStyles()
+  const [mounted, setMounted] = useState(false)
   
   // Get user role from Clerk metadata
   const userRole = (user?.publicMetadata?.role) || 'student'
@@ -47,6 +48,11 @@ export default function Navbar() {
     return () => {
       if (userMenuTimerRef.current) clearTimeout(userMenuTimerRef.current)
     }
+  }, [])
+
+  // Mount check for theme toggle
+  useEffect(() => {
+    setMounted(true)
   }, [])
 
   const handleLogout = async () => {
@@ -308,6 +314,26 @@ export default function Navbar() {
               <Bell size={20} />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
             </button>
+            )}
+            
+            {/* Theme Toggle Button */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className={`p-2 transition-all duration-300 rounded-xl ${
+                  isDark ? 'text-white/70 hover:text-white' : 'text-amber-900/80 hover:text-amber-900'
+                }`}
+                style={{ backgroundColor: 'transparent' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.1)' : 'rgba(139,90,43,0.1)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? (
+                  <Sun size={20} />
+                ) : (
+                  <Moon size={20} />
+                )}
+              </button>
             )}
             
             {isLoaded && user ? (
@@ -627,6 +653,29 @@ export default function Navbar() {
                     <Bell size={20} />
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
                   </button>
+                  )}
+                  
+                  {/* Theme Toggle Button (Mobile) */}
+                  {mounted && (
+                    <button
+                      onClick={() => {
+                        setTheme(theme === "dark" ? "light" : "dark")
+                        setIsMenuOpen(false)
+                      }}
+                      className={`p-2 transition-all duration-300 rounded-xl ${
+                        isDark ? 'text-white/70 hover:text-white' : 'text-amber-900/80 hover:text-amber-900'
+                      }`}
+                      style={{ backgroundColor: 'transparent' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.1)' : 'rgba(139,90,43,0.1)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      aria-label="Toggle theme"
+                    >
+                      {theme === "dark" ? (
+                        <Sun size={20} />
+                      ) : (
+                        <Moon size={20} />
+                      )}
+                    </button>
                   )}
                 </div>
                 

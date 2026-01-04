@@ -516,7 +516,14 @@ export default function ProfilePage() {
                 await signOut()
                 router.push("/")
               }}
-              className="w-full px-4 py-3 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-center text-white"
+              className="w-full px-4 py-3 rounded-lg transition-all duration-300 text-center text-white"
+              style={{ 
+                background: themeStyles.buttonGradient,
+                boxShadow: themeStyles.buttonShadow,
+                borderColor: isDark ? 'rgba(168,85,247,0.4)' : 'rgba(139,90,43,0.4)'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadowHover}
+              onMouseLeave={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadow}
             >
               Sign Out
             </button>
