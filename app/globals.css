@@ -164,7 +164,9 @@ html, body {
 }
 
 /* Remove margin-top from Navbar on homepage */
-.homepage-navbar-wrapper nav {
+.homepage-navbar-wrapper nav,
+.enrollment-navbar-wrapper nav,
+.course-detail-navbar-wrapper nav {
   margin-top: 0 !important;
 }
 

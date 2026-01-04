@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { use } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
+import { useTheme } from "next-themes"
+import { useThemeStyles } from "../../../lib/theme-styles"
 import { ArrowLeft, CreditCard, User, Mail, Phone, Calendar, CheckCircle, Clock, Users, Star, ChevronDown } from "lucide-react"
 import Navbar from "../../../src/components/Navbar"
 import Link from "next/link"
@@ -28,6 +30,9 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
   const resolvedParams = use(params)
   const router = useRouter()
   const { user, isLoaded } = useUser()
+  const { theme } = useTheme()
+  const themeStyles = useThemeStyles()
+  const isDark = theme === 'dark'
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingCourse, setIsLoadingCourse] = useState(true)
   const [courseData, setCourseData] = useState<Course | null>(null)
@@ -148,21 +153,26 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
 
   if (isLoadingCourse || !isLoaded) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading course details...</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: themeStyles.pageBg }}>
+        <div className="text-center">
+          <div className={`animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4 ${isDark ? 'border-purple-500' : 'border-amber-700'}`}></div>
+          <p style={{ color: themeStyles.textPrimary }}>Loading course details...</p>
+        </div>
       </div>
     )
   }
 
   if (error || !courseData) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-red-500 text-xl text-center p-4 bg-gray-800 rounded-lg">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: themeStyles.pageBg }}>
+        <div className={`text-xl text-center p-6 rounded-2xl backdrop-blur-xl border ${isDark ? 'text-red-400 border-red-500/20' : 'text-red-600 border-red-600/30'}`} style={{ 
+          backgroundColor: isDark ? 'rgba(239,68,68,0.1)' : 'rgba(239,68,68,0.15)' 
+        }}>
           <p>Error: {error || "Course data could not be loaded."}</p>
-          <p className="text-sm text-gray-400 mt-2">Please try refreshing the page.</p>
+          <p className={`text-sm mt-2 ${isDark ? 'text-white/60' : 'text-amber-900/70'}`}>Please try refreshing the page.</p>
           <Link 
             href="/courses"
-            className="mt-4 inline-block text-purple-400 hover:text-purple-300"
+            className={`mt-4 inline-block ${isDark ? 'text-purple-400 hover:text-purple-300' : 'text-amber-800 hover:text-amber-900'}`}
           >
             Back to Courses
           </Link>
@@ -172,32 +182,38 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <Navbar />
+    <div className="min-h-screen relative" style={{ backgroundColor: themeStyles.pageBg }}>
+      <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: themeStyles.pageBgGradient }}></div>
+      <div className="enrollment-navbar-wrapper">
+        <Navbar />
+      </div>
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-10">
         {/* Header */}
         <div className="mb-8">
           <Link 
             href={`/courses/${courseData.id}`}
-            className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors mb-4"
+            className={`inline-flex items-center transition-colors mb-4 ${isDark ? 'text-purple-400 hover:text-purple-300' : 'text-amber-800 hover:text-amber-900'}`}
           >
             <ArrowLeft size={20} className="mr-2" />
             Back to Course
           </Link>
-          <h1 className="text-4xl font-bold mb-2">Enroll in Course</h1>
-          <p className="text-gray-400">Complete your enrollment for {courseData.title}</p>
+          <h1 className={`text-4xl font-bold mb-2 ${isDark ? 'text-white' : 'text-amber-900'}`}>Enroll in Course</h1>
+          <p style={{ color: themeStyles.textSecondary }}>Complete your enrollment for {courseData.title}</p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Enrollment Form */}
           <div className="space-y-8">
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-              <h2 className="text-2xl font-bold mb-6">Personal Information</h2>
+            <div className="rounded-xl p-6 backdrop-blur-xl border" style={{ 
+              backgroundColor: themeStyles.cardBg,
+              borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
+            }}>
+              <h2 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-amber-900'}`}>Personal Information</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium mb-2">
+                    <label htmlFor="firstName" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                       First Name *
                     </label>
                     <input
@@ -207,12 +223,22 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                       value={formData.firstName}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                      className={`w-full px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none ${isDark ? 'text-white placeholder-white/30' : 'text-amber-900 placeholder-amber-900/50'}`}
+                      style={{ 
+                        backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
                       placeholder="Enter your first name"
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium mb-2">
+                    <label htmlFor="lastName" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                       Last Name *
                     </label>
                     <input
@@ -222,14 +248,24 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                       value={formData.lastName}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                      className={`w-full px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none ${isDark ? 'text-white placeholder-white/30' : 'text-amber-900 placeholder-amber-900/50'}`}
+                      style={{ 
+                        backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
                       placeholder="Enter your last name"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  <label htmlFor="email" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                     Email Address *
                   </label>
                   <input
@@ -239,13 +275,23 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none ${isDark ? 'text-white placeholder-white/30' : 'text-amber-900 placeholder-amber-900/50'}`}
+                    style={{ 
+                      backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                    }}
                     placeholder="Enter your email address"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                  <label htmlFor="phone" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                     Phone Number
                   </label>
                   <input
@@ -254,14 +300,24 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none ${isDark ? 'text-white placeholder-white/30' : 'text-amber-900 placeholder-amber-900/50'}`}
+                    style={{ 
+                      backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                    }}
                     placeholder="Enter your phone number"
                   />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="company" className="block text-sm font-medium mb-2">
+                    <label htmlFor="company" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                       Company
                     </label>
                     <input
@@ -270,12 +326,22 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                      className={`w-full px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none ${isDark ? 'text-white placeholder-white/30' : 'text-amber-900 placeholder-amber-900/50'}`}
+                      style={{ 
+                        backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
                       placeholder="Enter your company name"
                     />
                   </div>
                   <div>
-                    <label htmlFor="position" className="block text-sm font-medium mb-2">
+                    <label htmlFor="position" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                       Position
                     </label>
                     <input
@@ -284,14 +350,24 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                       name="position"
                       value={formData.position}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors"
+                      className={`w-full px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none ${isDark ? 'text-white placeholder-white/30' : 'text-amber-900 placeholder-amber-900/50'}`}
+                      style={{ 
+                        backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      }}
                       placeholder="Enter your job title"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="experience" className="block text-sm font-medium mb-2">
+                  <label htmlFor="experience" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                     Experience Level
                   </label>
                   <div className="relative">
@@ -300,41 +376,41 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                     name="experience"
                     value={formData.experience}
                     onChange={handleChange}
-                      className="w-full px-4 py-3 pr-10 rounded-xl text-white focus:outline-none transition-all duration-300 backdrop-blur-xl border appearance-none cursor-pointer"
+                      className={`w-full px-4 py-3 pr-10 rounded-xl focus:outline-none transition-all duration-300 backdrop-blur-xl border appearance-none cursor-pointer ${isDark ? 'text-white' : 'text-amber-900'}`}
                       style={{ 
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                        borderColor: 'rgba(168,85,247,0.3)',
-                        boxShadow: '0 0 15px rgba(196,181,253,0.2), inset 0 1px 0 rgba(255,255,255,0.05)'
+                        backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                        borderColor: isDark ? 'rgba(168,85,247,0.3)' : 'rgba(139,90,43,0.3)',
+                        boxShadow: isDark ? '0 0 15px rgba(196,181,253,0.2), inset 0 1px 0 rgba(255,255,255,0.05)' : '0 0 15px rgba(139,90,43,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.5)'
-                        e.currentTarget.style.boxShadow = '0 0 20px rgba(196,181,253,0.3), inset 0 1px 0 rgba(255,255,255,0.08)'
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                        e.currentTarget.style.boxShadow = isDark ? '0 0 20px rgba(196,181,253,0.3), inset 0 1px 0 rgba(255,255,255,0.08)' : '0 0 20px rgba(139,90,43,0.3), inset 0 1px 0 rgba(255,255,255,0.15)'
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'
-                        e.currentTarget.style.boxShadow = '0 0 15px rgba(196,181,253,0.2), inset 0 1px 0 rgba(255,255,255,0.05)'
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(139,90,43,0.3)'
+                        e.currentTarget.style.boxShadow = isDark ? '0 0 15px rgba(196,181,253,0.2), inset 0 1px 0 rgba(255,255,255,0.05)' : '0 0 15px rgba(139,90,43,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                       }}
                       onFocus={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.6)'
-                        e.currentTarget.style.boxShadow = '0 0 25px rgba(196,181,253,0.4), inset 0 1px 0 rgba(255,255,255,0.1)'
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.6)' : 'rgba(139,90,43,0.6)'
+                        e.currentTarget.style.boxShadow = isDark ? '0 0 25px rgba(196,181,253,0.4), inset 0 1px 0 rgba(255,255,255,0.1)' : '0 0 25px rgba(139,90,43,0.4), inset 0 1px 0 rgba(255,255,255,0.2)'
                       }}
                       onBlur={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.3)'
-                        e.currentTarget.style.boxShadow = '0 0 15px rgba(196,181,253,0.2), inset 0 1px 0 rgba(255,255,255,0.05)'
+                        e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(139,90,43,0.3)'
+                        e.currentTarget.style.boxShadow = isDark ? '0 0 15px rgba(196,181,253,0.2), inset 0 1px 0 rgba(255,255,255,0.05)' : '0 0 15px rgba(139,90,43,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                       }}
                   >
-                      <option value="beginner" style={{ backgroundColor: '#0a0a0a', color: '#ffffff' }}>Beginner</option>
-                      <option value="intermediate" style={{ backgroundColor: '#0a0a0a', color: '#ffffff' }}>Intermediate</option>
-                      <option value="advanced" style={{ backgroundColor: '#0a0a0a', color: '#ffffff' }}>Advanced</option>
+                      <option value="beginner" style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff', color: isDark ? '#ffffff' : '#3a2e1f' }}>Beginner</option>
+                      <option value="intermediate" style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff', color: isDark ? '#ffffff' : '#3a2e1f' }}>Intermediate</option>
+                      <option value="advanced" style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff', color: isDark ? '#ffffff' : '#3a2e1f' }}>Advanced</option>
                   </select>
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <ChevronDown className="w-5 h-5" style={{ color: '#c084fc' }} />
+                      <ChevronDown className="w-5 h-5" style={{ color: isDark ? '#c084fc' : '#8b6f47' }} />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="goals" className="block text-sm font-medium mb-2">
+                  <label htmlFor="goals" className={`block text-sm font-medium mb-2 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                     Learning Goals
                   </label>
                   <textarea
@@ -343,13 +419,23 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                     value={formData.goals}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                    className={`w-full px-4 py-3 rounded-lg transition-all duration-300 focus:outline-none resize-none ${isDark ? 'text-white placeholder-white/30' : 'text-amber-900 placeholder-amber-900/50'}`}
+                    style={{ 
+                      backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                    }}
                     placeholder="What do you hope to achieve from this course?"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-4">Payment Method</label>
+                  <label className={`block text-sm font-medium mb-4 ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Payment Method</label>
                   <div className="space-y-3">
                     <label className="flex items-center">
                       <input
@@ -358,9 +444,13 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                         value="card"
                         checked={formData.paymentMethod === "card"}
                         onChange={handleChange}
-                        className="w-4 h-4 text-purple-600 bg-gray-900 border-gray-600 focus:ring-purple-500 focus:ring-2"
+                        className={`w-4 h-4 focus:ring-2 ${isDark ? 'text-purple-600 focus:ring-purple-500' : 'text-amber-800 focus:ring-amber-800'}`}
+                        style={{ 
+                          backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                          borderColor: isDark ? 'rgba(168,85,247,0.3)' : 'rgba(139,90,43,0.3)'
+                        }}
                       />
-                      <span className="ml-3 flex items-center">
+                      <span className={`ml-3 flex items-center ${isDark ? 'text-white' : 'text-amber-900'}`}>
                         <CreditCard size={20} className="mr-2" />
                         Credit/Debit Card
                       </span>
@@ -372,9 +462,13 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                         value="bank"
                         checked={formData.paymentMethod === "bank"}
                         onChange={handleChange}
-                        className="w-4 h-4 text-purple-600 bg-gray-900 border-gray-600 focus:ring-purple-500 focus:ring-2"
+                        className={`w-4 h-4 focus:ring-2 ${isDark ? 'text-purple-600 focus:ring-purple-500' : 'text-amber-800 focus:ring-amber-800'}`}
+                        style={{ 
+                          backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
+                          borderColor: isDark ? 'rgba(168,85,247,0.3)' : 'rgba(139,90,43,0.3)'
+                        }}
                       />
-                      <span className="ml-3">Bank Transfer</span>
+                      <span className={`ml-3 ${isDark ? 'text-white' : 'text-amber-900'}`}>Bank Transfer</span>
                     </label>
                   </div>
                 </div>
@@ -382,17 +476,34 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
                 <button
                   type="submit"
                   disabled={isSubmitting || !isLoaded || !user || isLoadingCourse || !courseData}
-                  className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 text-base"
+                  className="w-full text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 text-base backdrop-blur-sm border disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ 
+                    background: isSubmitting || !isLoaded || !user || isLoadingCourse || !courseData 
+                      ? (isDark ? 'rgba(75,85,99,0.5)' : 'rgba(139,90,43,0.3)')
+                      : themeStyles.buttonGradient,
+                    borderColor: isDark ? 'rgba(168,85,247,0.4)' : 'rgba(139,90,43,0.4)',
+                    boxShadow: themeStyles.buttonShadow
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSubmitting && isLoaded && user && !isLoadingCourse && courseData) {
+                      e.currentTarget.style.boxShadow = themeStyles.buttonShadowHover
+                      e.currentTarget.style.transform = 'scale(1.02)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = themeStyles.buttonShadow
+                    e.currentTarget.style.transform = 'scale(1)'
+                  }}
                 >
                   {isSubmitting ? "Enrolling..." : isLoadingCourse ? "Loading..." : `Complete Enrollment - ${courseData.price}`}
                 </button>
                 {!user && isLoaded && (
-                  <p className="text-sm text-yellow-400 mt-2 text-center">
+                  <p className={`text-sm mt-2 text-center ${isDark ? 'text-yellow-400' : 'text-amber-800'}`}>
                     Please sign in to enroll in this course.
                   </p>
                 )}
                 {error && (
-                  <p className="text-sm text-red-400 mt-2 text-center">
+                  <p className={`text-sm mt-2 text-center ${isDark ? 'text-red-400' : 'text-red-600'}`}>
                     {error}
                   </p>
                 )}
@@ -402,89 +513,98 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
 
           {/* Course Summary */}
           <div className="space-y-6">
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-              <h2 className="text-2xl font-bold mb-4">Course Summary</h2>
+            <div className="rounded-xl p-6 backdrop-blur-xl border" style={{ 
+              backgroundColor: themeStyles.cardBg,
+              borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
+            }}>
+              <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-amber-900'}`}>Course Summary</h2>
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-xl font-semibold text-purple-400 mb-2">{courseData.title}</h3>
-                  <p className="text-gray-400">Company: {courseData.company_name || 'N/A'}</p>
+                  <h3 className={`text-xl font-semibold mb-2 ${isDark ? 'text-purple-400' : 'text-amber-800'}`}>{courseData.title}</h3>
+                  <p style={{ color: themeStyles.textSecondary }}>Company: {courseData.company_name || 'N/A'}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center text-sm">
-                    <Clock size={16} className="mr-2 text-purple-400" />
+                  <div className={`flex items-center text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
+                    <Clock size={16} className="mr-2" style={{ color: isDark ? '#a78bfa' : '#8b6f47' }} />
                     <span>{courseData.duration}</span>
                   </div>
-                  <div className="flex items-center text-sm">
-                    <Users size={16} className="mr-2 text-purple-400" />
+                  <div className={`flex items-center text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
+                    <Users size={16} className="mr-2" style={{ color: isDark ? '#a78bfa' : '#8b6f47' }} />
                     <span>{courseData.student_count} students</span>
                   </div>
-                  <div className="flex items-center text-sm">
-                    <Star size={16} className="mr-2 text-purple-400" />
+                  <div className={`flex items-center text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
+                    <Star size={16} className="mr-2" style={{ color: '#fbbf24' }} />
                     <span>{courseData.rating} rating</span>
                   </div>
-                  <div className="flex items-center text-sm">
-                    <Calendar size={16} className="mr-2 text-purple-400" />
+                  <div className={`flex items-center text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
+                    <Calendar size={16} className="mr-2" style={{ color: isDark ? '#a78bfa' : '#8b6f47' }} />
                     <span>Starts TBD</span>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-gray-700">
-                  <p className="text-sm text-gray-400 mb-2">Location:</p>
-                  <p className="text-sm">{courseData.location}</p>
+                <div className="pt-4 border-t" style={{ borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)' }}>
+                  <p className={`text-sm mb-2 ${isDark ? 'text-white/60' : 'text-amber-900/70'}`}>Location:</p>
+                  <p className={`text-sm ${isDark ? 'text-white' : 'text-amber-900'}`}>{courseData.location}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4">What's Included</h3>
+            <div className="rounded-xl p-6 backdrop-blur-xl border" style={{ 
+              backgroundColor: themeStyles.cardBg,
+              borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
+            }}>
+              <h3 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-amber-900'}`}>What's Included</h3>
               <div className="space-y-3">
                 <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
-                  <span className="text-sm">Lifetime access to course materials</span>
+                  <CheckCircle className="w-5 h-5 mr-3" style={{ color: '#10b981' }} />
+                  <span className={`text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Lifetime access to course materials</span>
                 </div>
                 <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
-                  <span className="text-sm">Live interactive sessions</span>
+                  <CheckCircle className="w-5 h-5 mr-3" style={{ color: '#10b981' }} />
+                  <span className={`text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Live interactive sessions</span>
                 </div>
                 <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
-                  <span className="text-sm">Certificate of completion</span>
+                  <CheckCircle className="w-5 h-5 mr-3" style={{ color: '#10b981' }} />
+                  <span className={`text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Certificate of completion</span>
                 </div>
                 <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
-                  <span className="text-sm">1-on-1 mentoring sessions</span>
+                  <CheckCircle className="w-5 h-5 mr-3" style={{ color: '#10b981' }} />
+                  <span className={`text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>1-on-1 mentoring sessions</span>
                 </div>
                 <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
-                  <span className="text-sm">Project portfolio development</span>
+                  <CheckCircle className="w-5 h-5 mr-3" style={{ color: '#10b981' }} />
+                  <span className={`text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Project portfolio development</span>
                 </div>
                 <div className="flex items-center">
-                  <CheckCircle className="w-5 h-5 text-green-400 mr-3" />
-                  <span className="text-sm">Career guidance and support</span>
+                  <CheckCircle className="w-5 h-5 mr-3" style={{ color: '#10b981' }} />
+                  <span className={`text-sm ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Career guidance and support</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-              <h3 className="text-xl font-bold mb-4">Payment Information</h3>
+            <div className="rounded-xl p-6 backdrop-blur-xl border" style={{ 
+              backgroundColor: themeStyles.cardBg,
+              borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
+            }}>
+              <h3 className={`text-xl font-bold mb-4 ${isDark ? 'text-white' : 'text-amber-900'}`}>Payment Information</h3>
               <div className="space-y-3">
-                <div className="flex justify-between">
+                <div className={`flex justify-between ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                   <span>Course Fee:</span>
                   <span className="font-semibold">{courseData.price}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className={`flex justify-between ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                   <span>Registration Fee:</span>
                   <span className="font-semibold">$50</span>
                 </div>
-                <div className="flex justify-between">
+                <div className={`flex justify-between ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>
                   <span>Study Materials:</span>
                   <span className="font-semibold">Included</span>
                 </div>
-                <div className="pt-3 border-t border-gray-700">
-                  <div className="flex justify-between text-lg font-bold">
+                <div className="pt-3 border-t" style={{ borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)' }}>
+                  <div className={`flex justify-between text-lg font-bold ${isDark ? 'text-white' : 'text-amber-900'}`}>
                     <span>Total:</span>
-                    <span className="text-purple-400">
+                    <span className={isDark ? 'text-purple-400' : 'text-amber-800'}>
                       {(() => {
                         // Extract numeric value from price string (handles ₹, $, commas)
                         const priceStr = courseData.price.replace(/[₹$,]/g, '');
