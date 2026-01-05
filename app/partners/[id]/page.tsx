@@ -89,7 +89,7 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
                   {company.employeeCount && (
                     <div className="flex items-center text-gray-400">
                       <Users size={20} className="mr-3" />
-                      <span>{company.employeeCount.toLocaleString()} employees</span>
+                      <span>{company.employeeCount.toLocaleString('en-US')} employees</span>
                     </div>
                   )}
                   {company.founded && (

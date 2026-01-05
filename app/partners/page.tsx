@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useLayoutEffect } from "react"
 import { Search, MapPin, Building, Users, Calendar, ExternalLink, Mail, Phone, TrendingUp, Star, ChevronDown } from "lucide-react"
 import Navbar from "../../src/components/Navbar"
 import Link from "next/link"
@@ -63,9 +63,73 @@ const CompanyLogo = ({ companyName, isDark }: { companyName: string; isDark: boo
 }
 
 export default function PartnersPage() {
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
   const themeStyles = useThemeStyles()
-  const isDark = theme === 'dark'
+  
+  // Read initial theme from data-theme attribute (set by theme script before React)
+  // Returns: true for dark mode (purple), false for light mode (amber)
+  const [isDark, setIsDark] = useState(() => {
+    // First, try to read from data-theme attribute (set by theme script before React)
+    // This works in both client and SSR if document is available
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Client-side: fallback to localStorage if data-theme not set yet
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme')
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      let theme
+      
+      if (savedTheme === 'system' || !savedTheme) {
+        theme = prefersDark ? 'dark' : 'light'
+      } else {
+        theme = savedTheme // 'dark' or 'light'
+      }
+      
+      // If current mode is dark, SSR fallback should be dark
+      // If current mode is light, SSR fallback should be light
+      if (theme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      } else {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // SSR fallback: Check data-theme first (set by theme script before React)
+    // If current mode is dark, SSR fallback = dark
+    // If current mode is light, SSR fallback = light
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Final fallback: default to dark (will be corrected by useLayoutEffect)
+    return true
+  })
+  
+  // Update theme when resolvedTheme changes (from next-themes)
+  useLayoutEffect(() => {
+    if (resolvedTheme) {
+      setIsDark(resolvedTheme === 'dark')
+    } else if (typeof window !== 'undefined') {
+      // Fallback to reading from HTML if resolvedTheme not available yet
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      const htmlClass = document.documentElement.className
+      setIsDark(!(dataTheme === 'light' || htmlClass === 'light'))
+    }
+  }, [resolvedTheme])
   
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -103,7 +167,7 @@ export default function PartnersPage() {
   })
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: themeStyles.pageBg }}>
+    <div className="min-h-screen relative" suppressHydrationWarning style={{ backgroundColor: themeStyles.pageBg }}>
       <Navbar />
       
       {/* Header */}
@@ -112,12 +176,12 @@ export default function PartnersPage() {
         
         <div className="slide-up relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="text-center mb-16">
-            <div className="slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border" style={{ 
+            <div className="slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border" suppressHydrationWarning style={{ 
               backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
               borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)',
               transitionDelay: '0.1s' 
             }}>
-              <Building className="w-3.5 h-3.5" style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
+              <Building className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Industry Partners</span>
             </div>
             <h1 className="slide-up text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
@@ -225,6 +289,7 @@ export default function PartnersPage() {
                       placeholder="Search companies, industries, or locations..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
+                      suppressHydrationWarning
                       className={`w-full pl-14 pr-6 py-3.5 rounded-xl backdrop-blur-sm border transition-all duration-300 focus:outline-none focus:ring-2 font-light ${
                         isDark ? 'text-white placeholder-white/30 focus:ring-purple-500/50' : 'text-amber-900 placeholder-amber-900/50 focus:ring-amber-800/50'
                       }`}
@@ -239,6 +304,7 @@ export default function PartnersPage() {
                   <select
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
+                    suppressHydrationWarning
                     className={`w-full px-5 py-3.5 pr-10 rounded-xl focus:outline-none transition-all duration-300 backdrop-blur-xl border appearance-none cursor-pointer font-light ${
                       isDark ? 'text-white' : 'text-amber-900'
                     }`}
@@ -269,17 +335,17 @@ export default function PartnersPage() {
                     ))}
                   </select>
                   <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <ChevronDown className="w-4 h-4" style={{ color: isDark ? '#c084fc' : '#8b6f47' }} />
+                    <ChevronDown className="w-4 h-4" suppressHydrationWarning style={{ color: isDark ? '#c084fc' : '#8b6f47' }} />
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Results Count */}
-            <div className="slide-up mb-8" style={{ transitionDelay: '0.9s' }}>
+            <div className="slide-up mb-8" suppressHydrationWarning style={{ transitionDelay: '0.9s' }}>
               <p className={`text-sm font-light ${isDark ? 'text-white/40' : 'text-amber-900/60'}`}>
                 {searchTerm && (
-                  <span style={{ color: isDark ? '#c084fc' : '#8b6f47' }}>
+                  <span suppressHydrationWarning style={{ color: isDark ? '#c084fc' : '#8b6f47' }}>
                     Search results for "{searchTerm}":{" "}
                   </span>
                 )}
@@ -363,7 +429,7 @@ export default function PartnersPage() {
                     {partner.employeeCount && (
                       <span className="flex items-center gap-1.5">
                         <Users size={12} />
-                        <span>{partner.employeeCount.toLocaleString()}</span>
+                        <span>{partner.employeeCount.toLocaleString('en-US')}</span>
                       </span>
                     )}
                     {partner.founded && (
@@ -464,12 +530,12 @@ export default function PartnersPage() {
         <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: themeStyles.pageBgGradient }}></div>
         <div className="slide-up relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="text-center mb-16">
-            <div className="slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm border" style={{ 
+            <div className="slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm border" suppressHydrationWarning style={{ 
               backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
               borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)',
               transitionDelay: '0.1s' 
             }}>
-              <TrendingUp className="w-3.5 h-3.5" style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
+              <TrendingUp className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Industry Analytics</span>
             </div>
             <h2 className="slide-up text-4xl lg:text-5xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useMemo, useCallback, Suspense } from "react"
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback, Suspense } from "react"
 import { Inter } from "next/font/google"
 import { Search, Star, Users, Clock, MapPin, ArrowRight, Sparkles, TrendingUp, Award } from "lucide-react"
 import Navbar from "../src/components/Navbar"
@@ -43,9 +43,76 @@ interface Course {
 }
 
 export default function HomePage() {
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
   const themeStyles = useThemeStyles()
   const [mounted, setMounted] = useState(false)
+  
+  // Read initial theme from data-theme attribute (set by theme script before React)
+  // Returns: true for dark mode (purple), false for light mode (amber)
+  const [isDark, setIsDark] = useState(() => {
+    // First, try to read from data-theme attribute (set by theme script before React)
+    // This works in both client and SSR if document is available
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Client-side: fallback to localStorage if data-theme not set yet
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme')
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      let theme
+      
+      if (savedTheme === 'system' || !savedTheme) {
+        theme = prefersDark ? 'dark' : 'light'
+      } else {
+        theme = savedTheme // 'dark' or 'light'
+      }
+      
+      // If current mode is dark, SSR fallback should be dark
+      // If current mode is light, SSR fallback should be light
+      if (theme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      } else {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // SSR fallback: Check data-theme first (set by theme script before React)
+    // If current mode is dark, SSR fallback = dark
+    // If current mode is light, SSR fallback = light
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Final fallback: default to dark (will be corrected by useLayoutEffect)
+    return true
+  })
+  
+  // Update theme when resolvedTheme changes
+  useLayoutEffect(() => {
+    if (resolvedTheme) {
+      setIsDark(resolvedTheme === 'dark')
+    } else if (typeof window !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      const htmlClass = document.documentElement.className
+      setIsDark(!(dataTheme === 'light' || htmlClass === 'light'))
+    }
+  }, [resolvedTheme])
+  
+  // Use isDark for theme checks - keep theme variable for compatibility with existing code
+  const theme = isDark ? 'dark' : 'light'
   const [searchTerm, setSearchTerm] = useState("")
   const [searchRecommendations, setSearchRecommendations] = useState<SearchRecommendation[]>([])
   const [showRecommendations, setShowRecommendations] = useState(false)
@@ -415,7 +482,7 @@ export default function HomePage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { icon: Users, value: industryStats.totalStudents.toLocaleString(), label: "Students Trained" },
+              { icon: Users, value: industryStats.totalStudents.toLocaleString('en-US'), label: "Students Trained" },
               { icon: TrendingUp, value: industryStats.totalCourses, label: "Training Programs" },
               { icon: Award, value: industryStats.totalPartners, label: "Partner Companies" },
               { icon: Star, value: industryStats.averageRating, label: "Average Rating" },
@@ -707,16 +774,16 @@ export default function HomePage() {
       </section>
 
       {/* Industry Insights */}
-      <section className="slide-up py-12 sm:py-16 md:py-20 relative" style={{ backgroundColor: themeStyles.pageBg }}>
+      <section className="slide-up py-12 sm:py-16 md:py-20 relative" suppressHydrationWarning style={{ backgroundColor: themeStyles.pageBg }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title - Mobile: Top, Desktop: Center */}
           <div className="text-center mb-8 md:hidden">
-            <h2 className="text-2xl sm:text-3xl font-normal mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl font-normal mb-3 sm:mb-4" suppressHydrationWarning>
               <span className={`bg-clip-text text-transparent ${
                 theme === 'dark' 
                   ? 'bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400' 
                   : 'bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800'
-              }`} style={{ 
+              }`} suppressHydrationWarning style={{ 
                 textShadow: theme === 'dark' 
                   ? '0 0 30px rgba(250,204,21,0.6), 0 0 60px rgba(250,204,21,0.4)' 
                   : 'none' 
@@ -724,7 +791,7 @@ export default function HomePage() {
                 theme === 'dark' 
                   ? 'bg-gradient-to-r from-purple-300 to-purple-400' 
                   : 'bg-gradient-to-r from-amber-700 to-amber-600'
-              }`} style={{ 
+              }`} suppressHydrationWarning style={{ 
                 textShadow: theme === 'dark' 
                   ? '0 0 30px rgba(196,181,253,0.5), 0 0 60px rgba(196,181,253,0.3)' 
                   : 'none' 
@@ -747,12 +814,12 @@ export default function HomePage() {
                 { value: industryInsights.averageCoursePrice, label: "Average Price", desc: "Course pricing", isTall: false },
               ].map((insight, index) => {
                 // Theme-aware colors - same for all boxes
-                const boxBg = theme === 'dark' ? 'rgba(168,85,247,0.12)' : 'rgba(255,255,255,0.7)'
-                const boxBorder = theme === 'dark' ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
-                const hoverShadow = theme === 'dark' 
+                const boxBg = isDark ? 'rgba(168,85,247,0.12)' : 'rgba(255,255,255,0.7)'
+                const boxBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
+                const hoverShadow = isDark 
                   ? '0 12px 32px rgba(0,0,0,0.3), 0 0 25px rgba(196,181,253,0.3), inset 0 1px 0 rgba(255,255,255,0.08)'
                   : '0 12px 32px rgba(58,46,31,0.2), 0 0 25px rgba(139,90,43,0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
-                const defaultShadow = theme === 'dark'
+                const defaultShadow = isDark
                   ? '0 8px 24px rgba(0,0,0,0.2), 0 0 15px rgba(196,181,253,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
                   : '0 8px 24px rgba(58,46,31,0.15), 0 0 15px rgba(139,90,43,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                 // First box (tall) and last box (tall) have same height, 2nd and 3rd (short) have same height
@@ -764,6 +831,7 @@ export default function HomePage() {
                   <div 
                     key={index} 
                     className={`w-full md:flex-1 hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
+                    suppressHydrationWarning
                     style={{
                       backgroundColor: boxBg, 
                       borderColor: boxBorder, 
@@ -798,13 +866,13 @@ export default function HomePage() {
             </div>
             
             {/* Center title - Desktop only */}
-            <div className="hidden md:flex col-span-1 md:col-span-1 lg:col-span-1 text-center px-4 sm:px-8 md:px-12 lg:px-20 flex-col items-center justify-center py-8 md:py-0" style={{ minHeight: '200px', alignSelf: 'center' }}>
-              <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-normal mb-3 sm:mb-4">
+            <div className="hidden md:flex col-span-1 md:col-span-1 lg:col-span-1 text-center px-4 sm:px-8 md:px-12 lg:px-20 flex-col items-center justify-center py-8 md:py-0" suppressHydrationWarning style={{ minHeight: '200px', alignSelf: 'center' }}>
+              <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-normal mb-3 sm:mb-4" suppressHydrationWarning>
                 <span className={`bg-clip-text text-transparent ${
                   theme === 'dark' 
                     ? 'bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400' 
                     : 'bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800'
-                }`} style={{ 
+                }`} suppressHydrationWarning style={{ 
                   textShadow: theme === 'dark' 
                     ? '0 0 30px rgba(250,204,21,0.6), 0 0 60px rgba(250,204,21,0.4)' 
                     : 'none' 
@@ -812,7 +880,7 @@ export default function HomePage() {
                   theme === 'dark' 
                     ? 'bg-gradient-to-r from-purple-300 to-purple-400' 
                     : 'bg-gradient-to-r from-amber-700 to-amber-600'
-                }`} style={{ 
+                }`} suppressHydrationWarning style={{ 
                   textShadow: theme === 'dark' 
                     ? '0 0 30px rgba(196,181,253,0.5), 0 0 60px rgba(196,181,253,0.3)' 
                     : 'none' 
@@ -834,12 +902,12 @@ export default function HomePage() {
                 { value: industryInsights.marketGrowth, label: "Market Growth", desc: "Year over year", isTall: true },
               ].map((insight, index) => {
                 // Theme-aware colors - same for all boxes
-                const boxBg = theme === 'dark' ? 'rgba(168,85,247,0.12)' : 'rgba(255,255,255,0.7)'
-                const boxBorder = theme === 'dark' ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
-                const hoverShadow = theme === 'dark' 
+                const boxBg = isDark ? 'rgba(168,85,247,0.12)' : 'rgba(255,255,255,0.7)'
+                const boxBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
+                const hoverShadow = isDark 
                   ? '0 12px 32px rgba(0,0,0,0.3), 0 0 25px rgba(196,181,253,0.3), inset 0 1px 0 rgba(255,255,255,0.08)'
                   : '0 12px 32px rgba(58,46,31,0.2), 0 0 25px rgba(139,90,43,0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
-                const defaultShadow = theme === 'dark'
+                const defaultShadow = isDark
                   ? '0 8px 24px rgba(0,0,0,0.2), 0 0 15px rgba(196,181,253,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
                   : '0 8px 24px rgba(58,46,31,0.15), 0 0 15px rgba(139,90,43,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
                 // First box (tall) and last box (tall) have same height, 2nd and 3rd (short) have same height
@@ -851,6 +919,7 @@ export default function HomePage() {
                   <div 
                     key={index} 
                     className={`w-full md:flex-1 hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
+                    suppressHydrationWarning
                     style={{
                       backgroundColor: boxBg, 
                       borderColor: boxBorder, 
@@ -928,11 +997,23 @@ export default function HomePage() {
               >
                 Get Started Today
               </Link>
-              <Link href="/partners" className="text-base px-7 py-3 rounded-2xl transition-all duration-300" style={{ backgroundColor: '#E0E0E0', color: '#6b21a8' }} onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = '0.9'
-              }} onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = '1'
-              }}>
+              <Link 
+                href="/partners" 
+                className="text-base px-7 py-3 rounded-2xl transition-all duration-300 backdrop-blur-sm border" 
+                style={{ 
+                  backgroundColor: theme === 'dark' ? 'rgba(168,85,247,0.15)' : 'rgba(255,255,255,0.9)', 
+                  color: theme === 'dark' ? '#c084fc' : '#8b6f47',
+                  borderColor: theme === 'dark' ? 'rgba(168,85,247,0.3)' : 'rgba(139,90,43,0.3)'
+                }} 
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = '0.9'
+                  e.currentTarget.style.borderColor = theme === 'dark' ? 'rgba(168,85,247,0.5)' : 'rgba(139,90,43,0.5)'
+                }} 
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '1'
+                  e.currentTarget.style.borderColor = theme === 'dark' ? 'rgba(168,85,247,0.3)' : 'rgba(139,90,43,0.3)'
+                }}
+              >
                 Explore Partners
               </Link>
             </div>

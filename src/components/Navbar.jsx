@@ -29,7 +29,9 @@ export default function Navbar() {
   const userName = user?.fullName || user?.firstName || user?.emailAddresses[0]?.emailAddress || 'User'
   const userEmail = user?.emailAddresses[0]?.emailAddress || ''
   
-  const isDark = theme === 'dark'
+  // Use consistent default during SSR to prevent hydration mismatch
+  // After mount, use the actual theme from next-themes
+  const isDark = mounted ? (theme === 'dark') : true
 
   useEffect(() => {
     const handleClickOutside = (event) => {

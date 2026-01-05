@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useLayoutEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useUser, useClerk } from "@clerk/nextjs"
@@ -24,8 +24,68 @@ export default function ProfilePage() {
   const { user, isLoaded } = useUser()
   const { signOut } = useClerk()
   const router = useRouter()
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  
+  // Read initial theme from data-theme attribute (set by theme script before React)
+  // Returns: true for dark mode (purple), false for light mode (amber)
+  const [isDark, setIsDark] = useState(() => {
+    // First, try to read from data-theme attribute (set by theme script before React)
+    // This works in both client and SSR if document is available
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Client-side: fallback to localStorage if data-theme not set yet
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme')
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      let theme
+      
+      if (savedTheme === 'system' || !savedTheme) {
+        theme = prefersDark ? 'dark' : 'light'
+      } else {
+        theme = savedTheme
+      }
+      
+      // If current mode is dark, SSR fallback should be dark
+      // If current mode is light, SSR fallback should be light
+      if (theme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      } else {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // SSR fallback: Check data-theme first (set by theme script before React)
+    // If current mode is dark, SSR fallback = dark
+    // If current mode is light, SSR fallback = light
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Final fallback: default to dark (will be corrected by useLayoutEffect)
+    return true
+  })
+  
+  // Update theme when resolvedTheme changes
+  useLayoutEffect(() => {
+    if (resolvedTheme) {
+      setIsDark(resolvedTheme === 'dark')
+    }
+  }, [resolvedTheme])
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isUploadingImage, setIsUploadingImage] = useState(false)
@@ -217,7 +277,6 @@ export default function ProfilePage() {
     }
   }
 
-  const isDark = theme === 'dark'
   const themeStyles = useThemeStyles()
 
   if (!isLoaded) {

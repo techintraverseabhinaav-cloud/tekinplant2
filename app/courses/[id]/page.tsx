@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useLayoutEffect } from "react"
 import { use } from "react"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../../../lib/theme-styles"
@@ -32,9 +32,68 @@ interface Course {
 
 export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params)
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
   const themeStyles = useThemeStyles()
-  const isDark = theme === 'dark'
+  
+  // Read initial theme from data-theme attribute (set by theme script before React)
+  // Returns: true for dark mode (purple), false for light mode (amber)
+  const [isDark, setIsDark] = useState(() => {
+    // First, try to read from data-theme attribute (set by theme script before React)
+    // This works in both client and SSR if document is available
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Client-side: fallback to localStorage if data-theme not set yet
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme')
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      let theme
+      
+      if (savedTheme === 'system' || !savedTheme) {
+        theme = prefersDark ? 'dark' : 'light'
+      } else {
+        theme = savedTheme
+      }
+      
+      // If current mode is dark, SSR fallback should be dark
+      // If current mode is light, SSR fallback should be light
+      if (theme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      } else {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // SSR fallback: Check data-theme first (set by theme script before React)
+    // If current mode is dark, SSR fallback = dark
+    // If current mode is light, SSR fallback = light
+    if (typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current mode is dark, SSR fallback = dark
+      }
+      if (dataTheme === 'light') {
+        return false // Current mode is light, SSR fallback = light
+      }
+    }
+    
+    // Final fallback: default to dark (will be corrected by useLayoutEffect)
+    return true
+  })
+  
+  // Update theme when resolvedTheme changes
+  useLayoutEffect(() => {
+    if (resolvedTheme) {
+      setIsDark(resolvedTheme === 'dark')
+    }
+  }, [resolvedTheme])
   const [activeTab, setActiveTab] = useState("overview")
   const [courseData, setCourseData] = useState<Course | null>(null)
   const [isLoading, setIsLoading] = useState(true)

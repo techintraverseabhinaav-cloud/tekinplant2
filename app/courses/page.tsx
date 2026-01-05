@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense, useMemo } from "react"
+import { useState, useEffect, useLayoutEffect, Suspense, useMemo } from "react"
 import { Search, Clock, Users, Star, MapPin, Building, Filter, ArrowRight, ChevronDown } from "lucide-react"
 import Navbar from "../../src/components/Navbar"
 import Link from "next/link"
@@ -34,9 +34,153 @@ function CoursesContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { isSignedIn } = useUser()
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
   const themeStyles = useThemeStyles()
-  const isDark = theme === 'dark'
+  
+  // Read initial theme from data-theme attribute (set by theme script before React)
+  // Returns: true for dark mode (purple), false for light mode (amber)
+  // The key is to read from data-theme which is set synchronously in <head> before React
+  const [isDark, setIsDark] = useState(() => {
+    // Client-side: Read from data-theme first (set by theme script before React hydrates)
+    // The theme script runs synchronously in <head>, so data-theme should be available
+    // when React hydrates on the client
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        return true // Current theme is dark - match it
+      }
+      if (dataTheme === 'light') {
+        return false // Current theme is light - match it
+      }
+      
+      // Fallback to localStorage if data-theme not set yet (shouldn't happen, but safety)
+      const savedTheme = localStorage.getItem('theme')
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      let theme
+      
+      if (savedTheme === 'system' || !savedTheme) {
+        theme = prefersDark ? 'dark' : 'light'
+      } else {
+        theme = savedTheme // 'dark' or 'light'
+      }
+      
+      // Return based on determined theme
+      // This matches what the theme script would set in data-theme
+      return theme === 'dark'
+    }
+    
+    // SSR fallback: During server-side rendering, document and window are not available
+    // We can't know the user's theme preference during SSR
+    // However, the theme script runs in <head> before React, so by the time React hydrates,
+    // data-theme should be set. The useState initializer runs during hydration, so it should
+    // be able to read data-theme. If not, we default to false (light mode) and useLayoutEffect
+    // will correct it immediately (runs synchronously before paint, so no visible flash)
+    return false
+  })
+  
+  // Update theme immediately when component mounts (runs synchronously before paint)
+  // This ensures the theme matches the current theme set by the theme script
+  // and prevents leak of wrong theme colors
+  useLayoutEffect(() => {
+    // Read from data-theme first (set by theme script before React hydrates)
+    // This is the most reliable source since it's set synchronously in <head>
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const dataTheme = document.documentElement.getAttribute('data-theme')
+      if (dataTheme === 'dark') {
+        setIsDark(true) // Current theme is dark - match it
+        return
+      }
+      if (dataTheme === 'light') {
+        setIsDark(false) // Current theme is light - match it
+        return
+      }
+    }
+    
+    // Fallback to resolvedTheme from next-themes
+    if (resolvedTheme) {
+      setIsDark(resolvedTheme === 'dark')
+    } else if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      // Final fallback: check className
+      const htmlClass = document.documentElement.className
+      setIsDark(!(htmlClass === 'light'))
+    }
+  }, [resolvedTheme])
+  
+  // Update when resolvedTheme changes (user manually switches theme)
+  useEffect(() => {
+    if (resolvedTheme) {
+      setIsDark(resolvedTheme === 'dark')
+    }
+  }, [resolvedTheme])
+
+  // Theme-dependent color variables: purple for dark mode, amber/golden for light mode
+  // All colors are set using if-else to ensure proper theme separation
+  let themeColors: {
+    badgeBg: string
+    badgeBorder: string
+    iconColor: string
+    textColor: string
+    gradientClass: string
+    statBorder: string
+    statBg: string
+    hoverShadow: string
+    searchBg: string
+    searchBorder: string
+    inputBg: string
+    inputBorder: string
+    inputText: string
+    inputPlaceholder: string
+    inputFocusRing: string
+    chevronColor: string
+    optionBg: string
+    optionText: string
+  }
+  
+  if (isDark) {
+    // Dark mode - purple colors only
+    themeColors = {
+      badgeBg: 'rgba(0,0,0,0.4)',
+      badgeBorder: 'rgba(168,85,247,0.2)',
+      iconColor: '#a855f7',
+      textColor: 'text-white/70',
+      gradientClass: 'bg-gradient-to-r from-purple-300 via-purple-200 to-purple-300',
+      statBorder: 'rgba(168,85,247,0.25)',
+      statBg: 'rgba(0,0,0,0.3)',
+      hoverShadow: '0 12px 24px rgba(0,0,0,0.4), 0 0 20px rgba(196,181,253,0.2)',
+      searchBg: 'rgba(0,0,0,0.3)',
+      searchBorder: 'rgba(168,85,247,0.2)',
+      inputBg: 'rgba(0,0,0,0.4)',
+      inputBorder: 'rgba(168,85,247,0.2)',
+      inputText: 'text-white',
+      inputPlaceholder: 'placeholder-white/30',
+      inputFocusRing: 'focus:ring-purple-500/50',
+      chevronColor: '#c084fc',
+      optionBg: '#0a0a0a',
+      optionText: '#ffffff'
+    }
+  } else {
+    // Light mode - amber/golden colors only
+    themeColors = {
+      badgeBg: 'rgba(255,255,255,0.7)',
+      badgeBorder: 'rgba(139,90,43,0.25)',
+      iconColor: '#8b6f47',
+      textColor: 'text-amber-900/80',
+      gradientClass: 'bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800',
+      statBorder: 'rgba(139,90,43,0.3)',
+      statBg: 'rgba(255,255,255,0.7)',
+      hoverShadow: '0 12px 24px rgba(58,46,31,0.2), 0 0 20px rgba(139,90,43,0.25)',
+      searchBg: 'rgba(255,255,255,0.8)',
+      searchBorder: 'rgba(139,90,43,0.3)',
+      inputBg: 'rgba(255,255,255,0.9)',
+      inputBorder: 'rgba(139,90,43,0.3)',
+      inputText: 'text-amber-900',
+      inputPlaceholder: 'placeholder-amber-900/50',
+      inputFocusRing: 'focus:ring-amber-800/50',
+      chevronColor: '#8b6f47',
+      optionBg: '#ffffff',
+      optionText: '#3a2e1f'
+    }
+  }
 
   // Fetch courses from API
   useEffect(() => {
@@ -90,7 +234,7 @@ function CoursesContent() {
   }, [courses, searchTerm, category, location])
 
   return (
-    <div className="min-h-screen relative" style={{ backgroundColor: themeStyles.pageBg }}>
+    <div className="min-h-screen relative" suppressHydrationWarning style={{ backgroundColor: themeStyles.pageBg }}>
       <Navbar />
       
       {/* Header */}
@@ -99,23 +243,36 @@ function CoursesContent() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border" style={{ 
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border" suppressHydrationWarning style={{ 
               backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
               borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)'
             }}>
-              <Building className="w-3.5 h-3.5" style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
-              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-amber-900/80'}`}>Industry Training Programs</span>
+              <Building className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
+              <span suppressHydrationWarning style={{ 
+                color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(139,90,43,0.8)'
+              }} className="text-xs font-medium tracking-wide uppercase">Industry Training Programs</span>
             </div>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-tight tracking-tight">
-              <span style={{ color: themeStyles.textPrimary }}>Industry</span> <span className={`bg-clip-text text-transparent ${
-                isDark 
-                  ? 'bg-gradient-to-r from-purple-300 via-purple-200 to-purple-300' 
-                  : 'bg-gradient-to-r from-amber-800 via-amber-700 to-amber-800'
-              }`}>Training Programs</span>
-            </h1>
-            <p className="text-lg sm:text-xl max-w-3xl mx-auto mb-16 font-light leading-relaxed" style={{ 
-              color: themeStyles.textSecondary,
-              opacity: isDark ? 0.5 : 0.8
+            {(() => {
+              // Theme-dependent heading colors: white/purple for dark mode, black/golden for light mode
+              let industryColor, trainingGradient
+              if (isDark) {
+                // Dark mode - Industry in white, Training Programs in purple
+                industryColor = '#ffffff'
+                trainingGradient = 'bg-gradient-to-r from-purple-300 via-purple-200 to-purple-300'
+              } else {
+                // Light mode - Industry in black, Training Programs in golden
+                industryColor = '#1a0f00'
+                trainingGradient = 'bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700'
+              }
+              return (
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-tight tracking-tight" suppressHydrationWarning>
+                  <span suppressHydrationWarning style={{ color: industryColor }}>Industry</span> <span className={`bg-clip-text text-transparent ${trainingGradient}`} suppressHydrationWarning>Training Programs</span>
+                </h1>
+              )
+            })()}
+            <p className="text-lg sm:text-xl max-w-3xl mx-auto mb-16 font-light leading-relaxed" suppressHydrationWarning style={{ 
+              color: isDark ? '#ffffff' : '#1a0f00',
+              opacity: isDark ? 0.9 : 0.9
             }}>
               Discover comprehensive training programs designed by industry experts to accelerate your career growth
             </p>
@@ -128,91 +285,95 @@ function CoursesContent() {
                 { icon: "/Icons/students.png", value: industryStats.totalStudents, label: "Students Trained" },
                 { icon: "/Icons/rating.png", value: industryStats.averageRating, label: "Average Rating" },
               ].map((stat, index) => {
-                const statBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
-                const statBg = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.7)'
-                const hoverShadow = isDark
-                  ? '0 12px 24px rgba(0,0,0,0.4), 0 0 20px rgba(196,181,253,0.2)'
-                  : '0 12px 24px rgba(58,46,31,0.2), 0 0 20px rgba(139,90,43,0.25)'
                 
                 return (
                 <div 
                   key={index} 
-                  className="text-center p-8 rounded-2xl transition-all duration-500" 
+                  className="text-center p-8 rounded-2xl transition-all duration-500"
+                  suppressHydrationWarning
                   style={{ 
-                    backgroundColor: statBg, 
-                    borderColor: statBorder, 
+                    backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.7)', 
+                    borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)', 
                     borderWidth: '1px'
                   }} 
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)'
-                    e.currentTarget.style.boxShadow = hoverShadow
+                    e.currentTarget.style.boxShadow = themeColors.hoverShadow
                   }} 
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)'
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
-                  <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center mx-auto mb-6" style={{ 
-                    backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.9)', 
-                    borderColor: statBorder, 
-                    borderWidth: '1px' 
-                  }}>
-                    <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ 
-                      borderColor: statBorder, 
-                      borderWidth: '1px', 
-                      backgroundColor: '#ffffff' 
-                    }}>
-                      <div 
-                        className="absolute inset-0 rounded-lg"
-                        style={{
-                          background: isDark ? 'transparent' : 'linear-gradient(135deg, rgba(217,119,6,0.5) 0%, rgba(251,191,36,0.4) 100%)',
-                          mixBlendMode: isDark ? 'normal' : 'color',
-                          pointerEvents: 'none',
-                          zIndex: 1
-                        }}
-                      />
-                      <img 
-                        src={stat.icon} 
-                        alt={stat.label} 
-                        className="w-full h-full object-cover scale-125 relative z-0" 
-                        style={{ 
-                          filter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6)',
-                          WebkitFilter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6)'
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <h3 className={`text-3xl lg:text-4xl font-light mb-2 tracking-tight bg-clip-text text-transparent ${
-                    isDark 
-                      ? 'bg-gradient-to-r from-purple-300 to-purple-400' 
-                      : 'bg-gradient-to-r from-amber-800 to-amber-700'
-                  }`}>{stat.value}</h3>
-                  <p className={`text-sm font-light tracking-wide uppercase ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>{stat.label}</p>
+                  {(() => {
+                    return (
+                      <>
+                        <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center mx-auto mb-6" suppressHydrationWarning style={{ 
+                          backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.9)', 
+                          borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)', 
+                          borderWidth: '1px' 
+                        }}>
+                          <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" suppressHydrationWarning style={{ 
+                            borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)', 
+                            borderWidth: '1px', 
+                            backgroundColor: '#ffffff' 
+                          }}>
+                            <div 
+                              className="absolute inset-0 rounded-lg"
+                              suppressHydrationWarning
+                              style={{
+                                background: isDark ? 'transparent' : 'linear-gradient(135deg, rgba(217,119,6,0.5) 0%, rgba(251,191,36,0.4) 100%)',
+                                mixBlendMode: isDark ? 'normal' : 'color',
+                                pointerEvents: 'none',
+                                zIndex: 1
+                              }}
+                            />
+                            <img 
+                              src={stat.icon} 
+                              alt={stat.label} 
+                              className="w-full h-full object-cover scale-125 relative z-0" 
+                              suppressHydrationWarning
+                              style={{ 
+                                filter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6)',
+                                WebkitFilter: isDark ? 'none' : 'hue-rotate(90deg) saturate(3) brightness(1.6)'
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <h3 className={`text-3xl lg:text-4xl font-light mb-2 tracking-tight bg-clip-text text-transparent ${
+                          isDark ? 'bg-gradient-to-r from-purple-300 to-purple-400' : 'bg-gradient-to-r from-amber-800 to-amber-700'
+                        }`} suppressHydrationWarning>{stat.value}</h3>
+                        <p className="text-sm font-light tracking-wide uppercase" suppressHydrationWarning style={{ 
+                          color: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(139,90,43,0.7)'
+                        }}>{stat.label}</p>
+                      </>
+                    )
+                  })()}
                 </div>
                 )
               })}
             </div>
 
             {/* Search and Filters */}
-            <div className="rounded-2xl p-8 mb-8 backdrop-blur-xl border" style={{ 
-              backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)',
-              borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+            <div className="rounded-2xl p-8 mb-8 backdrop-blur-xl border" suppressHydrationWarning style={{ 
+              backgroundColor: themeColors.searchBg,
+              borderColor: themeColors.searchBorder
             }}>
               <div className="grid md:grid-cols-4 gap-4">
                 <div className="md:col-span-2">
                   <div className="relative">
-                    <Search className={`absolute left-5 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-white/40' : 'text-amber-900/50'}`} size={18} />
+                    <Search className="absolute left-5 top-1/2 transform -translate-y-1/2" size={18} suppressHydrationWarning style={{ color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(139,90,43,0.5)' }} />
                     <input
                       type="text"
                       placeholder="Search courses, companies, or skills..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className={`w-full pl-14 pr-6 py-3.5 rounded-xl backdrop-blur-sm border transition-all duration-300 focus:outline-none focus:ring-2 font-light ${
-                        isDark ? 'text-white placeholder-white/30 focus:ring-purple-500/50' : 'text-amber-900 placeholder-amber-900/50 focus:ring-amber-800/50'
-                      }`}
+                      suppressHydrationWarning
+                      className={`w-full pl-14 pr-6 py-3.5 rounded-xl backdrop-blur-sm border transition-all duration-300 focus:outline-none focus:ring-2 font-light ${isDark ? 'placeholder-white/30 focus:ring-purple-500/50' : 'placeholder-amber-900/50 focus:ring-amber-800/50'}`}
                       style={{ 
                         backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)', 
-                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)',
+                        color: isDark ? '#ffffff' : 'rgba(139,90,43,0.9)'
                       }}
                     />
                   </div>
@@ -221,22 +382,31 @@ function CoursesContent() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className={`w-full px-5 py-3.5 pr-10 rounded-xl focus:outline-none transition-all duration-300 backdrop-blur-xl border appearance-none cursor-pointer font-light ${
-                      isDark ? 'text-white' : 'text-amber-900'
-                    }`}
+                    suppressHydrationWarning
+                    className="w-full px-5 py-3.5 pr-10 rounded-xl focus:outline-none transition-all duration-300 backdrop-blur-xl border appearance-none cursor-pointer font-light"
                     style={{ 
                       backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
-                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)',
+                      color: isDark ? '#ffffff' : 'rgba(139,90,43,0.9)'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.4)' : 'rgba(139,90,43,0.5)'
+                      if (isDark) {
+                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.4)'
+                      } else {
+                        e.currentTarget.style.borderColor = 'rgba(139,90,43,0.5)'
+                      }
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
                     }}
                     onFocus={(e) => {
-                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.6)' : 'rgba(139,90,43,0.6)'
-                      e.currentTarget.style.boxShadow = isDark ? '0 0 0 2px rgba(168,85,247,0.2)' : '0 0 0 2px rgba(139,90,43,0.2)'
+                      if (isDark) {
+                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.6)'
+                        e.currentTarget.style.boxShadow = '0 0 0 2px rgba(168,85,247,0.2)'
+                      } else {
+                        e.currentTarget.style.borderColor = 'rgba(139,90,43,0.6)'
+                        e.currentTarget.style.boxShadow = '0 0 0 2px rgba(139,90,43,0.2)'
+                      }
                     }}
                     onBlur={(e) => {
                       e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
@@ -244,36 +414,45 @@ function CoursesContent() {
                     }}
                   >
                     {categories.map((cat) => (
-                      <option key={cat} value={cat} style={{ 
+                      <option key={cat} value={cat} suppressHydrationWarning style={{ 
                         backgroundColor: isDark ? '#0a0a0a' : '#ffffff', 
-                        color: isDark ? '#ffffff' : '#3a2e1f' 
+                        color: isDark ? '#ffffff' : '#3a2e1f'
                       }}>{cat}</option>
                     ))}
                   </select>
                   <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <ChevronDown className="w-4 h-4" style={{ color: isDark ? '#c084fc' : '#8b6f47' }} />
+                    <ChevronDown className="w-4 h-4" suppressHydrationWarning style={{ color: isDark ? '#c084fc' : '#8b6f47' }} />
                   </div>
                 </div>
                 <div className="relative">
                   <select
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className={`w-full px-5 py-3.5 pr-10 rounded-xl focus:outline-none transition-all duration-300 backdrop-blur-xl border appearance-none cursor-pointer font-light ${
-                      isDark ? 'text-white' : 'text-amber-900'
-                    }`}
+                    suppressHydrationWarning
+                    className="w-full px-5 py-3.5 pr-10 rounded-xl focus:outline-none transition-all duration-300 backdrop-blur-xl border appearance-none cursor-pointer font-light"
                     style={{ 
                       backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.9)',
-                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)',
+                      color: isDark ? '#ffffff' : 'rgba(139,90,43,0.9)'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.4)' : 'rgba(139,90,43,0.5)'
+                      if (isDark) {
+                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.4)'
+                      } else {
+                        e.currentTarget.style.borderColor = 'rgba(139,90,43,0.5)'
+                      }
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
                     }}
                     onFocus={(e) => {
-                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.6)' : 'rgba(139,90,43,0.6)'
-                      e.currentTarget.style.boxShadow = isDark ? '0 0 0 2px rgba(168,85,247,0.2)' : '0 0 0 2px rgba(139,90,43,0.2)'
+                      if (isDark) {
+                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.6)'
+                        e.currentTarget.style.boxShadow = '0 0 0 2px rgba(168,85,247,0.2)'
+                      } else {
+                        e.currentTarget.style.borderColor = 'rgba(139,90,43,0.6)'
+                        e.currentTarget.style.boxShadow = '0 0 0 2px rgba(139,90,43,0.2)'
+                      }
                     }}
                     onBlur={(e) => {
                       e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
@@ -281,14 +460,14 @@ function CoursesContent() {
                     }}
                   >
                     {locations.map((loc) => (
-                      <option key={loc} value={loc} style={{ 
+                      <option key={loc} value={loc} suppressHydrationWarning style={{ 
                         backgroundColor: isDark ? '#0a0a0a' : '#ffffff', 
-                        color: isDark ? '#ffffff' : '#3a2e1f' 
+                        color: isDark ? '#ffffff' : '#3a2e1f'
                       }}>{loc}</option>
                     ))}
                   </select>
                   <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <ChevronDown className="w-4 h-4" style={{ color: isDark ? '#c084fc' : '#8b6f47' }} />
+                    <ChevronDown className="w-4 h-4" suppressHydrationWarning style={{ color: isDark ? '#c084fc' : '#8b6f47' }} />
                   </div>
                 </div>
               </div>
@@ -296,13 +475,15 @@ function CoursesContent() {
 
             {/* Results Count */}
             <div className="mb-8">
-              <p className={`text-sm font-light ${isDark ? 'text-white/40' : 'text-amber-900/60'}`}>
+              <p className="text-sm font-light" suppressHydrationWarning style={{ 
+                color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(139,90,43,0.6)'
+              }}>
                 {searchTerm && (
-                  <span style={{ color: isDark ? '#c084fc' : '#8b6f47' }}>
+                  <span suppressHydrationWarning style={{ color: isDark ? '#c084fc' : '#8b6f47' }}>
                     Search results for "{searchTerm}":{" "}
                   </span>
                 )}
-                Showing <span className={isDark ? 'text-white/60' : 'text-amber-900/70'}>{filteredCourses.length}</span> of <span className={isDark ? 'text-white/60' : 'text-amber-900/70'}>{loading ? 0 : courses.length}</span> training programs
+                Showing <span suppressHydrationWarning style={{ color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(139,90,43,0.7)' }}>{filteredCourses.length}</span> of <span suppressHydrationWarning style={{ color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(139,90,43,0.7)' }}>{loading ? 0 : courses.length}</span> training programs
               </p>
             </div>
           </div>
@@ -315,26 +496,66 @@ function CoursesContent() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           {loading ? (
             <div className="text-center py-24">
-              <div className={`animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4 ${isDark ? 'border-purple-500' : 'border-amber-700'}`}></div>
-              <p className={`font-light ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>Loading courses...</p>
+              {(() => {
+                // Loading spinner: purple for dark mode, amber for light mode
+                let spinnerBorder, loadingTextColor
+                if (isDark) {
+                  // Dark mode - purple colors only
+                  spinnerBorder = 'border-purple-500'
+                  loadingTextColor = 'text-white/50'
+                } else {
+                  // Light mode - amber colors only
+                  spinnerBorder = 'border-amber-700'
+                  loadingTextColor = 'text-amber-900/70'
+                }
+                return (
+                  <>
+                    <div className={`animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4 ${spinnerBorder}`} suppressHydrationWarning></div>
+                    <p className={`font-light ${loadingTextColor}`} suppressHydrationWarning>Loading courses...</p>
+                  </>
+                )
+              })()}
             </div>
           ) : filteredCourses.length === 0 ? (
             <div className="text-center py-24">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm border" style={{ 
-                backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.7)',
-                borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
-              }}>
-                <Search className={`w-10 h-10 ${isDark ? 'text-white/40' : 'text-amber-900/50'}`} />
-              </div>
-              <h3 className={`text-2xl font-light mb-4 ${isDark ? 'text-white' : 'text-amber-900'}`}>
-                {searchTerm ? `No courses found for "${searchTerm}"` : "No courses found"}
-              </h3>
-              <p className={`mb-10 font-light ${isDark ? 'text-white/50' : 'text-amber-900/70'}`}>
-                {searchTerm 
-                  ? "Try adjusting your search terms or browse all courses" 
-                  : "Try adjusting your search criteria or filters"
+              {(() => {
+                // Empty state: purple for dark mode, amber for light mode
+                let emptyBg, emptyBorder, emptyIconColor, emptyTitleColor, emptyTextColor
+                if (isDark) {
+                  // Dark mode - purple colors only
+                  emptyBg = 'rgba(0,0,0,0.3)'
+                  emptyBorder = 'rgba(168,85,247,0.2)'
+                  emptyIconColor = 'text-white/40'
+                  emptyTitleColor = 'text-white'
+                  emptyTextColor = 'text-white/50'
+                } else {
+                  // Light mode - amber colors only
+                  emptyBg = 'rgba(255,255,255,0.7)'
+                  emptyBorder = 'rgba(139,90,43,0.3)'
+                  emptyIconColor = 'text-amber-900/50'
+                  emptyTitleColor = 'text-amber-900'
+                  emptyTextColor = 'text-amber-900/70'
                 }
-              </p>
+                return (
+                  <>
+                    <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm border" suppressHydrationWarning style={{ 
+                      backgroundColor: emptyBg,
+                      borderColor: emptyBorder
+                    }}>
+                      <Search className={`w-10 h-10 ${emptyIconColor}`} />
+                    </div>
+                    <h3 className={`text-2xl font-light mb-4 ${emptyTitleColor}`} suppressHydrationWarning>
+                      {searchTerm ? `No courses found for "${searchTerm}"` : "No courses found"}
+                    </h3>
+                    <p className={`mb-10 font-light ${emptyTextColor}`} suppressHydrationWarning>
+                      {searchTerm 
+                        ? "Try adjusting your search terms or browse all courses" 
+                        : "Try adjusting your search criteria or filters"
+                      }
+                    </p>
+                  </>
+                )
+              })()}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => {
@@ -386,7 +607,7 @@ function CoursesContent() {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCourses.map((course, index) => {
-                const cardBg = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.8)'
+                const cardBg = isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)'
                 const cardBorder = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
                 const hoverShadow = isDark
                   ? '0 12px 24px rgba(0,0,0,0.4), 0 0 20px rgba(196,181,253,0.2)'
@@ -434,15 +655,22 @@ function CoursesContent() {
                   </div>
 
                   <div className="p-6 space-y-4 flex flex-col flex-grow">
-                    <h3 className="text-xl font-light leading-tight line-clamp-2" style={{ color: themeStyles.textPrimary }}>
+                    <h3 className="text-xl font-light leading-tight line-clamp-2" suppressHydrationWarning style={{ 
+                      color: isDark ? '#ffffff' : '#1a0f00'
+                    }}>
                       {course.title}
                     </h3>
                     
-                    <p className="text-sm line-clamp-2 leading-relaxed font-light flex-grow" style={{ color: themeStyles.textSecondary }}>
+                    <p className="text-sm line-clamp-2 leading-relaxed font-light flex-grow" suppressHydrationWarning style={{ 
+                      color: isDark ? 'rgba(255,255,255,0.9)' : 'rgba(26, 15, 0, 0.85)'
+                    }}>
                       {course.description}
                     </p>
 
-                    <div className={`flex items-center gap-4 text-xs pt-3 border-t ${isDark ? 'text-white/40 border-white/5' : 'text-amber-900/60 border-amber-900/10'}`}>
+                    <div className="flex items-center gap-4 text-xs pt-3 border-t" suppressHydrationWarning style={{ 
+                      color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(139,90,43,0.6)',
+                      borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(139,90,43,0.1)'
+                    }}>
                       <div className="flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{course.duration}</span>
@@ -490,12 +718,17 @@ function CoursesContent() {
 }
 
 export default function CoursesPage() {
+  // Read theme from HTML for Suspense fallback (before React hydrates)
+  // Default to dark mode for SSR
+  const isDarkFallback = true
+  const fallbackBg = '#000000'
+  
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#000000' }}>
+      <div className="min-h-screen flex items-center justify-center" suppressHydrationWarning style={{ backgroundColor: fallbackBg }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-white/50 font-light">Loading courses...</p>
+          <div className={`animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4 ${isDarkFallback ? 'border-purple-500' : 'border-amber-700'}`} suppressHydrationWarning></div>
+          <p className={`font-light ${isDarkFallback ? 'text-white/50' : 'text-amber-900/70'}`} suppressHydrationWarning>Loading courses...</p>
         </div>
       </div>
     }>

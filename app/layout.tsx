@@ -47,23 +47,104 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="dark">
       <head>
         <script
+          id="theme-script"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('theme') || 'dark';
-                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                    document.documentElement.style.backgroundColor = '#000000';
+                  // Check local storage first, then system preference
+                  var savedTheme = localStorage.getItem('theme');
+                  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var theme;
+                  
+                  if (savedTheme === 'system' || !savedTheme) {
+                    theme = prefersDark ? 'dark' : 'light';
                   } else {
-                    document.documentElement.classList.remove('dark');
-                    document.documentElement.style.backgroundColor = '#fef3e2';
+                    theme = savedTheme; // 'dark' or 'light'
                   }
-                } catch (e) {}
+                  
+                  // Apply the theme to the document element immediately
+                  var html = document.documentElement;
+                  html.setAttribute('data-theme', theme);
+                  html.className = theme;
+                  
+                  // Set background colors immediately to prevent flash
+                  if (theme === 'dark') {
+                    html.style.setProperty('background-color', '#000000', 'important');
+                  } else {
+                    html.style.setProperty('background-color', '#f5f1e8', 'important');
+                  }
+                  
+                  // Apply body styles when body is available
+                  function applyBodyStyles() {
+                    var body = document.body;
+                    if (body) {
+                      body.style.setProperty('transition', 'none', 'important');
+                      if (theme === 'dark') {
+                        body.style.setProperty('background', 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)', 'important');
+                        body.style.setProperty('color', '#ffffff', 'important');
+                      } else {
+                        body.style.setProperty('background', 'linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%)', 'important');
+                        body.style.setProperty('color', '#3a2e1f', 'important');
+                      }
+                      html.setAttribute('data-theme-initialized', 'true');
+                      
+                      // Re-enable transitions after React hydrates
+                      setTimeout(function() {
+                        body.style.removeProperty('transition');
+                      }, 200);
+                    }
+                  }
+                  
+                  // Try to apply immediately if body exists
+                  if (document.body) {
+                    applyBodyStyles();
+                  } else {
+                    // Use MutationObserver to catch body when it's added
+                    var observer = new MutationObserver(function(mutations) {
+                      if (document.body) {
+                        applyBodyStyles();
+                        observer.disconnect();
+                      }
+                    });
+                    observer.observe(document.documentElement, { childList: true, subtree: true });
+                  }
+                } catch (e) {
+                  // Fallback to dark theme on error
+                  var html = document.documentElement;
+                  html.className = 'dark';
+                  html.setAttribute('data-theme', 'dark');
+                  html.style.setProperty('background-color', '#000000', 'important');
+                }
               })();
+            `,
+          }}
+        />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              html { 
+                background-color: #000000 !important; 
+              }
+              html[data-theme="light"] { 
+                background-color: #f5f1e8 !important; 
+              }
+              body { 
+                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+                color: #ffffff !important;
+                transition: none !important;
+                opacity: 1 !important;
+              }
+              html[data-theme="light"] body {
+                background: linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%) !important;
+                color: #3a2e1f !important;
+              }
+              html[data-theme-initialized] body {
+                transition: background-color 0.3s ease, color 0.3s ease, background 0.3s ease !important;
+              }
             `,
           }}
         />
@@ -78,6 +159,7 @@ export default function RootLayout({
               defaultTheme="dark"
               enableSystem
               disableTransitionOnChange
+              storageKey="theme"
             >
               <SyncUserToSupabase />
               {children}
