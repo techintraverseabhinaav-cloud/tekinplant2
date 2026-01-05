@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useUser, useClerk } from "@clerk/nextjs"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../../lib/theme-styles"
+import { toast } from "sonner"
 import { 
   ArrowLeft, 
   User, 
@@ -172,7 +173,10 @@ export default function ProfilePage() {
           console.error('❌ Full error:', JSON.stringify(errorData, null, 2))
           
           // Show error to user
-          alert(`Profile updated in Clerk, but failed to sync to Supabase: ${errorData.error || 'Unknown error'}. Check console for details.`)
+          toast.warning("Profile updated in Clerk", {
+            description: `But failed to sync to Supabase: ${errorData.error || 'Unknown error'}. Check console for details.`,
+            duration: 5000,
+          })
         } else {
           const result = await response.json()
           console.log('✅ Profile synced to Supabase:', result)
@@ -184,7 +188,10 @@ export default function ProfilePage() {
         console.error('❌ Error stack:', syncError?.stack)
         
         // Show error to user
-        alert(`Profile updated in Clerk, but failed to sync to Supabase: ${syncError?.message || 'Network error'}. Check console for details.`)
+        toast.warning("Profile updated in Clerk", {
+          description: `But failed to sync to Supabase: ${syncError?.message || 'Network error'}. Check console for details.`,
+          duration: 5000,
+        })
       }
       
       // Note: Email changes typically require verification in Clerk
@@ -201,10 +208,16 @@ export default function ProfilePage() {
         lastName: currentLastName,
       }))
       
-      alert("Profile updated successfully!")
+      toast.success("Profile updated successfully!", {
+        description: "Your changes have been saved.",
+        duration: 3000,
+      })
     } catch (error: any) {
       console.error("Error updating profile:", error)
-      alert("Failed to update profile. Please try again.")
+      toast.error("Failed to update profile", {
+        description: "Please try again.",
+        duration: 4000,
+      })
     } finally {
       setIsSaving(false)
     }
@@ -229,13 +242,19 @@ export default function ProfilePage() {
     
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file')
+      toast.error("Invalid file type", {
+        description: "Please select an image file.",
+        duration: 3000,
+      })
       return
     }
     
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('Image size must be less than 5MB')
+      toast.error("File too large", {
+        description: "Image size must be less than 5MB.",
+        duration: 3000,
+      })
       return
     }
     
@@ -266,10 +285,16 @@ export default function ProfilePage() {
         }
       }
       
-      alert('Profile image updated successfully!')
+      toast.success("Profile image updated successfully!", {
+        description: "Your profile picture has been updated.",
+        duration: 3000,
+      })
     } catch (error: any) {
       console.error('Error uploading image:', error)
-      alert('Failed to upload image. Please try again.')
+      toast.error("Failed to upload image", {
+        description: "Please try again.",
+        duration: 4000,
+      })
     } finally {
       setIsUploadingImage(false)
       // Reset file input
@@ -329,7 +354,11 @@ export default function ProfilePage() {
         }}>
           <div className="flex items-center space-x-6">
             <div className="relative">
-              <div className="w-24 h-24 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+              <div className={`w-24 h-24 rounded-full flex items-center justify-center ${
+                isDark 
+                  ? 'bg-gradient-to-br from-purple-600 to-blue-600' 
+                  : 'bg-gradient-to-br from-amber-700 to-amber-800'
+              }`}>
                 {user.imageUrl ? (
                   <img 
                     src={user.imageUrl} 
@@ -343,7 +372,11 @@ export default function ProfilePage() {
                 )}
               </div>
               {isEditing && (
-                <label className="absolute bottom-0 right-0 p-2 bg-purple-600 rounded-full hover:bg-purple-700 transition-colors cursor-pointer">
+                <label className={`absolute bottom-0 right-0 p-2 rounded-full transition-colors cursor-pointer ${
+                  isDark 
+                    ? 'bg-purple-600 hover:bg-purple-700' 
+                    : 'bg-amber-700 hover:bg-amber-800'
+                }`}>
                   <Camera size={16} className="text-white" />
                   <input
                     type="file"
@@ -367,7 +400,7 @@ export default function ProfilePage() {
                 userRole === 'admin' ? (isDark ? 'bg-red-900/30 text-red-300' : 'bg-red-200 text-red-800') :
                 userRole === 'trainer' ? (isDark ? 'bg-green-900/30 text-green-300' : 'bg-green-200 text-green-800') :
                 userRole === 'corporate' ? (isDark ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-200 text-blue-800') :
-                (isDark ? 'bg-purple-900/30 text-purple-300' : 'bg-purple-200 text-purple-800')
+                (isDark ? 'bg-purple-900/30 text-purple-300' : 'bg-amber-200 text-amber-800')
               }`}>
                 {userRole.charAt(0).toUpperCase() + userRole.slice(1)}
               </span>
@@ -375,7 +408,11 @@ export default function ProfilePage() {
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex items-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                  isDark 
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                    : 'bg-amber-700 hover:bg-amber-800 text-white'
+                }`}
               >
                 <Edit2 size={18} />
                 <span>Edit Profile</span>

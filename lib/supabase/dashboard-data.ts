@@ -159,6 +159,7 @@ export async function getStudentDashboardData(clerkId: string) {
         company: e.courses?.company_name || 'Unknown',
         duration: e.courses?.duration || 'N/A',
         rating: e.courses?.rating || 0,
+        image_url: e.courses?.image_url || null,
         progress: e.progress_percentage || 0,
         status: e.status,
         lastAccessed: new Date(e.enrolled_at).toLocaleDateString(),

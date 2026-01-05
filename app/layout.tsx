@@ -5,6 +5,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import SyncUserToSupabase from '../components/SyncUserToSupabase'
 import { ClerkErrorBoundary } from '../components/ClerkErrorBoundary'
 import { ThemeProvider } from '../components/theme-provider'
+import { Toaster } from 'sonner'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -78,35 +79,30 @@ export default function RootLayout({
                     html.style.setProperty('background-color', '#f5f1e8', 'important');
                   }
                   
-                  // Apply body styles when body is available
-                  function applyBodyStyles() {
+                  // Apply body class when body is available (CSS-based, no inline styles)
+                  function applyBodyClass() {
                     var body = document.body;
                     if (body) {
-                      body.style.setProperty('transition', 'none', 'important');
+                      // Remove both classes first to avoid conflicts
+                      body.classList.remove('darkbody', 'lightbody');
+                      // Add the appropriate class based on theme
                       if (theme === 'dark') {
-                        body.style.setProperty('background', 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)', 'important');
-                        body.style.setProperty('color', '#ffffff', 'important');
+                        body.classList.add('darkbody');
                       } else {
-                        body.style.setProperty('background', 'linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%)', 'important');
-                        body.style.setProperty('color', '#3a2e1f', 'important');
+                        body.classList.add('lightbody');
                       }
                       html.setAttribute('data-theme-initialized', 'true');
-                      
-                      // Re-enable transitions after React hydrates
-                      setTimeout(function() {
-                        body.style.removeProperty('transition');
-                      }, 200);
                     }
                   }
                   
                   // Try to apply immediately if body exists
                   if (document.body) {
-                    applyBodyStyles();
+                    applyBodyClass();
                   } else {
                     // Use MutationObserver to catch body when it's added
                     var observer = new MutationObserver(function(mutations) {
                       if (document.body) {
-                        applyBodyStyles();
+                        applyBodyClass();
                         observer.disconnect();
                       }
                     });
@@ -118,6 +114,11 @@ export default function RootLayout({
                   html.className = 'dark';
                   html.setAttribute('data-theme', 'dark');
                   html.style.setProperty('background-color', '#000000', 'important');
+                  // Apply body class if body exists
+                  if (document.body) {
+                    document.body.classList.remove('lightbody');
+                    document.body.classList.add('darkbody');
+                  }
                 }
               })();
             `,
@@ -132,16 +133,29 @@ export default function RootLayout({
               html[data-theme="light"] { 
                 background-color: #f5f1e8 !important; 
               }
+              /* Default body styles (dark mode) */
               body { 
                 background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
                 color: #ffffff !important;
                 transition: none !important;
                 opacity: 1 !important;
               }
+              /* Light mode via data-theme attribute */
               html[data-theme="light"] body {
                 background: linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%) !important;
                 color: #3a2e1f !important;
               }
+              /* Light mode via body class (CSS-based, preferred) */
+              body.lightbody {
+                background: linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%) !important;
+                color: #3a2e1f !important;
+              }
+              /* Dark mode via body class (CSS-based, preferred) */
+              body.darkbody {
+                background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+                color: #ffffff !important;
+              }
+              /* Re-enable transitions after initialization */
               html[data-theme-initialized] body {
                 transition: background-color 0.3s ease, color 0.3s ease, background 0.3s ease !important;
               }
@@ -162,6 +176,22 @@ export default function RootLayout({
               storageKey="theme"
             >
               <SyncUserToSupabase />
+              <Toaster 
+                position="top-right"
+                richColors
+                closeButton
+                toastOptions={{
+                  classNames: {
+                    toast: 'theme-toast',
+                    title: 'theme-toast-title',
+                    description: 'theme-toast-description',
+                    success: 'theme-toast-success',
+                    error: 'theme-toast-error',
+                    info: 'theme-toast-info',
+                    warning: 'theme-toast-warning',
+                  },
+                }}
+              />
               {children}
             </ThemeProvider>
           </ClerkProvider>

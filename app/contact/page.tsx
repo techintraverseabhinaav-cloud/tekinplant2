@@ -5,6 +5,7 @@ import { Send, ChevronDown, MessageCircle, Lock, Linkedin, Youtube, Instagram } 
 import Navbar from "../../src/components/Navbar"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../../lib/theme-styles"
+import { toast } from "sonner"
 
 export default function ContactPage() {
   const { resolvedTheme } = useTheme()
@@ -97,7 +98,10 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log("Form submitted:", formData)
-    alert("Thank you for your message! We'll get back to you soon.")
+    toast.success("Message sent successfully!", {
+      description: "We'll get back to you soon.",
+      duration: 4000,
+    })
     setFormData({ name: "", email: "", subject: "", message: "" })
   }
 

@@ -5,6 +5,7 @@ import { MapPin, Building, Users, Calendar, ExternalLink, Mail, Clock, Star, Dol
 import Navbar from "../../../src/components/Navbar"
 import Link from "next/link"
 import { industryPartners, industryCourses } from "../../../lib/industry-data"
+import { toast } from "sonner"
 
 export default function CompanyDetailPage({ params }: { params: { id: string } }) {
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null)
@@ -48,7 +49,10 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
   const submitEnrollment = (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically send the enrollment data to your backend
-    alert(`Enrollment submitted for course ${enrollmentForm.courseId}! We'll contact you at ${enrollmentForm.email} soon.`)
+    toast.success("Enrollment submitted!", {
+      description: `We'll contact you at ${enrollmentForm.email} soon.`,
+      duration: 5000,
+    })
     setSelectedCourse(null)
     setEnrollmentForm({ name: "", email: "", phone: "", courseId: "" })
   }

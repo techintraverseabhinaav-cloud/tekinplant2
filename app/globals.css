@@ -176,9 +176,187 @@ body {
   min-height: 100vh;
   background-attachment: fixed;
   border: none;
-  /* Prevent flashing - set initial background (will be overridden by script) */
+  /* Default to dark mode - will be overridden by body class */
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  color: #ffffff;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode body class */
+body.darkbody {
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
   color: #ffffff !important;
+}
+
+/* Light mode body class */
+body.lightbody {
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%) !important;
+  color: #3a2e1f !important;
+}
+
+/* Theme-aware page backgrounds using body classes */
+body.darkbody .theme-page-bg {
+  background: #000000;
+}
+
+body.lightbody .theme-page-bg {
+  background: #f5f1e8;
+}
+
+body.darkbody .theme-page-bg-gradient {
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 50%, #000000 100%);
+}
+
+body.lightbody .theme-page-bg-gradient {
+  background: linear-gradient(180deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%);
+}
+
+/* Theme-aware text colors */
+body.darkbody .theme-text-primary {
+  color: #ffffff;
+}
+
+body.lightbody .theme-text-primary {
+  color: #3a2e1f;
+}
+
+body.darkbody .theme-text-secondary {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.lightbody .theme-text-secondary {
+  color: rgba(58, 46, 31, 0.7);
+}
+
+/* Theme-aware card backgrounds */
+body.darkbody .theme-card-bg {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+body.lightbody .theme-card-bg {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+body.darkbody .theme-card-bg-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+body.lightbody .theme-card-bg-overlay {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Theme-aware section backgrounds */
+body.darkbody .theme-section-bg {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+body.lightbody .theme-section-bg {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Theme-aware input/select backgrounds */
+body.darkbody .theme-input-bg {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(168, 85, 247, 0.25);
+  color: #ffffff;
+}
+
+body.lightbody .theme-input-bg {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(139, 90, 43, 0.3);
+  color: #3a2e1f;
+}
+
+body.darkbody .theme-input-bg::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+body.lightbody .theme-input-bg::placeholder {
+  color: rgba(58, 46, 31, 0.5);
+}
+
+/* Theme-aware border colors */
+body.darkbody .theme-border {
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+body.lightbody .theme-border {
+  border-color: rgba(139, 90, 43, 0.3);
+}
+
+/* Theme-aware badge styles */
+body.darkbody .theme-badge {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(168, 85, 247, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.lightbody .theme-badge {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(139, 90, 43, 0.25);
+  color: rgba(139, 90, 43, 0.8);
+}
+
+/* Theme-aware icon colors */
+body.darkbody .theme-icon {
+  color: #a855f7;
+}
+
+body.lightbody .theme-icon {
+  color: #8b6f47;
+}
+
+/* Theme-aware heading colors */
+body.darkbody .theme-heading-primary {
+  color: #ffffff;
+}
+
+body.lightbody .theme-heading-primary {
+  color: #1a0f00;
+}
+
+body.darkbody .theme-heading-accent {
+  background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+body.lightbody .theme-heading-accent {
+  background: linear-gradient(135deg, #8b6f47 0%, #a0826d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Theme-aware statistics box styles */
+body.darkbody .theme-stat-box {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+body.lightbody .theme-stat-box {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(139, 90, 43, 0.3);
+}
+
+body.darkbody .theme-stat-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.lightbody .theme-stat-label {
+  color: rgba(58, 46, 31, 0.8);
+}
+
+/* Theme-aware option styles */
+body.darkbody .theme-option {
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+body.lightbody .theme-option {
+  background: #ffffff;
+  color: #3a2e1f;
 }
 
 /* Prevent transition on initial load */
@@ -605,4 +783,100 @@ html[data-theme-initialized] body {
 
 .cl-footerActionLink:hover {
   color: #4338ca !important;
+}
+
+/* Theme-aware Toast Notifications */
+/* Dark mode toasts */
+.dark .theme-toast {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+  backdrop-filter: blur(20px) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(168, 85, 247, 0.2) !important;
+}
+
+.dark .theme-toast-title {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.dark .theme-toast-description {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.dark .theme-toast-success {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+  background: rgba(17, 24, 39, 0.95) !important;
+}
+
+.dark .theme-toast-error {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background: rgba(17, 24, 39, 0.95) !important;
+}
+
+.dark .theme-toast-info {
+  border-color: rgba(168, 85, 247, 0.4) !important;
+  background: rgba(17, 24, 39, 0.95) !important;
+}
+
+.dark .theme-toast-warning {
+  border-color: rgba(251, 191, 36, 0.4) !important;
+  background: rgba(17, 24, 39, 0.95) !important;
+}
+
+/* Light mode toasts */
+.light .theme-toast {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(139, 90, 43, 0.3) !important;
+  backdrop-filter: blur(20px) !important;
+  color: #3a2e1f !important;
+  box-shadow: 0 8px 32px rgba(58, 46, 31, 0.15), 0 0 0 1px rgba(139, 90, 43, 0.2) !important;
+}
+
+.light .theme-toast-title {
+  color: #1a0f00 !important;
+  font-weight: 600 !important;
+}
+
+.light .theme-toast-description {
+  color: rgba(58, 46, 31, 0.7) !important;
+}
+
+.light .theme-toast-success {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.light .theme-toast-error {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.light .theme-toast-info {
+  border-color: rgba(139, 90, 43, 0.4) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.light .theme-toast-warning {
+  border-color: rgba(251, 191, 36, 0.4) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Toast close button */
+.theme-toast button[data-sonner-toast][aria-label="Close"] {
+  color: inherit !important;
+  opacity: 0.7 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.theme-toast button[data-sonner-toast][aria-label="Close"]:hover {
+  opacity: 1 !important;
+}
+
+.dark .theme-toast button[data-sonner-toast][aria-label="Close"] {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.light .theme-toast button[data-sonner-toast][aria-label="Close"] {
+  color: rgba(58, 46, 31, 0.7) !important;
 }

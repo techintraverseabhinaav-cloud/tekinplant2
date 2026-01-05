@@ -9,6 +9,7 @@ import { useThemeStyles } from "../../../lib/theme-styles"
 import { ArrowLeft, CreditCard, User, Mail, Phone, Calendar, CheckCircle, Clock, Users, Star, ChevronDown } from "lucide-react"
 import Navbar from "../../../src/components/Navbar"
 import Link from "next/link"
+import { toast } from "sonner"
 
 interface Course {
   id: string
@@ -153,13 +154,19 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
     e.preventDefault()
     
     if (!user) {
-      alert("Please sign in to enroll in a course.")
+      toast.error("Please sign in to enroll in a course.", {
+        description: "Redirecting to login page...",
+        duration: 3000,
+      })
       router.push("/login")
       return
     }
 
     if (!courseData?.id) {
-      alert("Course data not loaded. Please wait and try again.")
+      toast.error("Course data not loaded", {
+        description: "Please wait and try again.",
+        duration: 3000,
+      })
       return
     }
 
@@ -192,12 +199,20 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
       console.log('✅ Enrollment successful:', data.enrollment)
 
       // Success - redirect to student dashboard
-      alert("Enrollment successful! You can now access the course from your dashboard.")
-      router.push("/student-dashboard")
+      toast.success("Enrollment successful!", {
+        description: "You can now access the course from your dashboard.",
+        duration: 4000,
+      })
+      setTimeout(() => {
+        router.push("/student-dashboard")
+      }, 1500)
     } catch (error: any) {
       console.error('❌ Enrollment error:', error)
       setError(error.message || "Failed to enroll. Please try again.")
-      alert(error.message || "Failed to enroll. Please try again. Check console for details.")
+      toast.error("Enrollment failed", {
+        description: error.message || "Please try again. Check console for details.",
+        duration: 5000,
+      })
     } finally {
       setIsSubmitting(false)
     }

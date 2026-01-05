@@ -369,16 +369,28 @@ export default function StudentDashboard() {
                     <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0" style={{ 
                       backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.5)' 
                     }}>
-                      <Image
-                        src={course.image_url || "/placeholder.svg"}
-                        alt={course.title}
-                        width={96}
-                        height={96}
-                        className="object-cover"
-                        priority={false}
-                        placeholder="blur"
-                        blurDataURL="/placeholder.svg"
-                      />
+                      {course.image_url ? (
+                        <Image
+                          src={course.image_url}
+                          alt={course.title}
+                          width={96}
+                          height={96}
+                          className="object-cover w-full h-full"
+                          priority={false}
+                          onError={(e) => {
+                            // Fallback to placeholder if image fails to load
+                            e.currentTarget.src = "/placeholder.svg"
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center" style={{ 
+                          background: isDark 
+                            ? 'linear-gradient(135deg, rgba(168,85,247,0.2) 0%, rgba(139,92,246,0.2) 100%)'
+                            : 'linear-gradient(135deg, rgba(139,90,43,0.2) 0%, rgba(160,130,109,0.2) 100%)'
+                        }}>
+                          <BookOpen className="w-8 h-8" style={{ color: isDark ? '#a78bfa' : '#8b6f47', opacity: 0.5 }} />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-grow min-w-0">
                       <h4 className={`text-xl font-semibold mb-2 ${isDark ? 'text-white' : 'text-amber-900'}`}>{course.title}</h4>

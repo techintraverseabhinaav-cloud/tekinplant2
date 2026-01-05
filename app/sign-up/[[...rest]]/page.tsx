@@ -96,13 +96,20 @@ export default function SignUpPage() {
   }, [])
 
   useEffect(() => {
-    // Add custom styles for social buttons and remove inner borders
+    // Add custom styles for social buttons, sign button, and text colors
     const style = document.createElement('style')
     const borderColor = isDark ? 'rgba(168, 85, 247, 0.4)' : 'rgba(217, 119, 6, 0.5)'
     const borderColorHover = isDark ? 'rgba(168, 85, 247, 0.6)' : 'rgba(217, 119, 6, 0.7)'
     const textColor = isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(58, 46, 31, 0.9)'
     const bgColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.8)'
     const bgColorHover = isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.9)'
+    const buttonGradient = isDark 
+      ? 'linear-gradient(135deg, #a78bfa 0%, #c084fc 100%)'
+      : 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)'
+    const buttonGradientHover = isDark
+      ? 'linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)'
+      : 'linear-gradient(135deg, #b45309 0%, #d97706 100%)'
+    
     style.textContent = `
       button[data-provider="google"],
       .cl-socialButtonsBlockButton {
@@ -118,12 +125,45 @@ export default function SignUpPage() {
         color: ${isDark ? '#ffffff' : '#3a2e1f'} !important;
         transform: translateY(-1px);
       }
+      .cl-formButtonPrimary {
+        background: ${buttonGradient} !important;
+        border: none !important;
+        color: #ffffff !important;
+        box-shadow: ${isDark ? '0 4px 14px rgba(168, 85, 247, 0.4)' : '0 4px 14px rgba(217, 119, 6, 0.4)'} !important;
+      }
+      .cl-formButtonPrimary:hover {
+        background: ${buttonGradientHover} !important;
+        box-shadow: ${isDark ? '0 6px 20px rgba(168, 85, 247, 0.5)' : '0 6px 20px rgba(217, 119, 6, 0.5)'} !important;
+        transform: translateY(-1px);
+      }
       .cl-card,
       .cl-rootBox > div,
       .cl-cardBox {
         border: none !important;
         box-shadow: none !important;
       }
+      ${!isDark ? `
+        .cl-headerTitle,
+        .cl-headerSubtitle,
+        .cl-formFieldLabel,
+        .cl-footerActionLink,
+        .cl-formFieldInput,
+        .cl-identityPreviewText,
+        .cl-identityPreviewEditButton,
+        .cl-formResendCodeLink,
+        .cl-alertText {
+          color: #3a2e1f !important;
+        }
+        .cl-headerSubtitle,
+        .cl-formFieldLabel,
+        .cl-footerActionLink,
+        .cl-alertText {
+          color: rgba(58, 46, 31, 0.7) !important;
+        }
+        .cl-footerActionLink:hover {
+          color: #d97706 !important;
+        }
+      ` : ''}
     `
     document.head.appendChild(style)
     return () => {
