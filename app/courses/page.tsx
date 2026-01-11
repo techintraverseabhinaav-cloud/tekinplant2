@@ -531,15 +531,15 @@ function CoursesContent() {
           {loading ? (
             <div className="text-center py-24">
               {(() => {
-                // Loading spinner: purple for dark mode, amber for light mode
+                // Loading spinner: purple for both modes
                 let spinnerBorder, loadingTextColor
                 if (isDark) {
                   // Dark mode - purple colors only
                   spinnerBorder = 'border-purple-500'
                   loadingTextColor = 'text-white/50'
                 } else {
-                  // Light mode - amber colors only
-                  spinnerBorder = 'border-amber-700'
+                  // Light mode - purple colors only
+                  spinnerBorder = 'border-purple-700'
                   loadingTextColor = 'text-gray-800/70'
                 }
                 return (
@@ -553,7 +553,7 @@ function CoursesContent() {
           ) : filteredCourses.length === 0 ? (
             <div className="text-center py-24">
               {(() => {
-                // Empty state: purple for dark mode, amber for light mode
+                // Empty state: purple for both modes
                 let emptyBg, emptyBorder, emptyIconColor, emptyTitleColor, emptyTextColor
                 if (isDark) {
                   // Dark mode - purple colors only
@@ -563,9 +563,9 @@ function CoursesContent() {
                   emptyTitleColor = 'text-white'
                   emptyTextColor = 'text-white/50'
                 } else {
-                  // Light mode - amber colors only
+                  // Light mode - purple colors only
                   emptyBg = 'rgba(255,255,255,0.7)'
-                  emptyBorder = 'rgba(139,90,43,0.3)'
+                  emptyBorder = 'rgba(124,58,237,0.25)'
                   emptyIconColor = 'text-gray-600/50'
                   emptyTitleColor = 'text-gray-900'
                   emptyTextColor = 'text-gray-800/70'
@@ -619,18 +619,20 @@ function CoursesContent() {
                   <Link 
                     href="/courses" 
                     className={`px-6 py-3 rounded-xl transition-all duration-300 backdrop-blur-sm border font-medium ${
-                      isDark ? 'hover:border-purple-400/40' : 'hover:border-amber-800/50'
+                      isDark ? 'hover:border-purple-400/40' : 'hover:border-purple-600/50'
                     }`}
                     style={{ 
                       backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.7)', 
-                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)',
+                      borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)',
                       color: themeStyles.textPrimary
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.9)'
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.4)' : 'rgba(124,58,237,0.4)'
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.7)'
+                      e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)'
                     }}
                   >
                     View All Courses
@@ -642,10 +644,10 @@ function CoursesContent() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCourses.map((course, index) => {
                 const cardBg = isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)'
-                const cardBorder = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)'
+                const cardBorder = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)'
                 const hoverShadow = isDark
                   ? '0 12px 24px rgba(0,0,0,0.4), 0 0 20px rgba(196,181,253,0.2)'
-                  : '0 12px 24px rgba(58,46,31,0.2), 0 0 20px rgba(139,90,43,0.25)'
+                  : '0 12px 24px rgba(30,41,59,0.25), 0 0 20px rgba(124,58,237,0.25)'
                 
                 return (
                 <div 
@@ -670,7 +672,7 @@ function CoursesContent() {
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm border flex items-center gap-1.5" style={{ 
                         backgroundColor: isDark ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.9)',
-                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)',
+                        borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)',
                         color: isDark ? '#8b5cf6' : '#7c3aed'
                       }}>
                         <Star className="w-3 h-3 fill-current" /> {course.rating}
@@ -680,7 +682,7 @@ function CoursesContent() {
                       <span className="px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm border" style={{ 
                         background: themeStyles.buttonGradient, 
                         color: '#ffffff',
-                        borderColor: isDark ? 'rgba(168,85,247,0.4)' : 'rgba(139,90,43,0.4)',
+                        borderColor: isDark ? 'rgba(168,85,247,0.4)' : 'rgba(124,58,237,0.4)',
                         boxShadow: themeStyles.buttonShadow
                       }}>
                         {course.type}
@@ -703,7 +705,7 @@ function CoursesContent() {
 
                     <div className="flex items-center gap-4 text-xs pt-3 border-t" suppressHydrationWarning style={{ 
                       color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(26, 15, 0, 0.6)',
-                      borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(139,90,43,0.1)'
+                      borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(124,58,237,0.1)'
                     }}>
                       <div className="flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5" />
@@ -761,7 +763,7 @@ export default function CoursesPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center" suppressHydrationWarning style={{ backgroundColor: fallbackBg }}>
         <div className="text-center">
-          <div className={`animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4 ${isDarkFallback ? 'border-purple-500' : 'border-amber-700'}`} suppressHydrationWarning></div>
+          <div className={`animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4 ${isDarkFallback ? 'border-purple-500' : 'border-purple-700'}`} suppressHydrationWarning></div>
           <p className={`font-light ${isDarkFallback ? 'text-white/50' : 'text-gray-800/70'}`} suppressHydrationWarning>Loading courses...</p>
         </div>
       </div>
