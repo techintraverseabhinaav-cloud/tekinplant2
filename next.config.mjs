@@ -6,21 +6,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Exclude old React Router files from build
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      }
-    }
-    // Exclude src/pages and src/App.jsx (old React Router files)
-    config.module.rules.push({
-      test: /src\/(pages|App\.jsx)/,
-      use: 'ignore-loader',
-    })
-    return config
-  },
   images: {
     unoptimized: false, // Enable image optimization for better performance
     formats: ['image/avif', 'image/webp'],
@@ -43,7 +28,13 @@ const nextConfig = {
     ],
   },
   // Exclude old React Router files from compilation
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      }
+    }
     // Ignore src/pages and src/App.jsx which use react-router-dom
     config.module.rules.push({
       test: /src\/(pages|App\.jsx|main\.jsx)/,
