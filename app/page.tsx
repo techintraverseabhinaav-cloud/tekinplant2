@@ -475,7 +475,7 @@ export default function HomePage() {
    {/* Statistics Section – Flash Card Style */}
 <section className="slide-up py-16 sm:py-20 relative" style={{ backgroundColor: themeStyles.pageBg }}>
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
       {[
         { icon: Users, value: industryStats.totalStudents.toLocaleString('en-US'), label: "Students Trained" },
         { icon: TrendingUp, value: industryStats.totalCourses, label: "Training Programs" },
@@ -508,7 +508,7 @@ export default function HomePage() {
               <div
                 className="flash-card-face flash-card-front rounded-2xl"
                 style={{
-                  padding: '2rem',
+                  padding: '1rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -520,7 +520,7 @@ export default function HomePage() {
                 }}
               >
                 <stat.icon
-                  className="w-24 h-24 transition-transform duration-300"
+                  className="w-12 h-12 sm:w-16 sm:h-16 transition-transform duration-300"
                   style={{ color: iconColor }}
                 />
               </div>
@@ -529,7 +529,7 @@ export default function HomePage() {
               <div
                 className="flash-card-face flash-card-back rounded-2xl"
                 style={{
-                  padding: '2rem',
+                  padding: '1rem',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -543,14 +543,14 @@ export default function HomePage() {
               >
                 {/* Value */}
                 <div
-                  className={`text-3xl sm:text-4xl font-semibold text-center mb-3 bg-clip-text text-transparent ${valueGradient}`}
+                  className={`text-2xl sm:text-3xl lg:text-4xl font-semibold text-center mb-2 sm:mb-3 bg-clip-text text-transparent ${valueGradient}`}
                 >
                   {stat.value}
                 </div>
 
                 {/* Label */}
                 <p
-                  className={`text-sm sm:text-base text-center font-light ${textColor}`}
+                  className={`text-xs sm:text-sm lg:text-base text-center font-light ${textColor}`}
                   style={{ lineHeight: '1.6' }}
                 >
                   {stat.label}
@@ -603,7 +603,7 @@ export default function HomePage() {
                     const colors = theme === 'dark' ? [
                       { bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.25)', inner: 'rgba(124,58,237,0.22)' },
                       { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.25)', inner: 'rgba(99,102,241,0.22)' },
-                      { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.25)', inner: 'rgba(236,72,153,0.22)' },
+                      { bg: 'rgba(124,58,237,0.12)', border: 'rgba(124,58,237,0.25)', inner: 'rgba(124,58,237,0.22)' },
                       { bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.25)', inner: 'rgba(139,92,246,0.22)' },
                       { bg: 'rgba(79,70,229,0.12)', border: 'rgba(79,70,229,0.25)', inner: 'rgba(79,70,229,0.22)' },
                       { bg: 'rgba(192,132,252,0.12)', border: 'rgba(192,132,252,0.25)', inner: 'rgba(192,132,252,0.22)' },

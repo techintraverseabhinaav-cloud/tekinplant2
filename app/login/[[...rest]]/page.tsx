@@ -1,14 +1,78 @@
 "use client"
 
 import { useEffect, useState, useLayoutEffect } from 'react'
-import { SignIn } from '@clerk/nextjs'
+import { SignIn, useClerk } from '@clerk/nextjs'
 import SyncUserToSupabase from '../../../components/SyncUserToSupabase'
 import { useTheme } from 'next-themes'
 import { useThemeStyles } from '../../../lib/theme-styles'
+import { Award, Users, TrendingUp } from 'lucide-react'
 
 export default function LoginPage() {
   const { resolvedTheme } = useTheme()
   const themeStyles = useThemeStyles()
+  
+  // Debug: Log Clerk loading status
+  useEffect(() => {
+    const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+    const currentDomain = typeof window !== 'undefined' ? window.location.origin : 'SSR'
+    
+    console.log('🔑 Clerk Configuration Check:')
+    console.log('- Publishable Key:', publishableKey ? `${publishableKey.substring(0, 15)}...` : '❌ NOT SET')
+    console.log('- Key Type:', publishableKey?.startsWith('pk_live_') ? '✅ Production' : publishableKey?.startsWith('pk_test_') ? '⚠️ Development' : '❓ Unknown')
+    console.log('- Current Domain:', currentDomain)
+    
+    if (publishableKey?.startsWith('pk_live_')) {
+      console.warn('⚠️ IMPORTANT: Using Production Keys')
+      console.warn('⚠️ Make sure your domain is added to Clerk Dashboard → Settings → Frontend API')
+      console.warn('⚠️ Domain to add:', currentDomain)
+      console.warn('⚠️ If sign-in page is blank, this is likely the cause!')
+    }
+    
+    // Check for Clerk script loading
+    setTimeout(() => {
+      const clerkScript = document.querySelector('script[src*="clerk"]')
+      const clerkLoaded = typeof window !== 'undefined' && (window as any).Clerk
+      
+      if (!clerkScript && !clerkLoaded && publishableKey) {
+        console.error('❌ Clerk script not found - this may cause blank sign-in page')
+        console.error('❌ Common causes:')
+        console.error('   1. Domain not added to Clerk Dashboard → Settings → Frontend API')
+        console.error('   2. CORS errors blocking Clerk script')
+        console.error('   3. Ad blocker blocking Clerk script')
+        console.error('   4. Network connectivity issues')
+        console.error('❌ Check Network tab in DevTools for failed requests to clerk.com')
+        
+        // Try to manually load Clerk script as fallback
+        if (typeof window !== 'undefined' && !clerkLoaded) {
+          console.log('🔄 Attempting to manually load Clerk script...')
+          const script = document.createElement('script')
+          
+          // Extract the instance ID from publishable key (format: pk_live_XXXXX or pk_test_XXXXX)
+          const keyParts = publishableKey.split('_')
+          const instanceId = keyParts.length >= 3 ? keyParts[2] : null
+          
+          if (instanceId) {
+            script.src = `https://${instanceId}.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js`
+            script.async = true
+            script.onerror = () => {
+              console.error('❌ Failed to load Clerk script manually')
+              console.error('❌ This usually means domain is not whitelisted in Clerk Dashboard')
+              console.error('❌ Fix: Go to https://dashboard.clerk.com → Settings → Frontend API')
+              console.error('❌ Add your domain:', window.location.origin)
+            }
+            script.onload = () => {
+              console.log('✅ Clerk script loaded manually')
+            }
+            document.head.appendChild(script)
+          } else {
+            console.error('❌ Invalid publishable key format')
+          }
+        }
+      } else if (clerkLoaded) {
+        console.log('✅ Clerk script loaded successfully')
+      }
+    }, 2000)
+  }, [])
   
   // Read initial theme from data-theme attribute (set by theme script before React)
   // Returns: true for dark mode (purple), false for light mode (amber)
@@ -183,7 +247,7 @@ export default function LoginPage() {
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Welcome Back</span>
             </div>
             <h1 className="slide-up text-5xl lg:text-6xl xl:text-7xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign In to</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TEKINPLANT</span>
+              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign In to</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
             </h1>
             <p className={`slide-up text-lg lg:text-xl font-light leading-relaxed mb-12 ${isDark ? 'text-white/50' : 'text-purple-900/70'}`} style={{ transitionDelay: '0.3s' }}>
               Access your personalized learning dashboard and continue your professional development journey.
@@ -197,18 +261,44 @@ export default function LoginPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <div 
-                      className="absolute inset-0 rounded-lg"
+                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                  <div className="flash-card-inner">
+                    {/* Front of card - Icon only */}
+                    <div
+                      className="flash-card-face flash-card-front rounded-xl"
                       style={{
-                        background: 'transparent',
-                        mixBlendMode: 'normal',
-                        pointerEvents: 'none',
-                        zIndex: 1
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                          : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
-                    />
-                    <img src="/Icons/badge.png" alt="Badge" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: 'none', WebkitFilter: 'none' }} />
+                    >
+                      <Award
+                        className="w-10 h-10 transition-transform duration-300"
+                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
+                      />
+                    </div>
+
+                    {/* Back of card - Title */}
+                    <div
+                      className="flash-card-face flash-card-back rounded-xl"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
+                          : '0 16px 40px rgba(30,41,59,0.25), 0 0 30px rgba(124,58,237,0.25)',
+                      }}
+                    >
+                      <span className={`text-xs font-light px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Courses</span>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -223,18 +313,44 @@ export default function LoginPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <div 
-                      className="absolute inset-0 rounded-lg"
+                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                  <div className="flash-card-inner">
+                    {/* Front of card - Icon only */}
+                    <div
+                      className="flash-card-face flash-card-front rounded-xl"
                       style={{
-                        background: 'transparent',
-                        mixBlendMode: 'normal',
-                        pointerEvents: 'none',
-                        zIndex: 1
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                          : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
-                    />
-                    <img src="/Icons/students.png" alt="Students" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: 'none', WebkitFilter: 'none' }} />
+                    >
+                      <Users
+                        className="w-10 h-10 transition-transform duration-300"
+                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
+                      />
+                    </div>
+
+                    {/* Back of card - Title */}
+                    <div
+                      className="flash-card-face flash-card-back rounded-xl"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
+                          : '0 16px 40px rgba(30,41,59,0.25), 0 0 30px rgba(124,58,237,0.25)',
+                      }}
+                    >
+                      <span className={`text-xs font-light px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Trainers</span>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -286,7 +402,7 @@ export default function LoginPage() {
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Welcome Back</span>
             </div>
             <h1 className="text-4xl font-light mb-4 leading-tight tracking-tight">
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign In to</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TEKINPLANT</span>
+              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign In to</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
             </h1>
           </div>
 
@@ -296,7 +412,18 @@ export default function LoginPage() {
           {/* Clerk Sign In Component */}
           <div className="slide-up w-full" style={{ transitionDelay: '0.7s' }}>
             <div className={`rounded-2xl p-12 lg:p-14 backdrop-blur-xl border w-full ${isDark ? 'border-purple-500/20' : 'border-purple-500/30'}`} style={{ backgroundColor: themeStyles.cardBg }}>
-              <SignIn 
+              {/* Error boundary for Clerk component */}
+              {!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
+                <div className="text-center p-8">
+                  <p className={`text-lg mb-4 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
+                    ⚠️ Clerk Configuration Error
+                  </p>
+                  <p className={`text-sm ${isDark ? 'text-white/70' : 'text-purple-900/70'}`}>
+                    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is not set. Please check your environment variables.
+                  </p>
+                </div>
+              ) : (
+                <SignIn 
                 appearance={{
                   elements: {
                     rootBox: "mx-auto w-full flex flex-col items-center",
@@ -344,6 +471,7 @@ export default function LoginPage() {
                 signUpUrl="/sign-up"
                 afterSignInUrl="/redirect-dashboard"
               />
+              )}
             </div>
           </div>
         </div>

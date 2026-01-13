@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useLayoutEffect, Suspense, useMemo } from "react"
-import { Search, Clock, Users, Star, MapPin, Building, Filter, ArrowRight, ChevronDown } from "lucide-react"
+import { Search, Clock, Users, Star, MapPin, Building2, Filter, ArrowRight, ChevronDown, TrendingUp, Award } from "lucide-react"
 import Navbar from "../../src/components/Navbar"
 import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
@@ -241,7 +241,16 @@ function CoursesContent() {
       border: 'none',
       borderTop: 'none'
     }}>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        backgroundColor: 'transparent'
+      }}>
+        <Navbar />
+      </div>
       
       {/* Header */}
       <section className="relative py-24 overflow-hidden">
@@ -253,7 +262,7 @@ function CoursesContent() {
               backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
               borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)'
             }}>
-              <Building className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
+              <Building2 className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#8b6f47' }} />
               <span suppressHydrationWarning style={{ 
                 color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(26, 15, 0, 0.8)'
               }} className="text-xs font-medium tracking-wide uppercase">Industry Training Programs</span>
@@ -284,12 +293,12 @@ function CoursesContent() {
             </p>
 
             {/* Statistics */}
-            <div className="grid md:grid-cols-4 gap-6 lg:gap-8 mb-16">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-16">
               {[
-                { icon: "/Icons/building.png", value: industryStats.totalCourses, label: "Training Programs" },
-                { icon: "/Icons/growth.png", value: industryStats.totalPartners, label: "Partner Companies" },
-                { icon: "/Icons/students.png", value: industryStats.totalStudents, label: "Students Trained" },
-                { icon: "/Icons/rating.png", value: industryStats.averageRating, label: "Average Rating" },
+                { icon: Building2, value: industryStats.totalCourses, label: "Training Programs" },
+                { icon: TrendingUp, value: industryStats.totalPartners, label: "Partner Companies" },
+                { icon: Users, value: industryStats.totalStudents, label: "Students Trained" },
+                { icon: Star, value: industryStats.averageRating, label: "Average Rating" },
               ].map((stat, index) => {
                 const bg = isDark
                   ? 'rgba(124,58,237,0.10)'
@@ -299,6 +308,7 @@ function CoursesContent() {
                   ? 'rgba(124,58,237,0.25)'
                   : 'rgba(124,58,237,0.25)'
 
+                const iconColor = isDark ? '#8b5cf6' : '#7c3aed'
                 const textColor = isDark ? 'text-white/70' : 'text-black'
                 const valueGradient = isDark
                   ? 'bg-gradient-to-r from-purple-600 to-purple-500'
@@ -318,7 +328,7 @@ function CoursesContent() {
                       className="flash-card-face flash-card-front rounded-2xl"
                       suppressHydrationWarning
                       style={{
-                        padding: '2rem',
+                        padding: '1rem', // Adjusted for mobile
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -329,23 +339,10 @@ function CoursesContent() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <div 
-                        className="w-16 h-16 flex items-center justify-center overflow-hidden"
-                        style={{
-                          backgroundColor: isDark ? 'rgba(0,0,0,0.01)' : 'rgba(255,255,255,0.01)',
-                        }}
-                      >
-                        <img 
-                          src={stat.icon} 
-                          alt={stat.label} 
-                          className="w-full h-full object-contain" 
-                          suppressHydrationWarning
-                          style={{
-                            mixBlendMode: isDark ? 'screen' : 'multiply',
-                            transform: 'scale(1.8)',
-                          }}
-                        />
-                      </div>
+                      <stat.icon
+                        className="w-12 h-12 sm:w-16 sm:h-16 transition-transform duration-300" // Adjusted for mobile
+                        style={{ color: iconColor }}
+                      />
                     </div>
 
                     {/* Back of card - Stats */}
@@ -353,12 +350,12 @@ function CoursesContent() {
                       className="flash-card-face flash-card-back rounded-2xl"
                       suppressHydrationWarning
                       style={{
-                        padding: '2rem',
+                        padding: '1rem', // Adjusted for mobile
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        backgroundColor: bg,
                         border: `1px solid ${border}`,
                         boxShadow: isDark
                           ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
@@ -367,7 +364,7 @@ function CoursesContent() {
                     >
                       {/* Value */}
                       <div
-                        className={`text-3xl sm:text-4xl font-semibold text-center mb-3 bg-clip-text text-transparent ${valueGradient}`}
+                        className={`text-2xl sm:text-3xl lg:text-4xl font-semibold text-center mb-2 sm:mb-3 bg-clip-text text-transparent ${valueGradient}`} // Adjusted for mobile
                         suppressHydrationWarning
                       >
                         {stat.value}
@@ -375,7 +372,7 @@ function CoursesContent() {
 
                       {/* Label */}
                       <p
-                        className={`text-sm sm:text-base text-center font-light ${textColor}`}
+                        className={`text-xs sm:text-sm lg:text-base text-center font-light ${textColor}`} // Adjusted for mobile
                         suppressHydrationWarning
                         style={{ lineHeight: '1.6' }}
                       >

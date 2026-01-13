@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useLayoutEffect } from "react"
-import { Users, Award, Globe, Target } from "lucide-react"
+import { Users, Award, Globe, Target, TrendingUp, Star, Building2, Sparkles, UsersRound, Lightbulb } from "lucide-react"
 import Navbar from "../../src/components/Navbar"
 import Link from "next/link"
 import { useTheme } from "next-themes"
@@ -97,25 +97,25 @@ export default function AboutPage() {
   ]
 
   const stats = [
-    { number: "10,000+", label: "Students Trained", icon: "/Icons/students.png" },
-    { number: "50+", label: "Industry Partners", icon: "/Icons/globe.png" },
-    { number: "95%", label: "Success Rate", icon: "/Icons/badge.png" },
-    { number: "200+", label: "Training Programs", icon: "/Icons/growth.png" }
+    { number: "10,000+", label: "Students Trained", icon: Users },
+    { number: "50+", label: "Industry Partners", icon: Globe },
+    { number: "95%", label: "Success Rate", icon: Award },
+    { number: "200+", label: "Training Programs", icon: TrendingUp }
   ]
 
   const values = [
     {
-      icon: "/Icons/excellence.png",
+      icon: Sparkles,
       title: "Excellence",
       description: "We maintain the highest standards in our training programs, ensuring quality education that meets industry requirements."
     },
     {
-      icon: "/Icons/collaboration.png",
+      icon: UsersRound,
       title: "Collaboration",
       description: "We foster partnerships with industry leaders and educational institutions to create comprehensive learning experiences."
     },
     {
-      icon: "/Icons/innovation.png",
+      icon: Lightbulb,
       title: "Innovation",
       description: "We continuously evolve our training methodologies to incorporate the latest industry trends and technologies."
     }
@@ -129,7 +129,16 @@ export default function AboutPage() {
       border: 'none',
       borderTop: 'none'
     }}>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        backgroundColor: 'transparent'
+      }}>
+        <Navbar />
+      </div>
       
       {/* Hero Section */}
       <section className="relative py-24 overflow-hidden">
@@ -171,6 +180,7 @@ export default function AboutPage() {
                   ? 'rgba(124,58,237,0.25)'
                   : 'rgba(124,58,237,0.25)'
 
+                const iconColor = isDark ? '#8b5cf6' : '#7c3aed'
                 const textColor = isDark ? 'text-white/70' : 'text-black'
                 const valueGradient = isDark
                   ? 'bg-gradient-to-r from-purple-600 to-purple-500'
@@ -199,22 +209,10 @@ export default function AboutPage() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <div 
-                        className="w-16 h-16 flex items-center justify-center overflow-hidden"
-                        style={{
-                          backgroundColor: isDark ? 'rgba(0,0,0,0.01)' : 'rgba(255,255,255,0.01)',
-                        }}
-                      >
-                        <img 
-                          src={stat.icon} 
-                          alt={stat.label} 
-                          className="w-full h-full object-contain" 
-                          style={{
-                            mixBlendMode: isDark ? 'screen' : 'multiply',
-                            transform: 'scale(1.8)',
-                          }}
-                        />
-                      </div>
+                      <stat.icon
+                        className="w-16 h-16 transition-transform duration-300"
+                        style={{ color: iconColor }}
+                      />
                     </div>
 
                     {/* Back of card - Stats */}
@@ -226,7 +224,7 @@ export default function AboutPage() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        backgroundColor: bg,
                         border: `1px solid ${border}`,
                         boxShadow: isDark
                           ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
@@ -351,50 +349,32 @@ export default function AboutPage() {
           
           <div className="grid md:grid-cols-3 gap-12 lg:gap-16">
             {values.map((value, index) => {
-              const valueBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
-              const valueBg = isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.9)'
+              const valueBorder = isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'
+              const valueBg = isDark ? 'rgba(124,58,237,0.10)' : 'transparent'
+              const iconColor = isDark ? '#8b5cf6' : '#7c3aed'
               
               return (
               <div 
                 key={index} 
                 className="slide-up text-center transition-all duration-500" 
                 style={{ transitionDelay: `${0.3 + index * 0.1}s` }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }}
               >
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center mx-auto mb-6" style={{ 
-                  backgroundColor: valueBg, 
-                  borderColor: valueBorder, 
-                  borderWidth: '1px' 
-                }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ 
-                    borderColor: valueBorder, 
-                    borderWidth: '1px', 
-                    backgroundColor: '#ffffff' 
-                  }}>
-                    <div 
-                      className="absolute inset-0 rounded-lg"
-                      style={{
-                        background: 'transparent',
-                        mixBlendMode: 'normal',
-                        pointerEvents: 'none',
-                        zIndex: 1
-                      }}
-                    />
-                    <img 
-                      src={value.icon} 
-                      alt={value.title} 
-                      className="w-full h-full object-cover scale-150 relative z-0" 
-                      style={{ 
-                        filter: 'none',
-                        WebkitFilter: 'none'
-                      }}
-                    />
-                  </div>
+                <div 
+                  className="mx-auto mb-6 rounded-xl flex items-center justify-center transition-transform duration-300 hover:scale-110"
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    backgroundColor: valueBg,
+                    border: `1px solid ${valueBorder}`,
+                    boxShadow: isDark
+                      ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                      : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
+                  }}
+                >
+                  <value.icon
+                    className="w-12 h-12"
+                    style={{ color: iconColor }}
+                  />
                 </div>
                 <h3 className={`text-xl font-light mb-4 ${isDark ? 'text-white' : 'text-purple-900'}`}>{value.title}</h3>
                 <p className={`leading-relaxed font-light ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>

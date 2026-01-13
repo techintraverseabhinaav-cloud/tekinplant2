@@ -5,6 +5,7 @@ import { SignUp } from '@clerk/nextjs'
 import SyncUserToSupabase from '../../../components/SyncUserToSupabase'
 import { useTheme } from 'next-themes'
 import { useThemeStyles } from '../../../lib/theme-styles'
+import { Award, Users, TrendingUp } from 'lucide-react'
 
 export default function SignUpPage() {
   const { resolvedTheme } = useTheme()
@@ -184,7 +185,7 @@ export default function SignUpPage() {
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Get Started</span>
             </div>
             <h1 className="slide-up text-5xl lg:text-6xl xl:text-7xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TEKINPLANT</span>
+              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
             </h1>
             <p className={`slide-up text-lg lg:text-xl font-light leading-relaxed mb-12 ${isDark ? 'text-white/50' : 'text-purple-900/70'}`} style={{ transitionDelay: '0.3s' }}>
               Start your professional development journey and unlock access to industry-leading training programs.
@@ -198,18 +199,44 @@ export default function SignUpPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <div 
-                      className="absolute inset-0 rounded-lg"
+                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                  <div className="flash-card-inner">
+                    {/* Front of card - Icon only */}
+                    <div
+                      className="flash-card-face flash-card-front rounded-xl"
                       style={{
-                        background: 'transparent',
-                        mixBlendMode: 'normal',
-                        pointerEvents: 'none',
-                        zIndex: 1
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                          : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
-                    />
-                    <img src="/Icons/badge.png" alt="Badge" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: 'none', WebkitFilter: 'none' }} />
+                    >
+                      <Award
+                        className="w-10 h-10 transition-transform duration-300"
+                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
+                      />
+                    </div>
+
+                    {/* Back of card - Title */}
+                    <div
+                      className="flash-card-face flash-card-back rounded-xl"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
+                          : '0 16px 40px rgba(30,41,59,0.25), 0 0 30px rgba(124,58,237,0.25)',
+                      }}
+                    >
+                      <span className={`text-xs font-light px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Courses</span>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -224,18 +251,44 @@ export default function SignUpPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <div 
-                      className="absolute inset-0 rounded-lg"
+                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                  <div className="flash-card-inner">
+                    {/* Front of card - Icon only */}
+                    <div
+                      className="flash-card-face flash-card-front rounded-xl"
                       style={{
-                        background: 'transparent',
-                        mixBlendMode: 'normal',
-                        pointerEvents: 'none',
-                        zIndex: 1
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                          : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
-                    />
-                    <img src="/Icons/students.png" alt="Students" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: 'none', WebkitFilter: 'none' }} />
+                    >
+                      <Users
+                        className="w-10 h-10 transition-transform duration-300"
+                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
+                      />
+                    </div>
+
+                    {/* Back of card - Title */}
+                    <div
+                      className="flash-card-face flash-card-back rounded-xl"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
+                          : '0 16px 40px rgba(30,41,59,0.25), 0 0 30px rgba(124,58,237,0.25)',
+                      }}
+                    >
+                      <span className={`text-xs font-light px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Trainers</span>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -250,18 +303,44 @@ export default function SignUpPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <div 
-                      className="absolute inset-0 rounded-lg"
+                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                  <div className="flash-card-inner">
+                    {/* Front of card - Icon only */}
+                    <div
+                      className="flash-card-face flash-card-front rounded-xl"
                       style={{
-                        background: 'transparent',
-                        mixBlendMode: 'normal',
-                        pointerEvents: 'none',
-                        zIndex: 1
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                          : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
-                    />
-                    <img src="/Icons/growth.png" alt="Growth" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: 'none', WebkitFilter: 'none' }} />
+                    >
+                      <TrendingUp
+                        className="w-10 h-10 transition-transform duration-300"
+                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
+                      />
+                    </div>
+
+                    {/* Back of card - Title */}
+                    <div
+                      className="flash-card-face flash-card-back rounded-xl"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
+                          : '0 16px 40px rgba(30,41,59,0.25), 0 0 30px rgba(124,58,237,0.25)',
+                      }}
+                    >
+                      <span className={`text-xs font-light px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Certified</span>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -287,7 +366,7 @@ export default function SignUpPage() {
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Get Started</span>
             </div>
             <h1 className="text-4xl font-light mb-4 leading-tight tracking-tight">
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TEKINPLANT</span>
+              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
             </h1>
           </div>
 

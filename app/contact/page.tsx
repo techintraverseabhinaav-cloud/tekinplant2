@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useLayoutEffect } from "react"
-import { Send, ChevronDown, MessageCircle, Lock, Linkedin, Youtube, Instagram } from "lucide-react"
+import { Send, ChevronDown, MessageCircle, Lock, Linkedin, Youtube, Instagram, Mail, Phone, MapPin } from "lucide-react"
 import Navbar from "../../src/components/Navbar"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../../lib/theme-styles"
@@ -168,7 +168,16 @@ export default function ContactPage() {
       border: 'none',
       borderTop: 'none'
     }}>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        backgroundColor: 'transparent'
+      }}>
+        <Navbar />
+      </div>
       
       {/* Header */}
       <section className="relative py-24 overflow-hidden">
@@ -375,43 +384,54 @@ export default function ContactPage() {
         <div className="slide-up relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
             {[
-              { icon: "/Icons/email.png", title: "Email", content: "contact@tekinplant.com" },
-              { icon: "/Icons/phone.png", title: "Phone", content: "+91 9860970798" },
-              { icon: "/Icons/location.png", title: "Location", content: "Bangalore, India" }
+              { icon: Mail, title: "Email", content: "contact@tekinplant.com" },
+              { icon: Phone, title: "Phone", content: "+91 9860970798" },
+              { icon: MapPin, title: "Location", content: "Bangalore, India" }
             ].map((item, index) => {
-              const itemBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
-              const itemBg = isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.9)'
+              const itemBorder = isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'
+              const itemBg = isDark ? 'rgba(124,58,237,0.10)' : 'transparent'
+              const iconColor = isDark ? '#8b5cf6' : '#7c3aed'
               
               return (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center mx-auto mb-6" style={{ 
-                    backgroundColor: itemBg, 
-                    borderColor: itemBorder, 
-                    borderWidth: '1px' 
-                  }}>
-                    <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ 
-                      borderColor: itemBorder, 
-                      borderWidth: '1px', 
-                      backgroundColor: '#ffffff' 
-                    }}>
-                      <div 
-                        className="absolute inset-0 rounded-lg"
+                  <div className="flash-card-container mx-auto mb-6" style={{ width: '80px', height: '80px' }}>
+                    <div className="flash-card-inner">
+                      {/* Front of card - Icon only */}
+                      <div
+                        className="flash-card-face flash-card-front rounded-xl"
                         style={{
-                          background: 'transparent',
-                          mixBlendMode: 'normal',
-                          pointerEvents: 'none',
-                          zIndex: 1
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: itemBg,
+                          border: `1px solid ${itemBorder}`,
+                          boxShadow: isDark
+                            ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                            : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                         }}
-                      />
-                      <img 
-                        src={item.icon} 
-                        alt={item.title} 
-                        className="w-full h-full object-cover scale-150 relative z-0" 
-                        style={{ 
-                          filter: 'none',
-                          WebkitFilter: 'none'
+                      >
+                        <item.icon
+                          className="w-12 h-12 transition-transform duration-300"
+                          style={{ color: iconColor }}
+                        />
+                      </div>
+
+                      {/* Back of card - Title */}
+                      <div
+                        className="flash-card-face flash-card-back rounded-xl"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: itemBg,
+                          border: `1px solid ${itemBorder}`,
+                          boxShadow: isDark
+                            ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
+                            : '0 16px 40px rgba(30,41,59,0.25), 0 0 30px rgba(124,58,237,0.25)',
                         }}
-                      />
+                      >
+                        <h3 className={`text-sm font-light px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>{item.title}</h3>
+                      </div>
                     </div>
                   </div>
                   <h3 className={`text-lg font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>{item.title}</h3>

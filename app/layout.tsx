@@ -167,6 +167,7 @@ export default function RootLayout({
         <ClerkErrorBoundary>
           <ClerkProvider
             publishableKey={publishableKey}
+            domain={typeof window !== 'undefined' ? window.location.hostname : undefined}
           >
             <ThemeProvider
               attribute="class"

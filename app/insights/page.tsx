@@ -37,57 +37,40 @@ export default function InsightsPage() {
               const valueGradient = 'bg-gradient-to-r from-purple-300 to-purple-400'
               
               return (
-              <div key={index} className="flash-card-container">
-                <div className="flash-card-inner">
-                  {/* Front of card - Icon only */}
-                  <div
-                    className="flash-card-face flash-card-front rounded-2xl"
-                    style={{
-                      padding: '2rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: bg,
-                      border: `1px solid ${border}`,
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)',
-                    }}
-                  >
-                    <stat.icon
-                      className="w-24 h-24 transition-transform duration-300"
-                      style={{ color: stat.iconColor }}
-                    />
-                  </div>
+              <div 
+                key={index} 
+                className="rounded-2xl transition-all duration-300 hover:scale-105"
+                style={{
+                  padding: '2rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: bg,
+                  border: `1px solid ${border}`,
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)',
+                }}
+              >
+                {/* Icon */}
+                <stat.icon
+                  className="w-16 h-16 mb-4 transition-transform duration-300"
+                  style={{ color: stat.iconColor }}
+                />
 
-                  {/* Back of card - Stats */}
-                  <div
-                    className="flash-card-face flash-card-back rounded-2xl"
-                    style={{
-                      padding: '2rem',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      backgroundColor: 'transparent',
-                      border: `1px solid ${border}`,
-                      boxShadow: '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)',
-                    }}
-                  >
-                    {/* Value */}
-                    <div
-                      className={`text-3xl sm:text-4xl font-semibold text-center mb-3 bg-clip-text text-transparent ${valueGradient}`}
-                    >
-                      {stat.value}
-                    </div>
-
-                    {/* Label */}
-                    <p
-                      className={`text-sm sm:text-base text-center font-light ${textColor}`}
-                      style={{ lineHeight: '1.6' }}
-                    >
-                      {stat.label}
-                    </p>
-                  </div>
+                {/* Value */}
+                <div
+                  className={`text-3xl sm:text-4xl font-semibold text-center mb-3 bg-clip-text text-transparent ${valueGradient}`}
+                >
+                  {stat.value}
                 </div>
+
+                {/* Label */}
+                <p
+                  className={`text-sm sm:text-base text-center font-light ${textColor}`}
+                  style={{ lineHeight: '1.6' }}
+                >
+                  {stat.label}
+                </p>
               </div>
               )
             })}

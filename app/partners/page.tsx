@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useLayoutEffect } from "react"
-import { Search, MapPin, Building, Users, Calendar, ExternalLink, Mail, Phone, TrendingUp, Star, ChevronDown } from "lucide-react"
+import { Search, MapPin, Building2, Users, Calendar, ExternalLink, Mail, Phone, TrendingUp, Star, ChevronDown } from "lucide-react"
 import Navbar from "../../src/components/Navbar"
 import Link from "next/link"
 import { industryPartners, industryStats, industryInsights } from "../../lib/industry-data"
@@ -174,7 +174,16 @@ export default function PartnersPage() {
       border: 'none',
       borderTop: 'none'
     }}>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        backgroundColor: 'transparent'
+      }}>
+        <Navbar />
+      </div>
       
       {/* Header */}
       <section className="relative py-24 overflow-hidden">
@@ -187,7 +196,7 @@ export default function PartnersPage() {
               borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)',
               transitionDelay: '0.1s' 
             }}>
-              <Building className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#a78bfa' }} />
+              <Building2 className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#a78bfa' }} />
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Industry Partners</span>
             </div>
             <h1 className="slide-up text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
@@ -206,12 +215,12 @@ export default function PartnersPage() {
             </p>
 
             {/* Statistics */}
-            <div className="grid md:grid-cols-4 gap-6 lg:gap-8 mb-16">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-16">
               {[
-                { icon: "/Icons/building.png", value: industryStats.totalPartners, label: "Partner Companies" },
-                { icon: "/Icons/students.png", value: industryStats.totalStudents, label: "Students Trained" },
-                { icon: "/Icons/growth.png", value: industryStats.totalCourses, label: "Training Programs" },
-                { icon: "/Icons/rating.png", value: industryStats.averageRating, label: "Average Rating" },
+                { icon: Building2, value: industryStats.totalPartners, label: "Partner Companies" },
+                { icon: Users, value: industryStats.totalStudents, label: "Students Trained" },
+                { icon: TrendingUp, value: industryStats.totalCourses, label: "Training Programs" },
+                { icon: Star, value: industryStats.averageRating, label: "Average Rating" },
               ].map((stat, index) => {
                 const bg = isDark
                   ? 'rgba(124,58,237,0.10)'
@@ -221,6 +230,7 @@ export default function PartnersPage() {
                   ? 'rgba(124,58,237,0.25)'
                   : 'rgba(124,58,237,0.25)'
 
+                const iconColor = isDark ? '#8b5cf6' : '#7c3aed'
                 const textColor = isDark ? 'text-white/70' : 'text-black'
                 const valueGradient = isDark
                   ? 'bg-gradient-to-r from-purple-600 to-purple-500'
@@ -238,7 +248,7 @@ export default function PartnersPage() {
                     <div
                       className="flash-card-face flash-card-front rounded-2xl"
                       style={{
-                        padding: '2rem',
+                        padding: '1rem', // Adjusted for mobile
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -249,34 +259,22 @@ export default function PartnersPage() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <div 
-                        className="w-16 h-16 flex items-center justify-center overflow-hidden"
-                        style={{
-                          backgroundColor: isDark ? 'rgba(0,0,0,0.01)' : 'rgba(255,255,255,0.01)',
-                        }}
-                      >
-                        <img 
-                          src={stat.icon} 
-                          alt={stat.label} 
-                          className="w-full h-full object-contain" 
-                          style={{
-                            mixBlendMode: isDark ? 'screen' : 'multiply',
-                            transform: 'scale(1.8)',
-                          }}
-                        />
-                      </div>
+                      <stat.icon
+                        className="w-12 h-12 sm:w-16 sm:h-16 transition-transform duration-300" // Adjusted for mobile
+                        style={{ color: iconColor }}
+                      />
                     </div>
 
                     {/* Back of card - Stats */}
                     <div
                       className="flash-card-face flash-card-back rounded-2xl"
                       style={{
-                        padding: '2rem',
+                        padding: '1rem', // Adjusted for mobile
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        backgroundColor: bg,
                         border: `1px solid ${border}`,
                         boxShadow: isDark
                           ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
@@ -285,14 +283,14 @@ export default function PartnersPage() {
                     >
                       {/* Value */}
                       <div
-                        className={`text-3xl sm:text-4xl font-semibold text-center mb-3 bg-clip-text text-transparent ${valueGradient}`}
+                        className={`text-2xl sm:text-3xl lg:text-4xl font-semibold text-center mb-2 sm:mb-3 bg-clip-text text-transparent ${valueGradient}`} // Adjusted for mobile
                       >
                         {stat.value}
                       </div>
 
                       {/* Label */}
                       <p
-                        className={`text-sm sm:text-base text-center font-light ${textColor}`}
+                        className={`text-xs sm:text-sm lg:text-base text-center font-light ${textColor}`} // Adjusted for mobile
                         style={{ lineHeight: '1.6' }}
                       >
                         {stat.label}
@@ -440,7 +438,7 @@ export default function PartnersPage() {
                       </h3>
                       <div className="space-y-1">
                         <p className={`text-sm flex items-center font-light ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>
-                          <Building size={12} className="mr-1.5" />
+                          <Building2 size={12} className="mr-1.5" />
                           {partner.industry}
                         </p>
                         <p className={`text-sm flex items-center font-light ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>
