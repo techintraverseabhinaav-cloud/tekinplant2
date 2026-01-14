@@ -173,7 +173,7 @@ export default function SignUpPage() {
   }, [isDark])
 
   return (
-    <div className="min-h-screen relative flex" style={{ backgroundColor: themeStyles.pageBg }}>
+    <div className="min-h-screen relative flex flex-col lg:flex-row overflow-x-hidden" style={{ backgroundColor: themeStyles.pageBg }}>
       {/* Background Gradient */}
       <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: themeStyles.pageBgGradient }}></div>
       
@@ -373,14 +373,14 @@ export default function SignUpPage() {
       </div>
 
       {/* Right Side - Sign Up Form */}
-      <div className="flex-1 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-12 xl:px-16 relative z-10">
+      <div className="flex-1 flex flex-col justify-center items-center py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-12 xl:px-16 relative z-10 w-full overflow-y-auto">
         <div className="w-full max-w-md mx-auto">
           {/* Mobile Header */}
-          <div className="slide-up lg:hidden mb-8 text-center" style={{ transitionDelay: '0.1s' }}>
-            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)' }}>
+          <div className="slide-up lg:hidden mb-6 sm:mb-8 text-center" style={{ transitionDelay: '0.1s' }}>
+            <div className={`inline-flex items-center gap-2 rounded-full px-3 sm:px-4 py-1.5 mb-4 sm:mb-6 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)' }}>
               <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Get Started</span>
             </div>
-            <h1 className="text-4xl font-light mb-4 leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-light mb-3 sm:mb-4 leading-tight tracking-tight px-2">
               <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
             </h1>
           </div>
@@ -390,10 +390,10 @@ export default function SignUpPage() {
 
           {/* Clerk Sign Up Component */}
           <div className="slide-up w-full" style={{ transitionDelay: '0.7s' }}>
-            <div className={`rounded-2xl p-12 lg:p-14 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} w-full`} style={{ backgroundColor: themeStyles.cardBg }}>
+            <div className={`rounded-2xl p-6 sm:p-8 lg:p-12 xl:p-14 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} w-full`} style={{ backgroundColor: themeStyles.cardBg }}>
               {/* Welcome text inside the box */}
-              <div className="text-center mb-6">
-                <h2 className={`text-2xl lg:text-3xl font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Welcome</h2>
+              <div className="text-center mb-4 sm:mb-6">
+                <h2 className={`text-xl sm:text-2xl lg:text-3xl font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Welcome</h2>
               </div>
               <SignUp 
                 appearance={{
