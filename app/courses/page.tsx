@@ -247,7 +247,8 @@ function CoursesContent() {
         border: 'none',
         borderTop: 'none',
         paddingTop: 0,
-        backgroundColor: 'transparent'
+        marginTop: 0,
+        backgroundColor: themeStyles.pageBg
       }}>
         <Navbar />
       </div>

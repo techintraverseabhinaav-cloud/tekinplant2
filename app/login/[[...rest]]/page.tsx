@@ -5,6 +5,7 @@ import { SignIn, useClerk } from '@clerk/nextjs'
 import SyncUserToSupabase from '../../../components/SyncUserToSupabase'
 import { useTheme } from 'next-themes'
 import { useThemeStyles } from '../../../lib/theme-styles'
+import { Award, Users, TrendingUp } from 'lucide-react'
 
 export default function LoginPage() {
   const { resolvedTheme } = useTheme()
@@ -277,13 +278,11 @@ export default function LoginPage() {
                       }}
                     >
                       <div className="w-full h-full flex items-center justify-center">
-                        <img 
-                          src="/Icons/badge.png" 
-                          alt="Award" 
-                          className="w-16 h-16 object-contain transition-transform duration-300"
+                        <Award 
+                          size={64}
+                          className="transition-transform duration-300"
                           style={{
-                            mixBlendMode: isDark ? 'screen' : 'multiply',
-                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                            color: isDark ? '#ffffff' : '#7c3aed'
                           }}
                         />
                       </div>
@@ -336,13 +335,11 @@ export default function LoginPage() {
                       }}
                     >
                       <div className="w-full h-full flex items-center justify-center">
-                        <img 
-                          src="/Icons/collaboration.png" 
-                          alt="Users" 
-                          className="w-16 h-16 object-contain transition-transform duration-300"
+                        <Users 
+                          size={64}
+                          className="transition-transform duration-300"
                           style={{
-                            mixBlendMode: isDark ? 'screen' : 'multiply',
-                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                            color: isDark ? '#ffffff' : '#7c3aed'
                           }}
                         />
                       </div>
@@ -395,13 +392,11 @@ export default function LoginPage() {
                       }}
                     >
                       <div className="w-full h-full flex items-center justify-center">
-                        <img 
-                          src="/Icons/growth.png" 
-                          alt="Growth" 
-                          className="w-16 h-16 object-contain transition-transform duration-300"
+                        <TrendingUp 
+                          size={64}
+                          className="transition-transform duration-300"
                           style={{
-                            mixBlendMode: isDark ? 'screen' : 'multiply',
-                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                            color: isDark ? '#ffffff' : '#7c3aed'
                           }}
                         />
                       </div>

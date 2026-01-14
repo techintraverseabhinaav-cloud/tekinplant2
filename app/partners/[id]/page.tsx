@@ -63,7 +63,17 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
         border: 'none',
         borderTop: 'none'
       }}>
-        <Navbar />
+        <div style={{ 
+          position: 'relative',
+          zIndex: 50,
+          border: 'none',
+          borderTop: 'none',
+          paddingTop: 0,
+          marginTop: 0,
+          backgroundColor: themeStyles.pageBg
+        }}>
+          <Navbar />
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
             <h1 className={`text-4xl font-bold mb-4`} style={{ color: themeStyles.textPrimary }}>Company Not Found</h1>
@@ -117,7 +127,17 @@ export default function CompanyDetailPage({ params }: { params: { id: string } }
       border: 'none',
       borderTop: 'none'
     }}>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        marginTop: 0,
+        backgroundColor: themeStyles.pageBg
+      }}>
+        <Navbar />
+      </div>
       
       {/* Header */}
       <section className="py-20 relative overflow-hidden">

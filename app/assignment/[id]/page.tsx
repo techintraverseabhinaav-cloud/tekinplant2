@@ -52,7 +52,17 @@ export default function AssignmentPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        marginTop: 0,
+        backgroundColor: '#111827'
+      }}>
+        <Navbar />
+      </div>
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {/* Header */}

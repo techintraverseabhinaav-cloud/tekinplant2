@@ -247,7 +247,17 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
       border: 'none',
       borderTop: 'none'
     }}>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        marginTop: 0,
+        backgroundColor: themeStyles.pageBg
+      }}>
+        <Navbar />
+      </div>
       
       {/* Course Header */}
       <section className="py-24 relative overflow-hidden">

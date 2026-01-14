@@ -148,7 +148,17 @@ export default function QuizPage({ params }: { params: Promise<{ id: string }> }
 
     return (
       <div className="min-h-screen bg-gray-900 text-white">
-        <Navbar />
+        <div style={{ 
+          position: 'relative',
+          zIndex: 50,
+          border: 'none',
+          borderTop: 'none',
+          paddingTop: 0,
+          marginTop: 0,
+          backgroundColor: '#111827'
+        }}>
+          <Navbar />
+        </div>
         
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
@@ -217,7 +227,17 @@ export default function QuizPage({ params }: { params: Promise<{ id: string }> }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        marginTop: 0,
+        backgroundColor: '#111827'
+      }}>
+        <Navbar />
+      </div>
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {/* Header */}

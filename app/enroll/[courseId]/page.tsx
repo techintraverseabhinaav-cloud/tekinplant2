@@ -264,7 +264,17 @@ export default function EnrollmentPage({ params }: { params: Promise<{ courseId:
       borderTop: 'none'
     }}>
       <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: themeStyles.pageBgGradient }}></div>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        marginTop: 0,
+        backgroundColor: themeStyles.pageBg
+      }}>
+        <Navbar />
+      </div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-10">
         {/* Header */}

@@ -48,7 +48,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           id="theme-script"
@@ -67,9 +67,17 @@ export default function RootLayout({
                     theme = savedTheme; // 'dark' or 'light'
                   }
                   
-                  // Apply the theme to the document element immediately
+                  // Apply the theme to the document element IMMEDIATELY and SYNCHRONOUSLY
+                  // This must happen before any rendering to prevent flash
                   var html = document.documentElement;
+                  
+                  // Remove any existing theme classes first
+                  html.classList.remove('dark', 'light');
+                  
+                  // Set data-theme attribute
                   html.setAttribute('data-theme', theme);
+                  
+                  // Set className (this is what next-themes uses)
                   html.className = theme;
                   
                   // Set background colors immediately to prevent flash
@@ -111,6 +119,7 @@ export default function RootLayout({
                 } catch (e) {
                   // Fallback to dark theme on error
                   var html = document.documentElement;
+                  html.classList.remove('dark', 'light');
                   html.className = 'dark';
                   html.setAttribute('data-theme', 'dark');
                   html.style.setProperty('background-color', '#000000', 'important');
@@ -127,21 +136,30 @@ export default function RootLayout({
         <style
           dangerouslySetInnerHTML={{
             __html: `
-              html { 
+              /* Default: wait for theme script to set theme before showing anything */
+              html:not([data-theme]) { 
                 background-color: #000000 !important; 
               }
-              html[data-theme="light"] { 
+              /* Dark theme */
+              html[data-theme="dark"],
+              html.dark { 
+                background-color: #000000 !important; 
+              }
+              /* Light theme */
+              html[data-theme="light"],
+              html.light { 
                 background-color: #f5f1e8 !important; 
               }
-              /* Default body styles (dark mode) */
-              body { 
+              /* Default body styles - wait for theme initialization */
+              body:not([class*="body"]) { 
                 background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
                 color: #ffffff !important;
                 transition: none !important;
                 opacity: 1 !important;
               }
               /* Light mode via data-theme attribute */
-              html[data-theme="light"] body {
+              html[data-theme="light"] body,
+              html.light body {
                 background: linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%) !important;
                 color: #3a2e1f !important;
               }
@@ -171,10 +189,11 @@ export default function RootLayout({
           >
             <ThemeProvider
               attribute="class"
-              defaultTheme="dark"
+              defaultTheme="system"
               enableSystem
               disableTransitionOnChange
               storageKey="theme"
+              enableColorScheme={false}
             >
               <SyncUserToSupabase />
               <Toaster 

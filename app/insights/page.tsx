@@ -8,7 +8,17 @@ import { industryCourses, industryPartners, industryStats, industryInsights } fr
 export default function InsightsPage() {
   return (
     <div className="min-h-screen relative" style={{ backgroundColor: '#000000' }}>
-      <Navbar />
+      <div style={{ 
+        position: 'relative',
+        zIndex: 50,
+        border: 'none',
+        borderTop: 'none',
+        paddingTop: 0,
+        marginTop: 0,
+        backgroundColor: '#000000'
+      }}>
+        <Navbar />
+      </div>
       
       {/* Header */}
       <section className="py-20 relative overflow-hidden">
