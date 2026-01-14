@@ -5,7 +5,6 @@ import { SignIn, useClerk } from '@clerk/nextjs'
 import SyncUserToSupabase from '../../../components/SyncUserToSupabase'
 import { useTheme } from 'next-themes'
 import { useThemeStyles } from '../../../lib/theme-styles'
-import { Award, Users, TrendingUp } from 'lucide-react'
 
 export default function LoginPage() {
   const { resolvedTheme } = useTheme()
@@ -138,9 +137,9 @@ export default function LoginPage() {
   const primaryColor = isDark ? 'rgba(168,85,247' : 'rgba(168,85,247' // purple for both
   const primaryColorLight = isDark ? 'rgba(196,181,253' : 'rgba(196,181,253' // purple-300 for both
   const borderColor = isDark ? 'rgba(168,85,247' : 'rgba(168,85,247' 
-  const gradientFrom = isDark ? 'from-purple-300' : 'from-purple-300'
-  const gradientVia = isDark ? 'via-purple-200' : 'via-purple-200'
-  const gradientTo = isDark ? 'to-purple-300' : 'to-purple-300'
+  const gradientFrom = isDark ? 'from-purple-600' : 'from-purple-800'
+  const gradientVia = isDark ? 'via-purple-700' : 'via-purple-900'
+  const gradientTo = isDark ? 'to-purple-600' : 'to-purple-800'
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -261,7 +260,7 @@ export default function LoginPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                <div className="flash-card-container flex-shrink-0" style={{ width: '80px', height: '80px' }}>
                   <div className="flash-card-inner">
                     {/* Front of card - Icon only */}
                     <div
@@ -277,10 +276,17 @@ export default function LoginPage() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <Award
-                        className="w-10 h-10 transition-transform duration-300"
-                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
-                      />
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img 
+                          src="/Icons/badge.png" 
+                          alt="Award" 
+                          className="w-16 h-16 object-contain transition-transform duration-300"
+                          style={{
+                            mixBlendMode: isDark ? 'screen' : 'multiply',
+                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                          }}
+                        />
+                      </div>
                     </div>
 
                     {/* Back of card - Title */}
@@ -313,7 +319,7 @@ export default function LoginPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                <div className="flash-card-container flex-shrink-0" style={{ width: '80px', height: '80px' }}>
                   <div className="flash-card-inner">
                     {/* Front of card - Icon only */}
                     <div
@@ -329,10 +335,17 @@ export default function LoginPage() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <Users
-                        className="w-10 h-10 transition-transform duration-300"
-                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
-                      />
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img 
+                          src="/Icons/collaboration.png" 
+                          alt="Users" 
+                          className="w-16 h-16 object-contain transition-transform duration-300"
+                          style={{
+                            mixBlendMode: isDark ? 'screen' : 'multiply',
+                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                          }}
+                        />
+                      </div>
                     </div>
 
                     {/* Back of card - Title */}
@@ -365,18 +378,51 @@ export default function LoginPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="w-16 h-16 p-0.5 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.8)', borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px' }}>
-                  <div className="w-full h-full rounded-lg flex items-center justify-center overflow-hidden relative" style={{ borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(217,119,6,0.35)', borderWidth: '1px', backgroundColor: '#ffffff' }}>
-                    <div 
-                      className="absolute inset-0 rounded-lg"
+                <div className="flash-card-container flex-shrink-0" style={{ width: '80px', height: '80px' }}>
+                  <div className="flash-card-inner">
+                    {/* Front of card - Icon only */}
+                    <div
+                      className="flash-card-face flash-card-front rounded-xl"
                       style={{
-                        background: 'transparent',
-                        mixBlendMode: 'normal',
-                        pointerEvents: 'none',
-                        zIndex: 1
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 8px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05)'
+                          : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
-                    />
-                    <img src="/Icons/growth.png" alt="Growth" className="w-full h-full object-cover scale-150 relative z-0" style={{ filter: 'none', WebkitFilter: 'none' }} />
+                    >
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img 
+                          src="/Icons/growth.png" 
+                          alt="Growth" 
+                          className="w-16 h-16 object-contain transition-transform duration-300"
+                          style={{
+                            mixBlendMode: isDark ? 'screen' : 'multiply',
+                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Back of card - Title */}
+                    <div
+                      className="flash-card-face flash-card-back rounded-xl"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: isDark ? 'rgba(124,58,237,0.10)' : 'transparent',
+                        border: `1px solid ${isDark ? 'rgba(124,58,237,0.25)' : 'rgba(124,58,237,0.25)'}`,
+                        boxShadow: isDark
+                          ? '0 16px 40px rgba(0,0,0,0.35), 0 0 30px rgba(124,58,237,0.35)'
+                          : '0 16px 40px rgba(30,41,59,0.25), 0 0 30px rgba(124,58,237,0.25)',
+                      }}
+                    >
+                      <span className={`text-xs font-light px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Certified</span>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -412,6 +458,10 @@ export default function LoginPage() {
           {/* Clerk Sign In Component */}
           <div className="slide-up w-full" style={{ transitionDelay: '0.7s' }}>
             <div className={`rounded-2xl p-12 lg:p-14 backdrop-blur-xl border w-full ${isDark ? 'border-purple-500/20' : 'border-purple-500/30'}`} style={{ backgroundColor: themeStyles.cardBg }}>
+              {/* Welcome text inside the box */}
+              <div className="text-center mb-6">
+                <h2 className={`text-2xl lg:text-3xl font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Welcome</h2>
+              </div>
               {/* Error boundary for Clerk component */}
               {!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
                 <div className="text-center p-8">

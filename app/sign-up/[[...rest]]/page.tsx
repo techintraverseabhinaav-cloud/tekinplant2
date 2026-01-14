@@ -5,7 +5,6 @@ import { SignUp } from '@clerk/nextjs'
 import SyncUserToSupabase from '../../../components/SyncUserToSupabase'
 import { useTheme } from 'next-themes'
 import { useThemeStyles } from '../../../lib/theme-styles'
-import { Award, Users, TrendingUp } from 'lucide-react'
 
 export default function SignUpPage() {
   const { resolvedTheme } = useTheme()
@@ -199,7 +198,7 @@ export default function SignUpPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                <div className="flash-card-container flex-shrink-0" style={{ width: '80px', height: '80px' }}>
                   <div className="flash-card-inner">
                     {/* Front of card - Icon only */}
                     <div
@@ -215,10 +214,17 @@ export default function SignUpPage() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <Award
-                        className="w-10 h-10 transition-transform duration-300"
-                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
-                      />
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img 
+                          src="/Icons/badge.png" 
+                          alt="Award" 
+                          className="w-16 h-16 object-contain transition-transform duration-300"
+                          style={{
+                            mixBlendMode: isDark ? 'screen' : 'multiply',
+                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                          }}
+                        />
+                      </div>
                     </div>
 
                     {/* Back of card - Title */}
@@ -251,7 +257,7 @@ export default function SignUpPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                <div className="flash-card-container flex-shrink-0" style={{ width: '80px', height: '80px' }}>
                   <div className="flash-card-inner">
                     {/* Front of card - Icon only */}
                     <div
@@ -267,10 +273,17 @@ export default function SignUpPage() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <Users
-                        className="w-10 h-10 transition-transform duration-300"
-                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
-                      />
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img 
+                          src="/Icons/collaboration.png" 
+                          alt="Users" 
+                          className="w-16 h-16 object-contain transition-transform duration-300"
+                          style={{
+                            mixBlendMode: isDark ? 'screen' : 'multiply',
+                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                          }}
+                        />
+                      </div>
                     </div>
 
                     {/* Back of card - Title */}
@@ -303,7 +316,7 @@ export default function SignUpPage() {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.2)' : 'rgba(217,119,6,0.3)'
               }}>
-                <div className="flash-card-container flex-shrink-0" style={{ width: '64px', height: '64px' }}>
+                <div className="flash-card-container flex-shrink-0" style={{ width: '80px', height: '80px' }}>
                   <div className="flash-card-inner">
                     {/* Front of card - Icon only */}
                     <div
@@ -319,10 +332,17 @@ export default function SignUpPage() {
                           : '0 8px 24px rgba(30,41,59,0.15), inset 0 1px 0 rgba(255,255,255,0.1)',
                       }}
                     >
-                      <TrendingUp
-                        className="w-10 h-10 transition-transform duration-300"
-                        style={{ color: isDark ? '#8b5cf6' : '#7c3aed' }}
-                      />
+                      <div className="w-full h-full flex items-center justify-center">
+                        <img 
+                          src="/Icons/growth.png" 
+                          alt="Growth" 
+                          className="w-16 h-16 object-contain transition-transform duration-300"
+                          style={{
+                            mixBlendMode: isDark ? 'screen' : 'multiply',
+                            filter: isDark ? 'brightness(0) invert(1)' : 'none'
+                          }}
+                        />
+                      </div>
                     </div>
 
                     {/* Back of card - Title */}
@@ -376,6 +396,10 @@ export default function SignUpPage() {
           {/* Clerk Sign Up Component */}
           <div className="slide-up w-full" style={{ transitionDelay: '0.7s' }}>
             <div className={`rounded-2xl p-12 lg:p-14 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} w-full`} style={{ backgroundColor: themeStyles.cardBg }}>
+              {/* Welcome text inside the box */}
+              <div className="text-center mb-6">
+                <h2 className={`text-2xl lg:text-3xl font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Welcome</h2>
+              </div>
               <SignUp 
                 appearance={{
                   elements: {

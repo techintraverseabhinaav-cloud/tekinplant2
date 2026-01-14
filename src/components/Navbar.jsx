@@ -113,7 +113,7 @@ export default function Navbar() {
   }, [showSearch])
 
   return (
-    <nav className="relative z-50 backdrop-blur-xl mx-auto"
+    <nav className="relative z-50 backdrop-blur-xl"
     style={{
       backgroundColor: isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.8)',
       borderTop: 'none',
@@ -121,13 +121,16 @@ export default function Navbar() {
       borderBottom: `1px solid ${isDark ? 'rgba(168, 85, 247, 0.2)' : 'rgba(124, 58, 237, 0.25)'}`,
       borderLeft: `1px solid ${isDark ? 'rgba(168, 85, 247, 0.2)' : 'rgba(124, 58, 237, 0.25)'}`,
       borderRadius: '1.5rem',
-      width: 'calc(100% - 2rem)',
-      maxWidth: 'calc(1280px + 2rem)',
-      marginTop: '1rem'
+      width: '100%',
+      maxWidth: '100%',
+      margin: 0,
+      padding: 0,
+      display: 'flex',
+      justifyContent: 'center'
     }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+      <div className="max-w-7xl" style={{ padding: 0, margin: '0 auto', width: '100%', maxWidth: '1280px' }}>
+        <div className="flex items-center justify-between h-16 lg:h-20" style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
