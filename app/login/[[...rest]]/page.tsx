@@ -160,7 +160,14 @@ export default function LoginPage() {
 
   useEffect(() => {
     // Add custom styles for social buttons, sign button, and text colors
+    // Remove existing style if it exists
+    const existingStyle = document.getElementById('clerk-theme-styles')
+    if (existingStyle) {
+      existingStyle.remove()
+    }
+    
     const style = document.createElement('style')
+    style.id = 'clerk-theme-styles'
     const borderColor = isDark ? 'rgba(168, 85, 247, 0.4)' : 'rgba(168, 85, 247, 0.4)'
     const borderColorHover = isDark ? 'rgba(168, 85, 247, 0.6)' : 'rgba(168, 85, 247, 0.6)'
     const textColor = isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(30, 41, 59, 0.9)'
@@ -267,18 +274,15 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:flex-1 relative overflow-hidden">
         <div className="relative z-10 flex flex-col p-12 lg:p-16 xl:p-20 text-white w-full" style={{ paddingTop: '6rem', justifyContent: 'flex-start' }}>
           <div className="max-w-lg">
-            <div className={`slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-purple-500/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)', transitionDelay: '0.1s' }}>
-              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Welcome Back</span>
-            </div>
-            <h1 className="slide-up text-5xl lg:text-6xl xl:text-7xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign In to</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
+            <h1 className={`slide-up text-5xl lg:text-6xl xl:text-7xl font-light mb-6 leading-tight tracking-tight ${isDark ? 'text-white' : 'text-purple-900'}`} style={{ transitionDelay: '0.1s' }}>
+              Welcome Back
             </h1>
-            <p className={`slide-up text-lg lg:text-xl font-light leading-relaxed mb-12 ${isDark ? 'text-white/50' : 'text-purple-900/70'}`} style={{ transitionDelay: '0.3s' }}>
+            <p className={`slide-up text-lg lg:text-xl font-light leading-relaxed mb-12 ${isDark ? 'text-white/50' : 'text-purple-900/70'}`} style={{ transitionDelay: '0.2s' }}>
               Access your personalized learning dashboard and continue your professional development journey.
             </p>
             
             <div className="space-y-4">
-              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-500/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.4s' }} onMouseEnter={(e) => {
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-500/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.3s' }} onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
@@ -335,7 +339,7 @@ export default function LoginPage() {
                   <p className={`text-sm font-light ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>Learn from top companies</p>
                 </div>
               </div>
-              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.5s' }} onMouseEnter={(e) => {
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.4s' }} onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
@@ -392,7 +396,7 @@ export default function LoginPage() {
                   <p className={`text-sm font-light ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>Learn from industry professionals</p>
                 </div>
               </div>
-              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.6s' }} onMouseEnter={(e) => {
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-amber-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.5s' }} onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
@@ -463,11 +467,8 @@ export default function LoginPage() {
         <div className="w-full max-w-md mx-auto">
           {/* Mobile Header */}
           <div className="slide-up lg:hidden mb-6 sm:mb-8 text-center pt-16 sm:pt-20" style={{ transitionDelay: '0.05s' }}>
-            <div className={`inline-flex items-center gap-2 rounded-full px-3 sm:px-4 py-1.5 mb-4 sm:mb-6 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-purple-500/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)' }}>
-              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Welcome Back</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-light mb-3 sm:mb-4 leading-tight tracking-tight px-2">
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign In to</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
+            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-light mb-3 sm:mb-4 leading-tight tracking-tight px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>
+              Welcome Back
             </h1>
           </div>
 
@@ -477,9 +478,11 @@ export default function LoginPage() {
           {/* Clerk Sign In Component */}
           <div className="slide-up w-full" style={{ transitionDelay: '0.7s' }}>
             <div className={`rounded-2xl p-6 sm:p-8 lg:p-12 xl:p-14 backdrop-blur-xl border w-full ${isDark ? 'border-purple-500/20' : 'border-purple-500/30'}`} style={{ backgroundColor: themeStyles.cardBg }}>
-              {/* Welcome Back text inside the box */}
+              {/* Sign In to TekInPlant text inside the box */}
               <div className="text-center mb-4 sm:mb-6">
-                <h2 className={`text-xl sm:text-2xl lg:text-3xl font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Welcome Back</h2>
+                <h2 className={`text-xl sm:text-2xl lg:text-3xl font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>
+                  <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign In to</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
+                </h2>
               </div>
               {/* Error boundary for Clerk component */}
               {!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
@@ -493,6 +496,7 @@ export default function LoginPage() {
                 </div>
               ) : (
                 <SignIn 
+                key={isDark ? 'dark' : 'light'}
                 appearance={{
                   elements: {
                     rootBox: "mx-auto w-full flex flex-col items-center",

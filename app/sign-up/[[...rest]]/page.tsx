@@ -205,18 +205,15 @@ export default function SignUpPage() {
       <div className="hidden lg:flex lg:flex-1 relative overflow-hidden">
         <div className="relative z-10 flex flex-col p-12 lg:p-16 xl:p-20 text-white w-full" style={{ paddingTop: '6rem', justifyContent: 'flex-start' }}>
           <div className="max-w-lg">
-            <div className={`slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)', transitionDelay: '0.1s' }}>
-              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Get Started</span>
-            </div>
-            <h1 className="slide-up text-5xl lg:text-6xl xl:text-7xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
+            <h1 className={`slide-up text-5xl lg:text-6xl xl:text-7xl font-light mb-6 leading-tight tracking-tight ${isDark ? 'text-white' : 'text-purple-900'}`} style={{ transitionDelay: '0.1s' }}>
+              Welcome
             </h1>
-            <p className={`slide-up text-lg lg:text-xl font-light leading-relaxed mb-12 ${isDark ? 'text-white/50' : 'text-purple-900/70'}`} style={{ transitionDelay: '0.3s' }}>
+            <p className={`slide-up text-lg lg:text-xl font-light leading-relaxed mb-12 ${isDark ? 'text-white/50' : 'text-purple-900/70'}`} style={{ transitionDelay: '0.2s' }}>
               Start your professional development journey and unlock access to industry-leading training programs.
             </p>
             
             <div className="space-y-4">
-              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.4s' }} onMouseEnter={(e) => {
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.3s' }} onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
@@ -273,7 +270,7 @@ export default function SignUpPage() {
                   <p className={`text-sm font-light ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>Learn from top companies</p>
                 </div>
               </div>
-              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.5s' }} onMouseEnter={(e) => {
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.4s' }} onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
@@ -330,7 +327,7 @@ export default function SignUpPage() {
                   <p className={`text-sm font-light ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>Learn from industry professionals</p>
                 </div>
               </div>
-              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.6s' }} onMouseEnter={(e) => {
+              <div className={`slide-up flex items-start gap-4 rounded-xl p-4 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} transition-all duration-300`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.6)', transitionDelay: '0.5s' }} onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
                 e.currentTarget.style.borderColor = isDark ? 'rgba(168,85,247,0.3)' : 'rgba(217,119,6,0.4)'
               }} onMouseLeave={(e) => {
@@ -401,11 +398,8 @@ export default function SignUpPage() {
         <div className="w-full max-w-md mx-auto">
           {/* Mobile Header */}
           <div className="slide-up lg:hidden mb-6 sm:mb-8 text-center pt-16 sm:pt-20" style={{ transitionDelay: '0.05s' }}>
-            <div className={`inline-flex items-center gap-2 rounded-full px-3 sm:px-4 py-1.5 mb-4 sm:mb-6 backdrop-blur-sm border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'}`} style={{ backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)' }}>
-              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Get Started</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-light mb-3 sm:mb-4 leading-tight tracking-tight px-2">
-              <span className={isDark ? 'text-white' : 'text-purple-900'}>Sign Up for</span> <span className={`bg-gradient-to-r ${gradientFrom} ${gradientVia} ${gradientTo} bg-clip-text text-transparent`}>TekInPlant</span>
+            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-light mb-3 sm:mb-4 leading-tight tracking-tight px-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>
+              Welcome
             </h1>
           </div>
 
@@ -415,13 +409,17 @@ export default function SignUpPage() {
           {/* Clerk Sign Up Component */}
           <div className="slide-up w-full" style={{ transitionDelay: '0.7s' }}>
             <div className={`rounded-2xl p-6 sm:p-8 lg:p-12 xl:p-14 backdrop-blur-xl border ${isDark ? 'border-purple-500/20' : 'border-purple-600/30'} w-full`} style={{ backgroundColor: themeStyles.cardBg }}>
+              {/* Create an Account text inside the box */}
+              <div className="text-center mb-4 sm:mb-6">
+                <h2 className={`text-xl sm:text-2xl lg:text-3xl font-light mb-2 ${isDark ? 'text-white' : 'text-purple-900'}`}>Create an Account</h2>
+              </div>
               <SignUp 
                 appearance={{
                   elements: {
                     rootBox: "mx-auto w-full flex flex-col items-center",
                     card: "bg-transparent shadow-none border-none p-0 w-full",
-                    headerTitle: `text-2xl lg:text-3xl font-light mb-2 tracking-tight text-center ${isDark ? 'text-white' : 'text-purple-900'}`,
-                    headerSubtitle: `font-light mb-8 text-center ${isDark ? 'text-white/50' : 'text-purple-900/70'}`,
+                    headerTitle: "hidden",
+                    headerSubtitle: "hidden",
                     socialButtonsBlockButton: "rounded-xl border-2 transition-all duration-300 font-light w-full py-3 px-4 backdrop-blur-sm",
                     formButtonPrimary: `rounded-xl transition-all duration-300 hover:opacity-90 backdrop-blur-sm border ${isDark ? 'border-purple-400/40' : 'border-purple-600/50'} font-medium w-full`,
                     footerActionLink: "transition-colors duration-200 font-light",

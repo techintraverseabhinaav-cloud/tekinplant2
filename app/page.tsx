@@ -8,6 +8,7 @@ import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useUser } from "@clerk/nextjs"
 import { industryCourses, industryStats } from "../lib/industry-data"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../lib/theme-styles"
@@ -119,6 +120,7 @@ export default function HomePage() {
   const [featuredCourses, setFeaturedCourses] = useState<Course[]>([])
   const [loadingCourses, setLoadingCourses] = useState(true)
   const router = useRouter()
+  const { isSignedIn } = useUser()
   const popularSearches = ["Automation", "Electrical Engineering", "Siemens", "ABB"]
   const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -778,14 +780,20 @@ export default function HomePage() {
                     </div>
 
                     <div className="flex items-center justify-center pt-4">
-                      <Link href={`/courses/${course.id}`} className="text-base px-5 py-2.5 rounded-xl hover:opacity-90 backdrop-blur-sm border transition-all duration-300" style={{ 
-                        background: themeStyles.buttonGradient, 
-                        color: '#ffffff', 
-                        borderColor: theme === 'dark' ? 'rgba(124,58,237,0.4)' : 'rgba(139,90,43,0.4)',
-                        boxShadow: themeStyles.buttonShadow 
-                      }} onMouseEnter={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadowHover} onMouseLeave={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadow}>
+                      <button 
+                        onClick={() => isSignedIn ? router.push(`/courses/${course.id}`) : router.push('/login')} 
+                        className="text-base px-5 py-2.5 rounded-xl hover:opacity-90 backdrop-blur-sm border transition-all duration-300" 
+                        style={{ 
+                          background: themeStyles.buttonGradient, 
+                          color: '#ffffff', 
+                          borderColor: theme === 'dark' ? 'rgba(124,58,237,0.4)' : 'rgba(139,90,43,0.4)',
+                          boxShadow: themeStyles.buttonShadow 
+                        }} 
+                        onMouseEnter={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadowHover} 
+                        onMouseLeave={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadow}
+                      >
                         Learn More
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </div>

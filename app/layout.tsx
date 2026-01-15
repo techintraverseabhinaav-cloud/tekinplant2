@@ -87,7 +87,7 @@ export default function RootLayout({
                     html.style.setProperty('background-color', '#f5f1e8', 'important');
                   }
                   
-                  // Apply body class when body is available (CSS-based, no inline styles)
+                  // Apply body class and background color when body is available
                   function applyBodyClass() {
                     var body = document.body;
                     if (body) {
@@ -96,10 +96,23 @@ export default function RootLayout({
                       // Add the appropriate class based on theme
                       if (theme === 'dark') {
                         body.classList.add('darkbody');
+                        // Set background color inline immediately to prevent flash
+                        body.style.setProperty('background', 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)', 'important');
+                        body.style.setProperty('color', '#ffffff', 'important');
                       } else {
                         body.classList.add('lightbody');
+                        // Set background color inline immediately to prevent flash
+                        body.style.setProperty('background', 'linear-gradient(135deg, #f5f1e8 0%, #e8ddd4 50%, #d4c4b0 100%)', 'important');
+                        body.style.setProperty('color', '#3a2e1f', 'important');
                       }
+                      // Disable transitions during initialization to prevent flash
+                      body.style.setProperty('transition', 'none', 'important');
                       html.setAttribute('data-theme-initialized', 'true');
+                      
+                      // Re-enable transitions after a short delay
+                      setTimeout(function() {
+                        body.style.removeProperty('transition');
+                      }, 100);
                     }
                   }
                   
@@ -123,10 +136,13 @@ export default function RootLayout({
                   html.className = 'dark';
                   html.setAttribute('data-theme', 'dark');
                   html.style.setProperty('background-color', '#000000', 'important');
-                  // Apply body class if body exists
+                  // Apply body class and background if body exists
                   if (document.body) {
                     document.body.classList.remove('lightbody');
                     document.body.classList.add('darkbody');
+                    document.body.style.setProperty('background', 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)', 'important');
+                    document.body.style.setProperty('color', '#ffffff', 'important');
+                    document.body.style.setProperty('transition', 'none', 'important');
                   }
                 }
               })();
