@@ -8,7 +8,7 @@ import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { industryCourses, industryStats, industryInsights } from "../lib/industry-data"
+import { industryCourses, industryStats } from "../lib/industry-data"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../lib/theme-styles"
 
@@ -568,7 +568,11 @@ export default function HomePage() {
 
       {/* Featured Companies Section */}
       <section className="slide-right py-12 sm:py-16 relative overflow-hidden">
-        <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: themeStyles.pageBgGradient }}></div>
+        <div className="absolute inset-0 backdrop-blur-[1px]" style={{ 
+          background: isDark 
+            ? 'radial-gradient(ellipse 120% 100% at 50% 0%, rgba(38, 38, 38, 0.6) 0%, rgba(23, 23, 23, 0.75) 25%, rgba(17, 17, 17, 0.9) 50%, rgba(10, 10, 10, 0.95) 75%, #000000 100%), linear-gradient(180deg, rgba(26, 26, 26, 0.4) 0%, rgba(13, 13, 13, 0.7) 50%, rgba(0, 0, 0, 1) 100%)'
+            : 'radial-gradient(ellipse 120% 100% at 50% 0%, rgba(250, 250, 250, 0.8) 0%, rgba(245, 245, 245, 0.7) 25%, rgba(240, 240, 240, 0.6) 50%, rgba(235, 235, 235, 0.9) 75%, rgba(249, 250, 251, 1) 100%), linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(250, 250, 250, 0.95) 50%, rgba(241, 245, 249, 1) 100%)'
+        }}></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div className="text-center md:text-left">
@@ -808,188 +812,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Industry Insights */}
-      <section className="slide-up py-12 sm:py-16 md:py-20 relative" suppressHydrationWarning style={{ backgroundColor: themeStyles.pageBg }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Title - Mobile: Top, Desktop: Center */}
-          <div className="text-center mb-8 md:hidden">
-            <h2 className="text-2xl sm:text-3xl font-normal mb-3 sm:mb-4" suppressHydrationWarning>
-              <span className={`bg-clip-text text-transparent ${
-                theme === 'dark' 
-                  ? 'bg-gradient-to-r from-purple-600 via-purple-500 to-purple-600' 
-                  : 'bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700'
-              }`} suppressHydrationWarning style={{ 
-                textShadow: theme === 'dark' 
-                  ? '0 0 30px rgba(124,58,237,0.5), 0 0 60px rgba(124,58,237,0.3)' 
-                  : 'none' 
-              }}>Industry</span> <span className={`bg-clip-text text-transparent ${
-                theme === 'dark' 
-                  ? 'bg-gradient-to-r from-purple-600 to-purple-500' 
-                  : 'bg-gradient-to-r from-purple-700 to-purple-600'
-              }`} suppressHydrationWarning style={{ 
-                textShadow: theme === 'dark' 
-                  ? '0 0 30px rgba(124,58,237,0.5), 0 0 60px rgba(124,58,237,0.3)' 
-                  : 'none' 
-              }}>Insights</span>
-            </h2>
-            <p className="text-sm sm:text-base text-center px-2" style={{ 
-              lineHeight: '1.8', 
-              color: themeStyles.textPrimary,
-              opacity: theme === 'dark' ? 0.7 : 0.9
-            }}>
-              Stay ahead with comprehensive analytics and market trends
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-0">
-            {/* Left boxes - Mobile: 2x2 grid, Desktop: flex row */}
-            <div className="col-span-1 md:col-span-1 lg:col-span-2 grid grid-cols-2 md:flex md:flex-row gap-3 sm:gap-4 items-stretch md:items-end pr-0 max-w-full lg:max-w-[380px] md:self-end">
-              {[
-                { value: industryInsights.successRate, label: "Success Rate", desc: "Program completion rate", isTall: true },
-                { value: industryInsights.averageCoursePrice, label: "Average Price", desc: "Course pricing", isTall: false },
-              ].map((insight, index) => {
-                // Theme-aware colors - same for all boxes
-                const boxBg = isDark ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.7)'
-                const boxBorder = isDark ? 'rgba(124,58,237,0.25)' : 'rgba(139,90,43,0.3)'
-                const hoverShadow = isDark 
-                  ? '0 12px 32px rgba(0,0,0,0.3), 0 0 25px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.08)'
-                  : '0 12px 32px rgba(58,46,31,0.2), 0 0 25px rgba(139,90,43,0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
-                const defaultShadow = isDark
-                  ? '0 8px 24px rgba(0,0,0,0.2), 0 0 15px rgba(124,58,237,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
-                  : '0 8px 24px rgba(58,46,31,0.15), 0 0 15px rgba(139,90,43,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
-                // First box (tall) and last box (tall) have same height, 2nd and 3rd (short) have same height
-                const heightClass = insight.isTall 
-                  ? 'h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px]' 
-                  : 'h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px]'
-                
-                return (
-                  <div 
-                    key={index} 
-                    className={`w-full md:flex-1 hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
-                    suppressHydrationWarning
-                    style={{
-                      backgroundColor: boxBg, 
-                      borderColor: boxBorder, 
-                      borderWidth: '1px',
-                      boxShadow: defaultShadow
-                    }} 
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = hoverShadow
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                    }} 
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = defaultShadow
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}
-                  >
-                    <span className="font-bold text-center leading-none block mb-3 sm:mb-5 text-xl sm:text-2xl lg:text-3xl" style={{ 
-                      color: themeStyles.textPrimary, 
-                      letterSpacing: '-0.02em' 
-                    }}>{insight.value}</span>
-                    <h3 className="font-semibold mb-1 sm:mb-2 text-center text-sm sm:text-base lg:text-lg" style={{ 
-                      color: themeStyles.textPrimary,
-                      letterSpacing: '-0.01em' 
-                    }}>{insight.label}</h3>
-                    <p className="text-center text-xs sm:text-sm" style={{ 
-                      color: themeStyles.textSecondary,
-                      lineHeight: '1.6', 
-                      letterSpacing: '0.01em' 
-                    }}>{insight.desc}</p>
-                  </div>
-                )
-              })}
-            </div>
-            
-            {/* Center title - Desktop only */}
-            <div className="hidden md:flex col-span-1 md:col-span-1 lg:col-span-1 text-center px-4 sm:px-8 md:px-12 lg:px-20 flex-col items-center justify-center py-8 md:py-0" suppressHydrationWarning style={{ minHeight: '200px', alignSelf: 'center' }}>
-              <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-normal mb-3 sm:mb-4" suppressHydrationWarning>
-                <span className={`bg-clip-text text-transparent ${
-                  theme === 'dark' 
-                    ? 'bg-gradient-to-r from-purple-600 via-purple-500 to-purple-600' 
-                    : 'bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700'
-                }`} suppressHydrationWarning style={{ 
-                  textShadow: theme === 'dark' 
-                    ? '0 0 30px rgba(124,58,237,0.5), 0 0 60px rgba(124,58,237,0.3)' 
-                    : 'none' 
-                }}>Industry</span> <span className={`bg-clip-text text-transparent ${
-                  theme === 'dark' 
-                    ? 'bg-gradient-to-r from-purple-600 to-purple-500' 
-                    : 'bg-gradient-to-r from-purple-700 to-purple-600'
-                }`} suppressHydrationWarning style={{ 
-                  textShadow: theme === 'dark' 
-                    ? '0 0 30px rgba(124,58,237,0.5), 0 0 60px rgba(124,58,237,0.3)' 
-                    : 'none' 
-                }}>Insights</span>
-              </h2>
-              <p className="text-sm sm:text-base text-center px-2" style={{ 
-                lineHeight: '1.8', 
-                color: themeStyles.textPrimary,
-                opacity: theme === 'dark' ? 0.7 : 0.9
-              }}>
-                Stay ahead with comprehensive analytics and market trends
-              </p>
-            </div>
-
-            {/* Right boxes - Mobile: 2x2 grid, Desktop: flex row */}
-            <div className="col-span-1 md:col-span-1 lg:col-span-2 grid grid-cols-2 md:flex md:flex-row gap-3 sm:gap-4 items-stretch md:items-end pl-0 max-w-full lg:max-w-[380px] md:ml-auto md:self-end">
-              {[
-                { value: industryInsights.placementRate, label: "Placement Rate", desc: "Job placement success", isTall: false },
-                { value: industryInsights.marketGrowth, label: "Market Growth", desc: "Year over year", isTall: true },
-              ].map((insight, index) => {
-                // Theme-aware colors - same for all boxes
-                const boxBg = isDark ? 'rgba(124,58,237,0.12)' : 'rgba(255,255,255,0.7)'
-                const boxBorder = isDark ? 'rgba(124,58,237,0.25)' : 'rgba(139,90,43,0.3)'
-                const hoverShadow = isDark 
-                  ? '0 12px 32px rgba(0,0,0,0.3), 0 0 25px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.08)'
-                  : '0 12px 32px rgba(58,46,31,0.2), 0 0 25px rgba(139,90,43,0.25), inset 0 1px 0 rgba(255,255,255,0.1)'
-                const defaultShadow = isDark
-                  ? '0 8px 24px rgba(0,0,0,0.2), 0 0 15px rgba(124,58,237,0.15), inset 0 1px 0 rgba(255,255,255,0.05)'
-                  : '0 8px 24px rgba(58,46,31,0.15), 0 0 15px rgba(139,90,43,0.2), inset 0 1px 0 rgba(255,255,255,0.1)'
-                // First box (tall) and last box (tall) have same height, 2nd and 3rd (short) have same height
-                const heightClass = insight.isTall 
-                  ? 'h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px]' 
-                  : 'h-[200px] sm:h-[220px] md:h-[240px] lg:h-[260px]'
-                
-                return (
-                  <div 
-                    key={index} 
-                    className={`w-full md:flex-1 hover-lift rounded-2xl sm:rounded-3xl transition-all duration-500 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 ${heightClass}`}
-                    suppressHydrationWarning
-                    style={{
-                      backgroundColor: boxBg, 
-                      borderColor: boxBorder, 
-                      borderWidth: '1px',
-                      boxShadow: defaultShadow
-                    }} 
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = hoverShadow
-                      e.currentTarget.style.transform = 'translateY(-4px)'
-                    }} 
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = defaultShadow
-                      e.currentTarget.style.transform = 'translateY(0)'
-                    }}
-                  >
-                    <span className="font-bold text-center leading-none block mb-3 sm:mb-5 text-xl sm:text-2xl lg:text-3xl" style={{ 
-                      color: themeStyles.textPrimary, 
-                      letterSpacing: '-0.02em' 
-                    }}>{insight.value}</span>
-                    <h3 className="font-semibold mb-1 sm:mb-2 text-center text-sm sm:text-base lg:text-lg" style={{ 
-                      color: themeStyles.textPrimary,
-                      letterSpacing: '-0.01em' 
-                    }}>{insight.label}</h3>
-                    <p className="text-center text-xs sm:text-sm" style={{ 
-                      color: themeStyles.textSecondary,
-                      lineHeight: '1.6', 
-                      letterSpacing: '0.01em' 
-                    }}>{insight.desc}</p>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
 
               {/* CTA Section */}
               <section className="slide-up py-12 sm:py-16 md:py-12 pt-20 sm:pt-24 md:pt-32 relative overflow-hidden">

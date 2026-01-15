@@ -4,7 +4,7 @@ import { useState, useEffect, useLayoutEffect } from "react"
 import { Search, MapPin, Building2, Users, Calendar, ExternalLink, Mail, Phone, TrendingUp, Star, ChevronDown } from "lucide-react"
 import Navbar from "../../src/components/Navbar"
 import Link from "next/link"
-import { industryPartners, industryStats, industryInsights } from "../../lib/industry-data"
+import { industryPartners, industryStats } from "../../lib/industry-data"
 import { useTheme } from "next-themes"
 import { useThemeStyles } from "../../lib/theme-styles"
 
@@ -551,135 +551,6 @@ export default function PartnersPage() {
               </button>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Industry Insights */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 backdrop-blur-[1px]" style={{ background: themeStyles.pageBgGradient }}></div>
-        <div className="slide-up relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-          <div className="text-center mb-16">
-            <div className="slide-up inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm border" suppressHydrationWarning style={{ 
-              backgroundColor: isDark ? 'rgba(0,0,0,0.4)' : 'rgba(255,255,255,0.7)',
-              borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.25)',
-              transitionDelay: '0.1s' 
-            }}>
-              <TrendingUp className="w-3.5 h-3.5" suppressHydrationWarning style={{ color: isDark ? '#a855f7' : '#a78bfa' }} />
-              <span className={`text-xs font-medium tracking-wide uppercase ${isDark ? 'text-white/70' : 'text-purple-900/80'}`}>Industry Analytics</span>
-            </div>
-            <h2 className="slide-up text-4xl lg:text-5xl font-light mb-6 leading-tight tracking-tight" style={{ transitionDelay: '0.2s' }}>
-              <span style={{ color: themeStyles.textPrimary }}>Industry</span> <span className={`bg-clip-text text-transparent ${
-                isDark 
-                  ? 'bg-gradient-to-r from-purple-300 to-purple-400' 
-                  : 'bg-gradient-to-r from-purple-800 to-purple-700'
-              }`}>Insights</span>
-            </h2>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {/* Top Industries */}
-            <div 
-              className="slide-up p-8 rounded-2xl backdrop-blur-xl border transition-all duration-500" 
-              style={{ 
-                backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)',
-                borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)',
-                transitionDelay: '0.3s' 
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)'
-                e.currentTarget.style.boxShadow = isDark
-                  ? '0 12px 24px rgba(0,0,0,0.4), 0 0 20px rgba(196,181,253,0.2)'
-                  : '0 12px 24px rgba(58,46,31,0.2), 0 0 20px rgba(139,90,43,0.25)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}
-            >
-              <h3 className={`text-lg font-medium mb-6 ${isDark ? 'text-white' : 'text-purple-900'}`}>Top Industries</h3>
-              <div className="space-y-4">
-                {industryInsights.topIndustries.map((industry, index) => (
-                  <div key={index} className={`flex items-center justify-between py-2 border-b last:border-0 ${isDark ? 'border-white/5' : 'border-purple-900/10'}`}>
-                    <span className={`font-light ${isDark ? 'text-white/60' : 'text-purple-900/70'}`}>{industry.name}</span>
-                    <span className={`font-medium ${isDark ? 'text-purple-400' : 'text-purple-800'}`}>{industry.count} companies</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Popular Locations */}
-            <div 
-              className="slide-up p-8 rounded-2xl backdrop-blur-xl border transition-all duration-500" 
-              style={{ 
-                backgroundColor: isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)',
-                borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(139,90,43,0.3)',
-                transitionDelay: '0.4s' 
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)'
-                e.currentTarget.style.boxShadow = isDark
-                  ? '0 12px 24px rgba(0,0,0,0.4), 0 0 20px rgba(196,181,253,0.2)'
-                  : '0 12px 24px rgba(58,46,31,0.2), 0 0 20px rgba(139,90,43,0.25)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}
-            >
-              <h3 className={`text-lg font-medium mb-6 ${isDark ? 'text-white' : 'text-purple-900'}`}>Popular Locations</h3>
-              <div className="space-y-4">
-                {industryInsights.popularLocations.map((location, index) => (
-                  <div key={index} className={`flex items-center justify-between py-2 border-b last:border-0 ${isDark ? 'border-white/5' : 'border-purple-900/10'}`}>
-                    <span className={`font-light ${isDark ? 'text-white/60' : 'text-purple-900/70'}`}>{location.name}</span>
-                    <span className={`font-medium ${isDark ? 'text-purple-400' : 'text-purple-800'}`}>{location.count} companies</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Additional Stats */}
-          <div className="grid md:grid-cols-4 gap-6 lg:gap-8">
-            {[
-              { value: industryInsights.averageCoursePrice, label: "Average Course Price" },
-              { value: industryInsights.averageDuration, label: "Average Duration" },
-              { value: industryInsights.successRate, label: "Success Rate" },
-              { value: industryInsights.placementRate, label: "Placement Rate" },
-            ].map((stat, index) => {
-              const statBorder = isDark ? 'rgba(168,85,247,0.25)' : 'rgba(139,90,43,0.3)'
-              const statBg = isDark ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.8)'
-              const hoverShadow = isDark
-                ? '0 12px 24px rgba(0,0,0,0.4), 0 0 20px rgba(196,181,253,0.2)'
-                : '0 12px 24px rgba(58,46,31,0.2), 0 0 20px rgba(139,90,43,0.25)'
-              
-              return (
-              <div 
-                key={index} 
-                className="slide-up p-8 rounded-2xl text-center transition-all duration-500 backdrop-blur-xl border" 
-                style={{ 
-                  backgroundColor: statBg, 
-                  borderColor: statBorder,
-                  transitionDelay: `${0.5 + index * 0.1}s`
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                  e.currentTarget.style.boxShadow = hoverShadow
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-              >
-                <h3 className={`text-3xl font-light mb-2 tracking-tight bg-clip-text text-transparent ${
-                  isDark 
-                    ? 'bg-gradient-to-r from-purple-300 to-purple-400' 
-                    : 'bg-gradient-to-r from-purple-800 to-purple-700'
-                }`}>{stat.value}</h3>
-                <p className={`text-sm font-light tracking-wide uppercase ${isDark ? 'text-white/50' : 'text-purple-900/70'}`}>{stat.label}</p>
-              </div>
-              )
-            })}
-          </div>
         </div>
       </section>
     </div>

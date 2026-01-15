@@ -137,16 +137,17 @@ export default function Navbar() {
               <span className="text-white font-bold text-lg">T</span>
             </div>
             <div>
-              <span className={`text-xl lg:text-2xl font-bold bg-clip-text text-transparent ${
+              <span className={`text-2xl lg:text-3xl font-bold bg-clip-text text-transparent ${
                 isDark 
                   ? 'bg-gradient-to-r from-purple-300 via-purple-200 to-purple-300' 
                   : 'bg-gradient-to-r from-purple-700 via-purple-600 to-purple-700'
               }`} style={{ 
                 textShadow: isDark 
                   ? '0 0 30px rgba(196,181,253,0.5), 0 0 60px rgba(196,181,253,0.3)' 
-                  : 'none' 
+                  : 'none',
+                letterSpacing: '-0.02em'
               }}>TekInPlant</span>
-              <div className={`text-xs -mt-1 ${isDark ? 'text-white/60' : 'text-gray-700/70'}`}>Portal</div>
+              <div className={`text-sm -mt-1 font-medium ${isDark ? 'text-white/70' : 'text-gray-700/80'}`}>Portal</div>
             </div>
           </Link>
 
@@ -155,8 +156,8 @@ export default function Navbar() {
             {/* Home */}
             <Link
               href="/"
-              className={`text-sm font-medium transition-all duration-300 px-3 py-2 rounded-xl relative group ${
-                isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+              className={`text-base font-semibold transition-all duration-300 px-4 py-2 rounded-xl relative group ${
+                isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
               }`}
               style={{ 
                 backgroundColor: pathname === '/' 
@@ -180,8 +181,8 @@ export default function Navbar() {
             {/* Courses */}
             <Link
               href="/courses"
-              className={`text-sm font-medium transition-all duration-300 px-3 py-2 rounded-xl ${
-                isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+              className={`text-base font-semibold transition-all duration-300 px-4 py-2 rounded-xl ${
+                isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
               }`}
               style={{ 
                 backgroundColor: pathname?.startsWith('/courses') 
@@ -205,8 +206,8 @@ export default function Navbar() {
             {/* Partners */}
             <Link
               href="/partners"
-              className={`text-sm font-medium transition-all duration-300 px-3 py-2 rounded-xl ${
-                isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+              className={`text-base font-semibold transition-all duration-300 px-4 py-2 rounded-xl ${
+                isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
               }`}
               style={{ 
                 backgroundColor: pathname === '/partners' 
@@ -231,8 +232,8 @@ export default function Navbar() {
             {isLoaded && user && (
               <Link
                 href={getDashboardLink()}
-                className={`text-sm font-medium transition-all duration-300 px-3 py-2 rounded-xl ${
-                  isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                className={`text-base font-semibold transition-all duration-300 px-4 py-2 rounded-xl ${
+                  isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
                 }`}
                 style={{ 
                   backgroundColor: pathname?.startsWith('/student-dashboard') || pathname?.startsWith('/admin-dashboard') || pathname?.startsWith('/trainer-dashboard') || pathname?.startsWith('/corporate-dashboard') 
@@ -257,8 +258,8 @@ export default function Navbar() {
             {/* About / Contact */}
             <Link
               href="/about"
-              className={`text-sm font-medium transition-all duration-300 px-3 py-2 rounded-xl ${
-                isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+              className={`text-base font-semibold transition-all duration-300 px-4 py-2 rounded-xl ${
+                isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
               }`}
               style={{ 
                 backgroundColor: pathname === '/about' 
@@ -280,8 +281,8 @@ export default function Navbar() {
             </Link>
             <Link
               href="/contact"
-              className={`text-sm font-medium transition-all duration-300 px-3 py-2 rounded-xl ${
-                isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+              className={`text-base font-semibold transition-all duration-300 px-4 py-2 rounded-xl ${
+                isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
               }`}
               style={{ 
                 backgroundColor: pathname === '/contact' 
@@ -390,33 +391,51 @@ export default function Navbar() {
               </button>
             )}
             
-            {/* Profile Icon - Always visible */}
-            <div 
-              className="relative user-menu z-50"
-              onMouseEnter={() => {
-                if (userMenuTimerRef.current) {
-                  clearTimeout(userMenuTimerRef.current)
-                  userMenuTimerRef.current = null
-                }
-              }}
-              onMouseLeave={() => {
-                const timer = setTimeout(() => {
-                  setShowUserMenu(false)
-                }, 1500)
-                userMenuTimerRef.current = timer
-              }}
-            >
-              <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className={`p-2 transition-all duration-300 rounded-xl ${
-                  isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
-                }`}
-                style={{ backgroundColor: 'transparent' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.1)' : 'rgba(124,58,237,0.1)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                aria-label="Profile menu"
+            {/* Sign In button (Desktop) */}
+            {!isLoaded || !user ? (
+              <Link
+                href="/login"
+                className="px-4 py-2 rounded-xl transition-all duration-300 hover:opacity-90 backdrop-blur-sm border text-sm font-semibold"
+                style={{
+                  background: themeStyles.buttonGradient,
+                  color: '#ffffff',
+                  borderColor: isDark ? 'rgba(168,85,247,0.4)' : 'rgba(124,58,237,0.4)',
+                  boxShadow: themeStyles.buttonShadow
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadowHover}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadow}
               >
-                {isLoaded && user ? (
+                Sign In
+              </Link>
+            ) : null}
+
+            {/* Profile Icon (Desktop, only when logged in) */}
+            {isLoaded && user && (
+              <div 
+                className="relative user-menu z-50"
+                onMouseEnter={() => {
+                  if (userMenuTimerRef.current) {
+                    clearTimeout(userMenuTimerRef.current)
+                    userMenuTimerRef.current = null
+                  }
+                }}
+                onMouseLeave={() => {
+                  const timer = setTimeout(() => {
+                    setShowUserMenu(false)
+                  }, 1500)
+                  userMenuTimerRef.current = timer
+                }}
+              >
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className={`p-2 transition-all duration-300 rounded-xl ${
+                    isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                  }`}
+                  style={{ backgroundColor: 'transparent' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.1)' : 'rgba(124,58,237,0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  aria-label="Profile menu"
+                >
                   <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden relative"
                   style={{ background: user?.imageUrl ? 'transparent' : themeStyles.buttonGradient }}>
                     {user?.imageUrl ? (
@@ -433,98 +452,78 @@ export default function Navbar() {
                             }
                           }}
                         />
-                        <span className="text-white text-sm font-medium absolute inset-0 flex items-center justify-center" style={{ display: 'none' }}>
+                        <span className="text-white text-base font-semibold absolute inset-0 flex items-center justify-center" style={{ display: 'none' }}>
                           {userName.charAt(0).toUpperCase()}
                         </span>
                       </>
                     ) : (
-                      <span className="text-white text-sm font-medium">{userName.charAt(0).toUpperCase()}</span>
+                      <span className="text-white text-base font-semibold">{userName.charAt(0).toUpperCase()}</span>
                     )}
                   </div>
-                ) : (
-                  <User size={20} />
-                )}
-              </button>
-              
-              {showUserMenu && (
-                <div 
-                  className="absolute right-0 mt-2 w-48 rounded-xl p-2 border backdrop-blur-xl z-50"
-                  style={{
-                    backgroundColor: isDark ? 'rgba(168,85,247,0.08)' : 'rgba(255,255,255,0.9)',
-                    borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(124,58,237,0.3)',
-                    boxShadow: isDark 
-                      ? '0 0 20px rgba(196,181,253,0.3), 0 0 40px rgba(196,181,253,0.2)'
-                      : '0 0 20px rgba(58,46,31,0.15), 0 0 40px rgba(58,46,31,0.1)'
-                  }}
-                  onMouseEnter={() => {
-                    if (userMenuTimerRef.current) {
-                      clearTimeout(userMenuTimerRef.current)
-                      userMenuTimerRef.current = null
-                    }
-                  }}
-                >
-                  {isLoaded && user ? (
-                    <>
-                      <div className="px-3 py-2 border-b" style={{ borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)' }}>
-                        <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{userName}</p>
-                        <p className={`text-xs ${isDark ? 'text-white/60' : 'text-gray-900/70'}`}>{userEmail}</p>
-                        <p className={`text-xs capitalize ${isDark ? 'text-purple-400' : 'text-purple-700'}`}>{userRole}</p>
-                      </div>
-                      <Link
-                        href="/profile"
-                        className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
-                          isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
-                        }`}
-                        style={{ backgroundColor: 'transparent' }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        <Settings size={16} />
-                        <span>Profile Settings</span>
-                      </Link>
-                      <Link
-                        href={getDashboardLink()}
-                        className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
-                          isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
-                        }`}
-                        style={{ backgroundColor: 'transparent' }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        <User size={16} />
-                        <span>Dashboard</span>
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center space-x-2 px-3 py-2 text-sm text-red-400 hover:text-red-300 rounded-lg transition-all duration-200 w-full text-left"
-                        style={{ backgroundColor: 'transparent' }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239,68,68,0.15)'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                      >
-                        <LogOut size={16} />
-                        <span>Sign Out</span>
-                      </button>
-                    </>
-                  ) : (
+                </button>
+                
+                {showUserMenu && (
+                  <div 
+                    className="absolute right-0 mt-2 w-48 rounded-xl p-2 border backdrop-blur-xl z-50"
+                    style={{
+                      backgroundColor: isDark ? 'rgba(168,85,247,0.08)' : 'rgba(255,255,255,0.9)',
+                      borderColor: isDark ? 'rgba(168,85,247,0.25)' : 'rgba(124,58,237,0.3)',
+                      boxShadow: isDark 
+                        ? '0 0 20px rgba(196,181,253,0.3), 0 0 40px rgba(196,181,253,0.2)'
+                        : '0 0 20px rgba(58,46,31,0.15), 0 0 40px rgba(58,46,31,0.1)'
+                    }}
+                    onMouseEnter={() => {
+                      if (userMenuTimerRef.current) {
+                        clearTimeout(userMenuTimerRef.current)
+                        userMenuTimerRef.current = null
+                      }
+                    }}
+                  >
+                    <div className="px-4 py-3 border-b" style={{ borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)' }}>
+                      <p className={`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{userName}</p>
+                      <p className={`text-sm ${isDark ? 'text-white/60' : 'text-gray-900/70'}`}>{userEmail}</p>
+                      <p className={`text-sm capitalize font-medium ${isDark ? 'text-purple-400' : 'text-purple-700'}`}>{userRole}</p>
+                    </div>
                     <Link
-                      href="/login"
-                      className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
-                        isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                      href="/profile"
+                      className={`flex items-center space-x-2 px-4 py-2.5 text-base font-semibold rounded-lg transition-all duration-200 ${
+                        isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
                       }`}
                       style={{ backgroundColor: 'transparent' }}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       onClick={() => setShowUserMenu(false)}
                     >
-                      <User size={16} />
-                      <span>Sign In</span>
+                      <Settings size={18} />
+                      <span>Profile Settings</span>
                     </Link>
-                  )}
-                </div>
-              )}
-            </div>
+                    <Link
+                      href={getDashboardLink()}
+                      className={`flex items-center space-x-2 px-4 py-2.5 text-base font-semibold rounded-lg transition-all duration-200 ${
+                        isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
+                      }`}
+                      style={{ backgroundColor: 'transparent' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <User size={18} />
+                      <span>Dashboard</span>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center space-x-2 px-4 py-2.5 text-base font-semibold text-red-400 hover:text-red-300 rounded-lg transition-all duration-200 w-full text-left"
+                      style={{ backgroundColor: 'transparent' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239,68,68,0.15)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <LogOut size={18} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
 
@@ -544,19 +543,32 @@ export default function Navbar() {
               <Search size={20} />
             </button>
 
-            {/* Profile Icon (Mobile) - Always visible */}
-            <div className="relative user-menu z-50">
-              <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className={`p-2 transition-all duration-300 rounded-xl ${
-                  isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
-                }`}
-                style={{ backgroundColor: 'transparent' }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.1)' : 'rgba(124,58,237,0.1)'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                aria-label="Profile menu"
+            {/* Profile Icon / Sign In Button (Mobile) */}
+            {isLoaded && user ? (
+              <div className="relative user-menu z-50"
+                onMouseEnter={() => {
+                  if (userMenuTimerRef.current) {
+                    clearTimeout(userMenuTimerRef.current)
+                    userMenuTimerRef.current = null
+                  }
+                }}
+                onMouseLeave={() => {
+                  const timer = setTimeout(() => {
+                    setShowUserMenu(false)
+                  }, 1500)
+                  userMenuTimerRef.current = timer
+                }}
               >
-                {isLoaded && user ? (
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className={`p-2 transition-all duration-300 rounded-xl ${
+                    isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                  }`}
+                  style={{ backgroundColor: 'transparent' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.1)' : 'rgba(124,58,237,0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  aria-label="Profile menu"
+                >
                   <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden relative"
                   style={{ background: user?.imageUrl ? 'transparent' : themeStyles.buttonGradient }}>
                     {user?.imageUrl ? (
@@ -573,20 +585,17 @@ export default function Navbar() {
                             }
                           }}
                         />
-                        <span className="text-white text-sm font-medium absolute inset-0 flex items-center justify-center" style={{ display: 'none' }}>
+                        <span className="text-white text-base font-semibold absolute inset-0 flex items-center justify-center" style={{ display: 'none' }}>
                           {userName.charAt(0).toUpperCase()}
                         </span>
                       </>
                     ) : (
-                      <span className="text-white text-sm font-medium">{userName.charAt(0).toUpperCase()}</span>
+                      <span className="text-white text-base font-semibold">{userName.charAt(0).toUpperCase()}</span>
                     )}
                   </div>
-                ) : (
-                  <User size={20} />
-                )}
-              </button>
-              
-              {showUserMenu && (
+                </button>
+                
+                {showUserMenu && (
                 <div 
                   className="absolute right-0 mt-2 w-48 rounded-xl p-2 border backdrop-blur-xl z-50"
                   style={{
@@ -599,15 +608,15 @@ export default function Navbar() {
                 >
                   {isLoaded && user ? (
                     <>
-                      <div className="px-3 py-2 border-b" style={{ borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)' }}>
-                        <p className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>{userName}</p>
-                        <p className={`text-xs ${isDark ? 'text-white/60' : 'text-gray-900/70'}`}>{userEmail}</p>
-                        <p className={`text-xs capitalize ${isDark ? 'text-purple-400' : 'text-purple-700'}`}>{userRole}</p>
+                      <div className="px-4 py-3 border-b" style={{ borderColor: isDark ? 'rgba(168,85,247,0.2)' : 'rgba(124,58,237,0.25)' }}>
+                        <p className={`text-base font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>{userName}</p>
+                        <p className={`text-sm ${isDark ? 'text-white/60' : 'text-gray-900/70'}`}>{userEmail}</p>
+                        <p className={`text-sm capitalize font-medium ${isDark ? 'text-purple-400' : 'text-purple-700'}`}>{userRole}</p>
                       </div>
                       <Link
                         href="/profile"
-                        className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
-                          isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                        className={`flex items-center space-x-2 px-4 py-2.5 text-base font-semibold rounded-lg transition-all duration-200 ${
+                          isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
                         }`}
                         style={{ backgroundColor: 'transparent' }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)'}
@@ -617,13 +626,13 @@ export default function Navbar() {
                           setIsMenuOpen(false)
                         }}
                       >
-                        <Settings size={16} />
+                        <Settings size={18} />
                         <span>Profile Settings</span>
                       </Link>
                       <Link
                         href={getDashboardLink()}
-                        className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
-                          isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                        className={`flex items-center space-x-2 px-4 py-2.5 text-base font-semibold rounded-lg transition-all duration-200 ${
+                          isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
                         }`}
                         style={{ backgroundColor: 'transparent' }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)'}
@@ -633,25 +642,25 @@ export default function Navbar() {
                           setIsMenuOpen(false)
                         }}
                       >
-                        <User size={16} />
+                        <User size={18} />
                         <span>Dashboard</span>
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-2 px-3 py-2 text-sm text-red-400 hover:text-red-300 rounded-lg transition-all duration-200 w-full text-left"
+                        className="flex items-center space-x-2 px-4 py-2.5 text-base font-semibold text-red-400 hover:text-red-300 rounded-lg transition-all duration-200 w-full text-left"
                         style={{ backgroundColor: 'transparent' }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239,68,68,0.15)'}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                       >
-                        <LogOut size={16} />
+                        <LogOut size={18} />
                         <span>Sign Out</span>
                       </button>
                     </>
                   ) : (
                     <Link
                       href="/login"
-                      className={`flex items-center space-x-2 px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
-                        isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                      className={`flex items-center space-x-2 px-4 py-2.5 text-base font-semibold rounded-lg transition-all duration-200 ${
+                        isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
                       }`}
                       style={{ backgroundColor: 'transparent' }}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)'}
@@ -661,13 +670,29 @@ export default function Navbar() {
                         setIsMenuOpen(false)
                       }}
                     >
-                      <User size={16} />
+                      <User size={18} />
                       <span>Sign In</span>
                     </Link>
                   )}
                 </div>
-              )}
-            </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="px-4 py-2 rounded-xl transition-all duration-300 hover:opacity-90 backdrop-blur-sm border text-sm font-semibold"
+                style={{
+                  background: themeStyles.buttonGradient,
+                  color: '#ffffff',
+                  borderColor: isDark ? 'rgba(168,85,247,0.4)' : 'rgba(124,58,237,0.4)',
+                  boxShadow: themeStyles.buttonShadow
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadowHover}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = themeStyles.buttonShadow}
+              >
+                Sign In
+              </Link>
+            )}
 
             {/* Mobile menu button */}
             <button
@@ -730,8 +755,8 @@ export default function Navbar() {
             <div className="flex flex-col space-y-4">
               <Link 
                 href="/" 
-                className={`text-sm font-medium transition-all duration-300 py-2 px-3 rounded-xl ${
-                  isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                className={`text-base font-semibold transition-all duration-300 py-2.5 px-4 rounded-xl ${
+                  isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
                 }`}
                 style={{ backgroundColor: pathname === '/' ? (isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)') : 'transparent' }}
                 onMouseEnter={(e) => {
@@ -793,8 +818,8 @@ export default function Navbar() {
               {isLoaded && user && (
                 <Link 
                   href={getDashboardLink()}
-                  className={`text-sm font-medium transition-all duration-300 py-2 px-3 rounded-xl ${
-                    isDark ? 'text-white/70 hover:text-white' : 'text-gray-800/80 hover:text-gray-900'
+                  className={`text-base font-semibold transition-all duration-300 py-2.5 px-4 rounded-xl ${
+                    isDark ? 'text-white/80 hover:text-white' : 'text-gray-800/90 hover:text-gray-900'
                   }`}
                   style={{ backgroundColor: pathname?.startsWith('/student-dashboard') || pathname?.startsWith('/admin-dashboard') || pathname?.startsWith('/trainer-dashboard') || pathname?.startsWith('/corporate-dashboard') ? (isDark ? 'rgba(168,85,247,0.15)' : 'rgba(124,58,237,0.15)') : 'transparent' }}
                   onMouseEnter={(e) => {
