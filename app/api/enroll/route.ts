@@ -188,25 +188,25 @@ export async function POST(request: NextRequest) {
       // If still no profile, return error
       if (!profile) {
         console.error('❌ Profile not found and could not be created:', profileError)
-        console.error('❌ Student ID:', studentId)
-        
-        // Try to list profiles for debugging
-        const { data: sampleProfiles } = await serviceSupabase
-          .from('profiles')
-          .select('id, email, clerk_id')
-          .limit(3)
-        
-        console.log('📋 Sample profiles in database:', sampleProfiles)
-        
-        return NextResponse.json(
-          { 
-            error: 'User profile not found. Please ensure you are logged in and your profile exists in Supabase.',
+      console.error('❌ Student ID:', studentId)
+      
+      // Try to list profiles for debugging
+      const { data: sampleProfiles } = await serviceSupabase
+        .from('profiles')
+        .select('id, email, clerk_id')
+        .limit(3)
+      
+      console.log('📋 Sample profiles in database:', sampleProfiles)
+      
+      return NextResponse.json(
+        { 
+          error: 'User profile not found. Please ensure you are logged in and your profile exists in Supabase.',
             details: profileError?.message || 'Profile does not exist and could not be created',
-            studentId,
+          studentId,
             hint: 'Try signing out and signing back in to sync your profile, or visit /profile to update your profile'
-          },
-          { status: 404 }
-        )
+        },
+        { status: 404 }
+      )
       }
     }
 
